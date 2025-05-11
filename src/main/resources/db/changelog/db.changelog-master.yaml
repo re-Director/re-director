@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: changes/v0001_create_redirects_table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/v0002_create_redirects_source_index.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/v0003_create_redirects_status_index.sql
+      relativeToChangelogFile: true

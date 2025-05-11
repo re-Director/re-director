@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>re:Director</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <span th:replace="~{fragments/general/css.html}"></span>
+    </head>
+    <body>
+        <span th:replace="~{fragments/nav.html}"></span>
+
+        <main class="container" style="padding-top: 50px;">
+            <div style="text-align: center;">
+                <h1>
+                    re:Director
+                </h1>
+                <h6>
+                    Manage Redirects Like a Pro
+                </h6>
+                <p>
+                    <small>
+                        Connect any domain and set up custom redirects in seconds. <br />
+                        re:Director gives you full control over your domain traffic. <br />
+                        Set up smart, reliable redirects with minimal setup. <br />
+                        Perfect for marketing, rebranding, or managing multiple sites from one place.
+                    </small>
+                </p>
+                <a href="/redirects">
+                    <button>
+                        Get Started
+                    </button>
+                </a>
+            </div>
+        </main>
+
+        <span th:replace="~{fragments/footer.html}"></span>
+        <span th:replace="~{fragments/general/js.html}"></span>
+    </body>
+</html>

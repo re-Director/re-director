@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX index_redirects_source ON redirects(source);

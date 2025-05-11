@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: re:Director
+
+  datasource:
+    url: jdbc:sqlite:file:sqlite.db
+    username: sa
+    password: sa
+    driverClassName: org.sqlite.JDBC
+
+redirect:
+  mappings:
+    example.com: https://target1.com
+    mysite.local: https://target2.com

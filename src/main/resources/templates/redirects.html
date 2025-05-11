@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>re:Director</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <span th:replace="~{fragments/general/css.html}"></span>
+    </head>
+    <body>
+        <span th:replace="~{fragments/nav.html}"></span>
+
+        <main class="container" style="padding-top: 50px;">
+            <div style="text-align: center;">
+                <h1>
+                    Your Redirects
+                </h1>
+                <div class="grid">
+                    <div>
+                        <form action="/redirects"  method="get">
+                            <fieldset role="group">
+                                <select name="status" aria-label="Status">
+                                    <option selected value="">All Status</option>
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="INACTIVE">Inactive</option>
+                                </select>
+                                <input name="search" placeholder="Filter" autocomplete="search" th:value="${param.search}"/>
+                                <button>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div style="text-align: right;">
+                        <button data-target="modal-create-redirect" onclick="toggleModal(event)">
+                            <i class="fa-solid fa-plus"></i> Create
+                        </button>
+                    </div>
+                </div>
+                <div class="grid">
+                        <div>
+                            <b>Source</b>
+                        </div>
+                        <div>
+                            <b>Target</b>
+                        </div>
+                        <div>
+                            <b>Status</b>
+                        </div>
+                        <div>
+                            <b>Actions</b>
+                        </div>
+                </div>
+                <hr style="height: 1px; background-color: black; border: none;">
+                <div class="grid" th:if="${redirects.empty}">
+                    No Redirects found
+                </div>
+                <span th:each="redirect, iterStat : ${redirects}">
+                    <div class="grid">
+                        <div>
+                            <span th:text="${redirect.source}">Source</span>
+                        </div>
+                        <div>
+                            <span th:text="${redirect.target}">Target</span>
+                        </div>
+                        <div>
+                            <span th:if="${redirect.status.name() == 'ACTIVE'}">
+                               <i class="fa-solid fa-circle-check pico-color-green-200"></i>
+                            </span>
+                            <span th:if="${redirect.status.name() == 'INACTIVE'}">
+                               <i class="fa-solid fa-square-xmark pico-color-red-400"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <span th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)">
+                                <i class="fa-solid fa-pen pico-color-slate-300" style="margin-right: 0.5em;" title="Edit"></i>
+                            </span>
+                            <form th:if="${redirect.status.name() == 'INACTIVE'}" method="POST" style="display: inline-block;" action="#" th:action="@{/redirects/{id}/status/ACTIVE(id=${redirect.id})}">
+                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Start"></i>
+                                </button>
+                            </form>
+                            <form th:if="${redirect.status.name() == 'ACTIVE'}" method="POST" style="display: inline-block;" action="#" th:action="@{/redirects/{id}/status/INACTIVE(id=${redirect.id})}">
+                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Pause"></i>
+                                </button>
+                            </form>
+                            <form method="POST" style="display: inline-block;" action="#" th:action="@{/redirects/{id}/delete(id=${redirect.id})}">
+                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa-solid fa-trash pico-color-red-300" title="Delete"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <hr th:unless="${iterStat.last}" style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 0.8em; margin-bottom: 0.8em">
+                </span>
+                <hr style="height: 1px; background-color: black; border: none;">
+                <div class="grid" th:unless="${redirects.empty}">
+                    <div style="text-align: left;">
+                        Showing <b th:text="${'1-' + redirects.size}">1-10</b> of <b th:text="${redirects.size}">1000</b>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <span th:replace="~{fragments/footer.html}"></span>
+
+        <dialog id="modal-create-redirect">
+            <article>
+                <header>
+                    <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
+                    <h3>Create Redirect</h3>
+                </header>
+                <form action="/redirects" method="post" th:object="${redirectDto}">
+                    <input type="text" placeholder="Source" th:field="*{source}">
+                    <input type="text" placeholder="Target" th:field="*{target}">
+
+                <footer>
+                    <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
+                        Cancel
+                    </button>
+                    <button autofocus>
+                        Confirm
+                    </button>
+                </footer>
+                </form>
+            </article>
+        </dialog>
+        <dialog th:each="redirect : ${redirects}" th:id="${'modal-update-redirect-' + redirect.id}">
+            <article>
+                <header>
+                    <button aria-label="Close" rel="prev" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)"></button>
+                    <h3>Create Redirect</h3>
+                </header>
+                <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${redirectDto}">
+                    <input type="text" placeholder="Source" name="source" th:value="${redirect.source}">
+                    <input type="text" placeholder="Target" name="target" th:value="${redirect.target}">
+
+                    <footer>
+                        <button role="button" class="secondary" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)">
+                            Cancel
+                        </button>
+                        <button autofocus>
+                            Confirm
+                        </button>
+                    </footer>
+                </form>
+            </article>
+        </dialog>
+
+        <span th:replace="~{fragments/general/js.html}"></span>
+    </body>
+</html>

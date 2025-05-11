@@ -1,0 +1,1 @@
+CREATE INDEX index_redirects_status ON redirects(status);
