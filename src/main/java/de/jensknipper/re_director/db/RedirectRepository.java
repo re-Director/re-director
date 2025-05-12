@@ -7,6 +7,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
@@ -20,6 +21,14 @@ public class RedirectRepository {
     }
 
     @Nullable
+    public Redirect findById(int id) {
+        return dsl
+                .selectFrom(REDIRECTS)
+                .where(REDIRECTS.ID.eq(id))
+                .fetchOneInto(Redirect.class);
+    }
+
+    @Nullable
     public String findTargetBySource(String source) {
         return dsl.selectFrom(REDIRECTS)
                 .where(REDIRECTS.SOURCE.eq(source)
@@ -27,7 +36,7 @@ public class RedirectRepository {
                 .fetchOne(REDIRECTS.TARGET);
     }
 
-    public List<Redirect> findAllFiltered(String search, Status status) {
+    public List<Redirect> findAllFiltered(@Nullable String search, @Nullable Status status) {
         Condition searchFilterCondition =
                 DSL.condition(search == null || search.isBlank())
                 .or(REDIRECTS.SOURCE.likeIgnoreCase("%" + search + "%")
@@ -41,12 +50,19 @@ public class RedirectRepository {
                 .fetchInto(Redirect.class);
     }
 
-    public void create(String source, String target) {
-        dsl
-                .insertInto(REDIRECTS)
-                .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET)
-                .values(source, target)
-                .execute();
+    public int create(String source, String target, Status status) {
+        return Objects.requireNonNull(
+                dsl
+                        .insertInto(REDIRECTS)
+                        .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.STATUS)
+                        .values(source, target, status)
+                        .returningResult(REDIRECTS.ID)
+                        .fetchOne())
+                .getValue(REDIRECTS.ID);
+    }
+
+    public int  create(String source, String target) {
+        return create(source, target, Status.ACTIVE);
     }
 
     public void update(int id, String source, String target) {

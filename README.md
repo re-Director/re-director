@@ -4,7 +4,7 @@
 
 ### High Prio
 
-- add repository tests
+- add formatter
 - publish on GitHub
   - proper readme
   - ci
@@ -16,6 +16,7 @@
 ### Medium Prio
 
 - simplify css with https://basscss.com/
+  - use float instead of text-align
 - proper architecture - entity, dto, etc.
 - different redirects, temporary etc.
 - metrics, eg. last called

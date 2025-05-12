@@ -42,7 +42,25 @@ public class RedirectTest {
                 .execute();
     }
 
-    // TODO add test where nothing happens
+    @Test
+    void testRedirectNotPresent() throws IOException {
+        // given
+        OkHttpClient client = createHttpClientWithCustomDns(requestUrl)
+                .followRedirects(false)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://" + requestUrl + ":" + port)
+                .build();
+
+        // when
+        Response response = client.newCall(request).execute();
+
+        // then
+        assertThat(response.code()).isIn(200);
+        assertThat(response.header("Location")).isEqualTo(null);
+
+        response.close();
+    }
 
     @Test
     void testRedirect() throws IOException {
