@@ -1,20 +1,17 @@
+# TODO
 
-## TODO
-
-### High Prio
+## High Prio
 
 - publish on GitHub
-    - proper readme
     - ci
-        - testing
         - built as docker container
             - live config, db as volume
         - publish to docker hub
 
-### Medium Prio
+## Medium Prio
 
-- simplify css with https://basscss.com/
-    - use float instead of text-align
+- simplify css
+    - utility classes for hr in table
 - proper architecture - entity, dto, etc.
 - different redirects, temporary etc.
 - metrics, eg. last called
@@ -27,8 +24,11 @@
 - path, query parameter forwarding
 - preserve request params when calling "redirect:/redirects"
 
-### Low Prio
+## Low Prio
 
+- table ordering
+  - fixed to target name for now
+  - dynamically
 - if redirect inactive or no match, redirect temporarily to own domain, currently it looks like that this is then hosted under the target domain
 - pagination
 - table
