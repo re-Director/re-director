@@ -1,39 +1,27 @@
 # re:Director
 
-## TODO
+**Manage Redirects Like a Pro**
 
-### High Prio
+A powerful, yet simple to use, self-hosted redirect service.
 
-- add formatter
-- publish on GitHub
-  - proper readme
-  - ci
-    - testing
-    - built as docker container
-      - live config, db as volume
-    - publish to docker hub
+## Overview
 
-### Medium Prio
+re:Director enables you to redirect any domain simply by specifying where it should direct to. Make URLs shorter and easier to memorize.
 
-- simplify css with https://basscss.com/
-  - use float instead of text-align
-- proper architecture - entity, dto, etc.
-- different redirects, temporary etc.
-- metrics, eg. last called
-- create/update form validation
-  - non null
-  - non empty
-  - source unique
-  - target is an url
-  - source is a domain - verify endings
-- preserve request params when calling "redirect:/redirects"
+![re:Director Main Page](doc/main_page.png)
 
-### Low Prio
+## Key Features
 
-- if redirect inactive or no match, redirect temporarily to own domain, currently it looks like that this is then hosted under the target domain
-- pagination
-- table
-  - odd coloring 
-  - show header next to values in mobile view
-  - move styling into css file
-- password protection
+- **Manage Redirects**: Create redirects for the domains you want to redirect to some target
+- **Filter Redirects**: Filter you redirects by source, target or status
+- **Pause Redirects**: Option to scrape all pages within the same domain
+- and more upcoming!
+
+## Getting Started
+
+make sure to have Java 21 installed and run the following command:
+
+```bash
+./mvnw spring-boot:run
+```
+A docker container will follow soon.
