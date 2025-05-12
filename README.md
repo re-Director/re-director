@@ -14,7 +14,7 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 
 - **Manage Redirects**: Create redirects for the domains you want to redirect to some target
 - **Filter Redirects**: Filter you redirects by source, target or status
-- **Pause Redirects**: Option to scrape all pages within the same domain
+- **Pause Redirects**: Option to temporarily pause redirects and resume them at a later time
 - and more upcoming!
 
 ## Getting Started
