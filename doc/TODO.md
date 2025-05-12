@@ -3,7 +3,6 @@
 
 ### High Prio
 
-- add formatter
 - publish on GitHub
     - proper readme
     - ci

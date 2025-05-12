@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 public class ReDirectorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ReDirectorApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(ReDirectorApplication.class, args);
+  }
 }
