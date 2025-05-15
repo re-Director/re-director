@@ -90,6 +90,36 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.5</version>
+				<configuration>
+					<from>
+						<image>eclipse-temurin:21-jre</image>
+					</from>
+					<to>
+						<image>${artifactId}:${version}</image>
+					</to>
+					<container>
+						<mainClass>de.jensknipper.re_director.ReDirectorApplication</mainClass>
+						<user>1000</user>
+						<environment>
+							<SPRING_PROFILES_ACTIVE>live</SPRING_PROFILES_ACTIVE>
+						</environment>
+					</container>
+					<extraDirectories>
+						<permissions>
+							<permission>
+								<file>/data</file>
+								<mode>777</mode>
+							</permission>
+						</permissions>
+					</extraDirectories>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
 				<artifactId>spotless-maven-plugin</artifactId>
@@ -108,6 +138,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
