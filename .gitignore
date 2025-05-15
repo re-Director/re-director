@@ -36,3 +36,4 @@ build/
 
 # sqlite database file
 sqlite.db
+sqlite-data/

@@ -3,7 +3,7 @@ spring:
     name: re:Director
 
   datasource:
-    url: jdbc:sqlite:file:sqlite.db
+    url: jdbc:sqlite:sqlite.db
     username: sa
     password: sa
     driverClassName: org.sqlite.JDBC
