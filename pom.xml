@@ -11,7 +11,7 @@
 
 	<groupId>de.jensknipper</groupId>
 	<artifactId>re-director</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>re:Director</name>
 	<description>redirect stuff</description>
 
@@ -98,9 +98,19 @@
 				<configuration>
 					<from>
 						<image>eclipse-temurin:21-jre</image>
+<!--						<platforms>-->
+<!--							<platform>-->
+<!--								<architecture>arm64</architecture>-->
+<!--								<os>linux</os>-->
+<!--							</platform>-->
+<!--						</platforms>-->
 					</from>
 					<to>
-						<image>${artifactId}:${version}</image>
+						<image>jensknipper/${artifactId}:${version}</image>
+						<tags>
+							<tag>latest</tag>
+<!--							<tag>arm64</tag>-->
+						</tags>
 					</to>
 					<container>
 						<mainClass>de.jensknipper.re_director.ReDirectorApplication</mainClass>
