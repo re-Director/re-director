@@ -16,7 +16,10 @@
 	<description>redirect stuff</description>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>21</java.version>
+
+		<architecture>amd64</architecture>
 	</properties>
 
 	<dependencies>
@@ -98,18 +101,19 @@
 				<configuration>
 					<from>
 						<image>eclipse-temurin:21-jre</image>
-<!--						<platforms>-->
-<!--							<platform>-->
-<!--								<architecture>arm64</architecture>-->
-<!--								<os>linux</os>-->
-<!--							</platform>-->
-<!--						</platforms>-->
+						<platforms>
+							<platform>
+								<architecture>${architecture}</architecture>
+								<os>linux</os>
+							</platform>
+						</platforms>
 					</from>
 					<to>
-						<image>jensknipper/${artifactId}:${version}</image>
+						<image>jensknipper/${artifactId}:${version}-${architecture}</image>
 						<tags>
 							<tag>latest</tag>
-<!--							<tag>arm64</tag>-->
+							<tag>${version}</tag>
+							<tag>${architecture}</tag>
 						</tags>
 					</to>
 					<container>

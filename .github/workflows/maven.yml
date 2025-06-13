@@ -10,9 +10,11 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "master" , "docker-test"]
+
+env:
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_KEY: ${{ secrets.DOCKER_HUB_KEY }}
 
 jobs:
   build:
@@ -28,4 +30,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn --batch-mode package --file pom.xml
+      # TODO pass artifacts to docker build
+      run: mvn --batch-mode clean verify
+    # TODO put these in a script and link them
+    - name: Build AMD64 Docker
+      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=amd64 -Djib.to.auth.username=DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
+    - name: Build ARM64 Docker
+      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=arm64 -Djib.to.auth.username=DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
