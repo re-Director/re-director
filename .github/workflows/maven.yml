@@ -29,11 +29,20 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-${{ runner.os }}-
+
     - name: Build with Maven
       # TODO pass artifacts to docker build
       run: mvn --batch-mode clean verify
     # TODO put these in a script and link them
     - name: Build AMD64 Docker
-      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=amd64 -Djib.to.auth.username=DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
+      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=amd64 -Djib.to.auth.username=$DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
     - name: Build ARM64 Docker
-      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=arm64 -Djib.to.auth.username=DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
+      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=arm64 -Djib.to.auth.username=$DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
