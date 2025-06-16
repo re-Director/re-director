@@ -1,3 +1,12 @@
 spring:
   datasource:
     url: jdbc:sqlite:/data/sqlite.db
+  devtools:
+    add-properties: false
+
+server:
+  port: 80
+
+logging:
+  level:
+    root: WARN

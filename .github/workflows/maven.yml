@@ -10,9 +10,11 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "master"]
+
+env:
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_KEY: ${{ secrets.DOCKER_HUB_KEY }}
 
 jobs:
   build:
@@ -27,5 +29,46 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+
+    - name: Set up Maven Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-${{ runner.os }}-
+
     - name: Build with Maven
-      run: mvn --batch-mode package --file pom.xml
+      run: mvn --batch-mode clean verify
+
+    - name: Build AMD64 Docker
+      run: | 
+        mvn --batch-mode jib:build \
+        -Darchitecture=amd64 \
+        -Djib.to.auth.username=$DOCKER_HUB_USER \
+        -Djib.to.auth.password=$DOCKER_HUB_KEY
+
+    - name: Build ARM64 Docker
+      run: | 
+        mvn --batch-mode jib:build \
+        -Darchitecture=arm64 \
+        -Djib.to.auth.username=$DOCKER_HUB_USER \
+        -Djib.to.auth.password=$DOCKER_HUB_KEY
+
+    - name: Link images
+      run: |
+        export NAMESPACE=jensknipper
+        export IMAGE=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+        export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        
+        docker login --username=$DOCKER_HUB_USER --password-stdin <<<$DOCKER_HUB_KEY
+        
+        docker manifest create $NAMESPACE/$IMAGE:$VERSION \
+        --amend $NAMESPACE/$IMAGE:$VERSION-amd64 \
+        --amend $NAMESPACE/$IMAGE:$VERSION-arm64
+        docker manifest push $NAMESPACE/$IMAGE:$VERSION
+
+        docker manifest create $NAMESPACE/$IMAGE:latest \
+        --amend $NAMESPACE/$IMAGE:$VERSION-amd64 \
+        --amend $NAMESPACE/$IMAGE:$VERSION-arm64
+        docker manifest push $NAMESPACE/$IMAGE:latest

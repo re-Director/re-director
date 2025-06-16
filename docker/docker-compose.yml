@@ -1,0 +1,7 @@
+services:
+  re-director:
+    image: jensknipper/re-director:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./sqlite-data:/data
