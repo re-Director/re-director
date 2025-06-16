@@ -19,6 +19,8 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 
 ## Getting Started
 
+### Java
+
 Clone this repo, make sure to have Java 21 installed and run the following command:
 
 ```bash
@@ -38,7 +40,7 @@ docker run \
 jensknipper/re-director:latest
 ```
 
-#### Docker Compose
+### Docker Compose
 
 You can also run this application using [Docker Compose](https://docs.docker.com/compose/)
 Simply save the following code into a `docker-compose.yml` file and run `docker-compose up`.
