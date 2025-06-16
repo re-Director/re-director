@@ -109,11 +109,10 @@
 						</platforms>
 					</from>
 					<to>
-						<image>jensknipper/${artifactId}:${version}-${architecture}</image>
+						<image>jensknipper/${artifactId}</image>
 						<tags>
-							<tag>latest</tag>
-							<tag>${version}</tag>
-							<tag>${architecture}</tag>
+							<tag>latest-${architecture}</tag>
+							<tag>${version}-${architecture}</tag>
 						</tags>
 					</to>
 					<container>

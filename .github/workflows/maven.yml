@@ -21,6 +21,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21
@@ -30,7 +34,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Cache Maven dependencies
+    - name: Set up Maven Cache
       uses: actions/cache@v4
       with:
         path: ~/.m2/repository
@@ -39,10 +43,29 @@ jobs:
           maven-${{ runner.os }}-
 
     - name: Build with Maven
-      # TODO pass artifacts to docker build
       run: mvn --batch-mode clean verify
-    # TODO put these in a script and link them
-    - name: Build AMD64 Docker
-      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=amd64 -Djib.to.auth.username=$DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
-    - name: Build ARM64 Docker
-      run: mvn --batch-mode jib:build -Djib.from.platforms[0].architecture=arm64 -Djib.to.auth.username=$DOCKER_HUB_USER -Djib.to.auth.password=$DOCKER_HUB_KEY
+
+    - name: Build and push Docker for ${{ matrix.arch }}
+      run: |
+        mvn --batch-mode jib:build \
+          -Darchitecture=${{ matrix.arch }} \
+          -Djib.to.auth.username=$DOCKER_HUB_USER \
+          -Djib.to.auth.password=$DOCKER_HUB_KEY
+
+    - name: Link images
+      run: |
+        export NAMESPACE=jensknipper
+        export IMAGE=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+        export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        
+        docker login --username=$DOCKER_HUB_USER --password-stdin <<<$DOCKER_HUB_KEY
+        
+        docker manifest create $NAMESPACE/$IMAGE:$VERSION \
+        --amend $NAMESPACE/$IMAGE:$VERSION-amd64 \
+        --amend $NAMESPACE/$IMAGE:$VERSION-arm64
+        docker manifest push $NAMESPACE/$IMAGE:$VERSION
+
+        docker manifest create $NAMESPACE/$IMAGE:latest \
+        --amend $NAMESPACE/$IMAGE:$VERSION-amd64 \
+        --amend $NAMESPACE/$IMAGE:$VERSION-arm64
+        docker manifest push $NAMESPACE/$IMAGE:latest
