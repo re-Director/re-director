@@ -2,11 +2,7 @@
 
 ## High Prio
 
-- publish on GitHub
-    - ci
-        - built as docker container
-            - live config, db as volume
-        - publish to docker hub
+- write Doc on how to behind reverse proxies: traefik, nginx, caddy
 
 ## Medium Prio
 
@@ -15,6 +11,7 @@
 - proper architecture - entity, dto, etc.
 - different redirects, temporary etc.
 - metrics, eg. last called
+  - as timeseries?
 - create/update form validation
     - non null
     - non empty
@@ -26,6 +23,7 @@
 
 ## Low Prio
 
+- add logo
 - table ordering
   - fixed to target name for now
   - dynamically

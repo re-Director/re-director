@@ -19,9 +19,36 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 
 ## Getting Started
 
-make sure to have Java 21 installed and run the following command:
+Clone this repo, make sure to have Java 21 installed and run the following command:
 
 ```bash
 ./mvnw spring-boot:run
 ```
-A docker container will follow soon.
+
+### Docker
+
+An image of the application can be pulled from Docker Hub:  
+https://hub.docker.com/repository/docker/jensknipper/re-director
+
+You can run it using the following command:
+```bash
+docker run \
+-p 80:80 \
+-v ./sqlite-data:/data \
+jensknipper/re-director:latest
+```
+
+#### Docker Compose
+
+You can also run this application using [Docker Compose](https://docs.docker.com/compose/)
+Simply save the following code into a `docker-compose.yml` file and run `docker-compose up`.
+
+```yaml
+services:
+  re-director:
+    image: jensknipper/re-director:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./sqlite-data:/data
+```

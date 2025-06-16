@@ -10,7 +10,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" , "docker-test"]
+    branches: [ "master"]
 
 env:
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
