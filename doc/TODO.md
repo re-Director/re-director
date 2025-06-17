@@ -11,7 +11,8 @@
 - different redirects, temporary etc.
 - metrics, eg. last called
   - as timeseries?
-- create/update form validation
+- update url when opening modal - required for backend form validation
+- create/update form validation - backend
     - non null
     - non empty
     - source unique

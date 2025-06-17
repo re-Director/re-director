@@ -112,8 +112,8 @@
                     <h3>Create Redirect</h3>
                 </header>
                 <form action="/redirects" method="post" th:object="${createRedirectRequest}">
-                    <input type="text" placeholder="Source" th:field="*{source}">
-                    <input type="text" placeholder="Target" th:field="*{target}">
+                    <input type="text" placeholder="Source" th:field="*{source}" required minlength="1">
+                    <input type="url" placeholder="Target" th:field="*{target}" required minlength="1">
 
                 <footer>
                     <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
@@ -130,11 +130,11 @@
             <article>
                 <header>
                     <button aria-label="Close" rel="prev" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)"></button>
-                    <h3>Create Redirect</h3>
+                    <h3>Update Redirect</h3>
                 </header>
-                <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${redirectDto}">
-                    <input type="text" placeholder="Source" name="source" th:value="${redirect.source}">
-                    <input type="text" placeholder="Target" name="target" th:value="${redirect.target}">
+                <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${createRedirectRequest}">
+                    <input type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
+                    <input type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
 
                     <footer>
                         <button role="button" class="secondary" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)">
