@@ -111,7 +111,7 @@
                     <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
                     <h3>Create Redirect</h3>
                 </header>
-                <form action="/redirects" method="post" th:object="${redirectDto}">
+                <form action="/redirects" method="post" th:object="${createRedirectRequest}">
                     <input type="text" placeholder="Source" th:field="*{source}">
                     <input type="text" placeholder="Target" th:field="*{target}">
 

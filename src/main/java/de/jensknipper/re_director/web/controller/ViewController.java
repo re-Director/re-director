@@ -1,7 +1,9 @@
 package de.jensknipper.re_director.web.controller;
 
 import de.jensknipper.re_director.db.RedirectRepository;
-import de.jensknipper.re_director.db.Status;
+import de.jensknipper.re_director.db.entity.Status;
+import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
+import de.jensknipper.re_director.web.controller.dto.DtoMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class ViewController {
 
   private final RedirectRepository redirectRepository;
+  private final DtoMapper dtoMapper;
 
-  public ViewController(RedirectRepository redirectRepository) {
+  public ViewController(RedirectRepository redirectRepository, DtoMapper dtoMapper) {
     this.redirectRepository = redirectRepository;
+    this.dtoMapper = dtoMapper;
   }
 
   @GetMapping("/")
@@ -26,25 +30,32 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) Status status,
       Model model) {
-    model.addAttribute("redirects", redirectRepository.findAllFiltered(search, status));
-    model.addAttribute("redirectDto", new RedirectDto());
+    model.addAttribute(
+        "redirects",
+        redirectRepository.findAllFiltered(search, status).stream()
+            .map(dtoMapper::toRedirectResponse)
+            .toList());
+    model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }
 
   @PostMapping("/redirects")
   public String createRedirect(
-      @ModelAttribute RedirectDto redirectDto, BindingResult bindingResult, Model model) {
-    redirectRepository.create(redirectDto.getSource(), redirectDto.getTarget());
+      @ModelAttribute CreateRedirectRequest createRedirectRequest,
+      BindingResult bindingResult,
+      Model model) {
+    redirectRepository.create(createRedirectRequest.getSource(), createRedirectRequest.getTarget());
     return "redirect:/redirects";
   }
 
   @PostMapping("/redirects/{id}")
   public String updateRedirect(
       @PathVariable int id,
-      @ModelAttribute RedirectDto redirectDto,
+      @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    redirectRepository.update(id, redirectDto.getSource(), redirectDto.getTarget());
+    redirectRepository.update(
+        id, createRedirectRequest.getSource(), createRedirectRequest.getTarget());
     return "redirect:/redirects";
   }
 

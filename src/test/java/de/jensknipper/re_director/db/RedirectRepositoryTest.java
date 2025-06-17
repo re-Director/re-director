@@ -4,6 +4,9 @@ import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+
+import de.jensknipper.re_director.db.entity.Redirect;
+import de.jensknipper.re_director.db.entity.Status;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

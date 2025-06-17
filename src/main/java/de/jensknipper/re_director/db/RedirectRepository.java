@@ -2,6 +2,8 @@ package de.jensknipper.re_director.db;
 
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
+import de.jensknipper.re_director.db.entity.Redirect;
+import de.jensknipper.re_director.db.entity.Status;
 import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;

@@ -1,8 +1,8 @@
-package de.jensknipper.re_director.web.controller;
+package de.jensknipper.re_director.web.controller.dto;
 
 import java.util.Objects;
 
-public final class RedirectDto {
+public final class CreateRedirectRequest {
   private String source;
   private String target;
 
@@ -26,7 +26,7 @@ public final class RedirectDto {
   public boolean equals(Object obj) {
     if (obj == this) return true;
     if (obj == null || obj.getClass() != this.getClass()) return false;
-    var that = (RedirectDto) obj;
+    var that = (CreateRedirectRequest) obj;
     return Objects.equals(this.source, that.source) && Objects.equals(this.target, that.target);
   }
 
@@ -37,6 +37,6 @@ public final class RedirectDto {
 
   @Override
   public String toString() {
-    return "RedirectDto[" + "source=" + source + ", " + "target=" + target + ']';
+    return "CreateRedirectRequest[" + "source=" + source + ", " + "target=" + target + ']';
   }
 }

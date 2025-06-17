@@ -8,7 +8,6 @@
 
 - simplify css
     - utility classes for hr in table
-- proper architecture - entity, dto, etc.
 - different redirects, temporary etc.
 - metrics, eg. last called
   - as timeseries?

@@ -1,4 +1,4 @@
-package de.jensknipper.re_director.db;
+package de.jensknipper.re_director.db.entity;
 
 import java.time.LocalDateTime;
 
