@@ -1,16 +1,13 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
 on:
   push:
     branches: [ "master"]
+    paths-ignore:
+      - 'doc/**'
+      - 'docker/**'
+      - '.run/**'
+      - 'README.md'
 
 env:
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
@@ -34,23 +31,24 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.m2/repository
-        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        key: maven-${{ runner.os }}-
+        #${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           maven-${{ runner.os }}-
 
     - name: Build with Maven
-      run: mvn --batch-mode clean verify
+      run: ./mvnw --batch-mode clean verify
 
     - name: Build AMD64 Docker
-      run: | 
-        mvn --batch-mode jib:build \
+      run: |
+        ./mvnw --batch-mode jib:build \
         -Darchitecture=amd64 \
         -Djib.to.auth.username=$DOCKER_HUB_USER \
         -Djib.to.auth.password=$DOCKER_HUB_KEY
 
     - name: Build ARM64 Docker
-      run: | 
-        mvn --batch-mode jib:build \
+      run: |
+        ./mvnw --batch-mode jib:build \
         -Darchitecture=arm64 \
         -Djib.to.auth.username=$DOCKER_HUB_USER \
         -Djib.to.auth.password=$DOCKER_HUB_KEY
