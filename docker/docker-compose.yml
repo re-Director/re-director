@@ -4,4 +4,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./sqlite-data:/data
+      - ./re-director-data:/data

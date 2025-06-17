@@ -36,4 +36,4 @@ build/
 
 # sqlite database file
 sqlite.db
-sqlite-data/
+docker/re-director-data/

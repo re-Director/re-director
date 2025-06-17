@@ -29,16 +29,16 @@ Clone this repo, make sure to have Java 21 installed and run the following comma
 
 ### Docker
 
-An image of the application can be pulled from Docker Hub:  
-https://hub.docker.com/repository/docker/jensknipper/re-director
+An image of the application can be pulled from [Docker Hub](https://hub.docker.com/repository/docker/jensknipper/re-director).
 
 You can run it using the following command:
 ```bash
 docker run \
 -p 80:80 \
--v ./sqlite-data:/data \
+-v ./re-director-data:/data \
 jensknipper/re-director:latest
 ```
+make sure to create the folder for the volume first!
 
 ### Docker Compose
 
@@ -52,5 +52,35 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./sqlite-data:/data
+      - ./re-director-data:/data
 ```
+make sure to create the folder for the volume first!
+
+### Docker Compose behind Traefik reverse proxy
+
+You might have quite a few applications running behind a Traefik reverse proxy. The configuration should then look like this.
+
+```yaml
+services:
+  traefik:
+    image: traefik:v3.4
+    command:
+      - "--providers.docker"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+ 
+  re-director:
+    image: jensknipper/re-director:latest
+    expose:
+      - 80
+    volumes:
+      - ./re-director-data:/data
+    labels:
+      - "traefik.http.routers.re-director.rule=Host(`re-director.localhost`) || HostRegexp(`.+`)"
+      - "traefik.http.routers.re-director.entrypoints=web"
+      - "traefik.http.routers.re-director.priority=1"
+```
+make sure to create the folder for the volume first!

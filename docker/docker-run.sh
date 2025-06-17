@@ -1,4 +1,4 @@
 docker run \
 -p 80:80 \
--v ./sqlite-data:/data \
+-v ./re-director-data:/data \
 jensknipper/re-director:latest

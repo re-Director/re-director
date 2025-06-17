@@ -189,7 +189,7 @@
 							</properties>
 							<forcedTypes>
 								<forcedType>
-									<userType>de.jensknipper.re_director.db.Status</userType>
+									<userType>de.jensknipper.re_director.db.entity.Status</userType>
 									<enumConverter>true</enumConverter>
 									<includeExpression>.*\.STATUS</includeExpression>
 								</forcedType>
