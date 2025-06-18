@@ -66,14 +66,19 @@ public class RedirectRepository {
         .getValue(REDIRECTS.ID);
   }
 
+  public int create(String source, String target, RedirectHttpStatusCode statusCode) {
+    return create(source, target, Status.ACTIVE, statusCode);
+  }
+
   public int create(String source, String target) {
     return create(source, target, Status.ACTIVE, RedirectHttpStatusCode.FOUND);
   }
 
-  public void update(int id, String source, String target) {
+  public void update(int id, String source, String target, RedirectHttpStatusCode statusCode) {
     dsl.update(REDIRECTS)
         .set(REDIRECTS.SOURCE, source)
         .set(REDIRECTS.TARGET, target)
+        .set(REDIRECTS.HTTP_STATUS_CODE, statusCode)
         .where(REDIRECTS.ID.eq(id))
         .execute();
   }

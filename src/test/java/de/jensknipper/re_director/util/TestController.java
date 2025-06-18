@@ -1,6 +1,5 @@
 package de.jensknipper.re_director.util;
 
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -1,5 +1,8 @@
 package de.jensknipper.re_director.db.entity;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum RedirectHttpStatusCode {
   MOVED_PERMANENTLY(301),
   FOUND(302),
@@ -14,5 +17,9 @@ public enum RedirectHttpStatusCode {
 
   public int getCode() {
     return code;
+  }
+
+  public static Optional<RedirectHttpStatusCode> findByCode(int code) {
+    return Arrays.stream(values()).filter(it -> it.code == code).findAny();
   }
 }

@@ -114,15 +114,22 @@
                 <form action="/redirects" method="post" th:object="${createRedirectRequest}">
                     <input type="text" placeholder="Source" th:field="*{source}" required minlength="1">
                     <input type="url" placeholder="Target" th:field="*{target}" required minlength="1">
+                    <select th:field="*{httpStatusCode}" aria-label="Select a Redirect HTTP Status Code" required>
+                        <option disabled value="404">Select a Redirect HTTP Status Code</option>
+                        <option value="301">301: Moved Permanently</option>
+                        <option selected value="302">302: Found</option>
+                        <option value="307">307: Temporary Redirect</option>
+                        <option value="308">308: Permanent Redirect</option>
+                    </select>
 
-                <footer>
-                    <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
-                        Cancel
-                    </button>
-                    <button autofocus>
-                        Confirm
-                    </button>
-                </footer>
+                    <footer>
+                        <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
+                            Cancel
+                        </button>
+                        <button autofocus>
+                            Confirm
+                        </button>
+                    </footer>
                 </form>
             </article>
         </dialog>
@@ -135,6 +142,13 @@
                 <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${createRedirectRequest}">
                     <input type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
                     <input type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
+                    <select name="httpStatusCode" aria-label="Select a Redirect HTTP Status Code" required>
+                        <option disabled value="404" th:selected="${redirect.httpStatusCode == null}">Select a Redirect HTTP Status Code</option>
+                        <option value="301" th:selected="${redirect.httpStatusCode == 301}">301: Moved Permanently</option>
+                        <option value="302" th:selected="${redirect.httpStatusCode == 302}">302: Found</option>
+                        <option value="307" th:selected="${redirect.httpStatusCode == 307}">307: Temporary Redirect</option>
+                        <option value="308" th:selected="${redirect.httpStatusCode == 308}">308: Permanent Redirect</option>
+                    </select>
 
                     <footer>
                         <button role="button" class="secondary" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)">

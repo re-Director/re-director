@@ -15,6 +15,7 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 - **Manage Redirects**: Create redirects for the domains you want to redirect to some target
 - **Filter Redirects**: Filter you redirects by source, target or status
 - **Pause Redirects**: Option to temporarily pause redirects and resume them at a later time
+- **Different HTTP Status Codes**: Chose between different redirects like: Moved Permanently (301), Found (302), Temporary Redirect (307) and Permanent Redirect (308)
 - and more upcoming!
 
 ## Getting Started
@@ -29,7 +30,7 @@ Clone this repo, make sure to have Java 21 installed and run the following comma
 
 ### Docker
 
-An image of the application can be pulled from [Docker Hub](https://hub.docker.com/repository/docker/jensknipper/re-director).
+An image of the application can be pulled from [Docker Hub](https://hub.docker.com/r/jensknipper/re-director).
 
 You can run it using the following command:
 ```bash

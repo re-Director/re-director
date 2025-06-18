@@ -8,7 +8,6 @@
 
 - simplify css
     - utility classes for hr in table
-- different redirects, temporary etc.
 - metrics, eg. last called
   - as timeseries?
 - update url when opening modal - required for backend form validation

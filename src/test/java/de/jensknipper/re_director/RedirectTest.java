@@ -3,6 +3,7 @@ package de.jensknipper.re_director;
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -11,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

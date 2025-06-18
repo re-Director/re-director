@@ -1,9 +1,11 @@
 package de.jensknipper.re_director.web.controller;
 
 import de.jensknipper.re_director.db.RedirectRepository;
+import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.Status;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +47,12 @@ public class ViewController {
       @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    redirectRepository.create(createRedirectRequest.getSource(), createRedirectRequest.getTarget());
+    Optional<RedirectHttpStatusCode> statusCode =
+        RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode());
+    redirectRepository.create(
+        createRedirectRequest.getSource(),
+        createRedirectRequest.getTarget(),
+        statusCode.orElse(RedirectHttpStatusCode.FOUND));
     return "redirect:/redirects";
   }
 
@@ -55,8 +62,13 @@ public class ViewController {
       @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
+    Optional<RedirectHttpStatusCode> statusCode =
+        RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode());
     redirectRepository.update(
-        id, createRedirectRequest.getSource(), createRedirectRequest.getTarget());
+        id,
+        createRedirectRequest.getSource(),
+        createRedirectRequest.getTarget(),
+        statusCode.orElse(RedirectHttpStatusCode.FOUND));
     return "redirect:/redirects";
   }
 
