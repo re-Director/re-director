@@ -34,4 +34,3 @@
     - show header next to values in mobile view
     - move styling into css file
 - password protection
-- add test where redirect is followed, add a controller only for test; test all redirect codes
