@@ -11,7 +11,7 @@
 
 	<groupId>de.jensknipper</groupId>
 	<artifactId>re-director</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>re:Director</name>
 	<description>redirect stuff</description>
 
@@ -112,7 +112,7 @@
 						<image>jensknipper/${artifactId}</image>
 						<tags>
 							<tag>latest-${architecture}</tag>
-							<tag>${version}-${architecture}</tag>
+							<tag>${project.version}-${architecture}</tag>
 						</tags>
 					</to>
 					<container>
@@ -189,9 +189,14 @@
 							</properties>
 							<forcedTypes>
 								<forcedType>
-									<userType>de.jensknipper.re_director.db.Status</userType>
+									<userType>de.jensknipper.re_director.db.entity.Status</userType>
 									<enumConverter>true</enumConverter>
 									<includeExpression>.*\.STATUS</includeExpression>
+								</forcedType>
+								<forcedType>
+									<userType>de.jensknipper.re_director.db.entity.RedirectHttpStatusCode</userType>
+									<enumConverter>true</enumConverter>
+									<includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
 								</forcedType>
 							</forcedTypes>
 						</database>

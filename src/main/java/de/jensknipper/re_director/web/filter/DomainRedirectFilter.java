@@ -1,6 +1,7 @@
 package de.jensknipper.re_director.web.filter;
 
 import de.jensknipper.re_director.db.RedirectRepository;
+import de.jensknipper.re_director.db.entity.RedirectInformation;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,9 +26,11 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
     String host = request.getHeader("Host");
     if (host != null) {
       String normalizedHost = normalizeHost(host);
-      String targetUrl = redirectRepository.findTargetBySource(normalizedHost);
-      if (targetUrl != null) {
-        response.sendRedirect(targetUrl);
+      RedirectInformation redirectInformation =
+          redirectRepository.findRedirectInformationBySource(normalizedHost);
+      if (redirectInformation != null) {
+        response.setStatus(redirectInformation.httpStatusCode().getCode());
+        response.setHeader("Location", redirectInformation.target());
       }
     }
     filterChain.doFilter(request, response);

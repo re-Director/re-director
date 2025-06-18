@@ -8,3 +8,6 @@ databaseChangeLog:
   - include:
       file: changes/v0003_create_redirects_status_index.sql
       relativeToChangelogFile: true
+  - include:
+      file: changes/v0004_update_redirects_table_add_http_status_code_column.sql
+      relativeToChangelogFile: true

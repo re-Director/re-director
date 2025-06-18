@@ -3,6 +3,10 @@ package de.jensknipper.re_director.db;
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.jensknipper.re_director.db.entity.Redirect;
+import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
+import de.jensknipper.re_director.db.entity.RedirectInformation;
+import de.jensknipper.re_director.db.entity.Status;
 import java.util.List;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,8 +52,12 @@ class RedirectRepositoryTest {
   @Test
   void updateStatusShouldChangeStatus() {
     // given
-    int id = redirectRepository.create("irrelevant", "irrelevant", Status.ACTIVE);
-    int otherId = redirectRepository.create("irrelevant2", "irrelevant2", Status.ACTIVE);
+    int id =
+        redirectRepository.create(
+            "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+    int otherId =
+        redirectRepository.create(
+            "irrelevant2", "irrelevant2", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
 
     // when
     redirectRepository.updateStatus(id, Status.INACTIVE);
@@ -148,7 +156,7 @@ class RedirectRepositoryTest {
     // given
     String source = "source";
     String target = "target";
-    redirectRepository.create(source, target, Status.INACTIVE);
+    redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
     redirectRepository.create("irrelevant", "irrelevant");
 
     // when
@@ -162,39 +170,42 @@ class RedirectRepositoryTest {
   }
 
   @Test
-  void findTargetBySourceShouldFindRelevant() {
+  void findRedirectInformationBySourceShouldFindRelevant() {
     // given
     String source = "source";
     String target = "target";
     redirectRepository.create(source, target);
-    redirectRepository.create("irrelevant", "irrelevant", Status.ACTIVE);
+    redirectRepository.create(
+        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
 
     // when
-    String result = redirectRepository.findTargetBySource(source);
+    RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
 
     // then
-    assertThat(result).isEqualTo(target);
+    assertThat(result).isNotNull();
+    assertThat(result.target()).isEqualTo(target);
+    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
   }
 
   @Test
-  void findTargetBySourceShouldReturnNullWhenNotFound() {
+  void findRedirectInformationBySourceShouldReturnNullWhenNotFound() {
     // given
     // when
-    String result = redirectRepository.findTargetBySource("source");
+    RedirectInformation result = redirectRepository.findRedirectInformationBySource("source");
 
     // then
     assertThat(result).isNull();
   }
 
   @Test
-  void findTargetBySourceShouldNotFindInactive() {
+  void findRedirectInformationBySourceShouldNotFindInactive() {
     // given
     String source = "source";
     String target = "target";
-    redirectRepository.create(source, target, Status.INACTIVE);
+    redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
 
     // when
-    String result = redirectRepository.findTargetBySource(source);
+    RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
 
     // then
     assertThat(result).isNull();

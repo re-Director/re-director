@@ -1,0 +1,1 @@
+ALTER TABLE redirects ADD COLUMN http_status_code TEXT NOT NULL DEFAULT 'FOUND';
