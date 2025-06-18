@@ -32,21 +32,24 @@ class RedirectRepositoryTest {
     // given
     String source = "source";
     String target = "target";
-    int id = redirectRepository.create("irrelevant", "irrelevant");
-    int otherId = redirectRepository.create("irrelevant2", "irrelevant2");
+    int id = redirectRepository.create("irrelevant", "irrelevant", RedirectHttpStatusCode.FOUND);
+    int otherId =
+        redirectRepository.create("irrelevant2", "irrelevant2", RedirectHttpStatusCode.FOUND);
 
     // when
-    redirectRepository.update(id, source, target);
+    redirectRepository.update(id, source, target, RedirectHttpStatusCode.PERMANENT_REDIRECT);
 
     // then
     Redirect result = redirectRepository.findById(id);
     assertThat(result).isNotNull();
     assertThat(result.source()).isEqualTo(source);
     assertThat(result.target()).isEqualTo(target);
+    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.PERMANENT_REDIRECT);
     Redirect otherResult = redirectRepository.findById(otherId);
     assertThat(otherResult).isNotNull();
     assertThat(otherResult.source()).isNotEqualTo(source);
     assertThat(otherResult.target()).isNotEqualTo(target);
+    assertThat(otherResult.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
   }
 
   @Test
