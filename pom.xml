@@ -11,7 +11,7 @@
 
 	<groupId>de.jensknipper</groupId>
 	<artifactId>re-director</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<name>re:Director</name>
 	<description>redirect stuff</description>
 
@@ -109,7 +109,7 @@
 						</platforms>
 					</from>
 					<to>
-						<image>jensknipper/${artifactId}</image>
+						<image>jensknipper/${project.artifactId}</image>
 						<tags>
 							<tag>latest-${architecture}</tag>
 							<tag>${project.version}-${architecture}</tag>
