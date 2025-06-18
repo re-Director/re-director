@@ -8,6 +8,10 @@ public final class DtoMapper {
 
   public RedirectResponse toRedirectResponse(Redirect redirect) {
     return new RedirectResponse(
-        redirect.id(), redirect.source(), redirect.target(), redirect.status());
+        redirect.id(),
+        redirect.source(),
+        redirect.target(),
+        redirect.httpStatusCode().getCode(),
+        redirect.status());
   }
 }

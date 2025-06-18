@@ -112,7 +112,7 @@
 						<image>jensknipper/${artifactId}</image>
 						<tags>
 							<tag>latest-${architecture}</tag>
-							<tag>${version}-${architecture}</tag>
+							<tag>${project.version}-${architecture}</tag>
 						</tags>
 					</to>
 					<container>
@@ -192,6 +192,11 @@
 									<userType>de.jensknipper.re_director.db.entity.Status</userType>
 									<enumConverter>true</enumConverter>
 									<includeExpression>.*\.STATUS</includeExpression>
+								</forcedType>
+								<forcedType>
+									<userType>de.jensknipper.re_director.db.entity.RedirectHttpStatusCode</userType>
+									<enumConverter>true</enumConverter>
+									<includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
 								</forcedType>
 							</forcedTypes>
 						</database>

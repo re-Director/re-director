@@ -4,6 +4,7 @@ import de.jensknipper.re_director.db.RedirectRepository;
 import de.jensknipper.re_director.db.entity.Status;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,7 @@ public class ViewController {
         "redirects",
         redirectRepository.findAllFiltered(search, status).stream()
             .map(dtoMapper::toRedirectResponse)
-            .toList());
+            .collect(Collectors.toList())); // thymeleaf needs modifiable list here
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }

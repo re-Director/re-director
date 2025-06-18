@@ -3,6 +3,8 @@ package de.jensknipper.re_director.db;
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
 import de.jensknipper.re_director.db.entity.Redirect;
+import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
+import de.jensknipper.re_director.db.entity.RedirectInformation;
 import de.jensknipper.re_director.db.entity.Status;
 import jakarta.annotation.Nullable;
 import java.util.List;
@@ -27,10 +29,11 @@ public class RedirectRepository {
   }
 
   @Nullable
-  public String findTargetBySource(String source) {
-    return dsl.selectFrom(REDIRECTS)
+  public RedirectInformation findRedirectInformationBySource(String source) {
+    return dsl.select(REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE)
+        .from(REDIRECTS)
         .where(REDIRECTS.SOURCE.eq(source).and(REDIRECTS.STATUS.eq(Status.ACTIVE)))
-        .fetchOne(REDIRECTS.TARGET);
+        .fetchOneInto(RedirectInformation.class);
   }
 
   public List<Redirect> findAllFiltered(@Nullable String search, @Nullable Status status) {
@@ -48,18 +51,23 @@ public class RedirectRepository {
         .fetchInto(Redirect.class);
   }
 
-  public int create(String source, String target, Status status) {
+  public int create(
+      String source, String target, Status status, RedirectHttpStatusCode statusCode) {
     return Objects.requireNonNull(
             dsl.insertInto(REDIRECTS)
-                .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.STATUS)
-                .values(source, target, status)
+                .columns(
+                    REDIRECTS.SOURCE,
+                    REDIRECTS.TARGET,
+                    REDIRECTS.STATUS,
+                    REDIRECTS.HTTP_STATUS_CODE)
+                .values(source, target, status, statusCode)
                 .returningResult(REDIRECTS.ID)
                 .fetchOne())
         .getValue(REDIRECTS.ID);
   }
 
   public int create(String source, String target) {
-    return create(source, target, Status.ACTIVE);
+    return create(source, target, Status.ACTIVE, RedirectHttpStatusCode.FOUND);
   }
 
   public void update(int id, String source, String target) {

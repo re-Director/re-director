@@ -63,7 +63,7 @@ public class RedirectTest {
     Response response = client.newCall(request).execute();
 
     // then
-    assertThat(response.code()).isIn(300, 301, 302, 303, 307, 308);
+    assertThat(response.code()).isEqualTo(302);
     assertThat(response.header("Location")).isEqualTo(targetUrl);
 
     response.close();
