@@ -2,7 +2,8 @@
 
 ## High Prio
 
-- write Doc on how to behind reverse proxies: traefik, nginx, caddy
+- write Doc on how to behind reverse proxies: caddy, nginx
+- update url when opening modal - required for backend form validation
 
 ## Medium Prio
 
@@ -10,7 +11,6 @@
     - utility classes for hr in table
 - metrics, eg. last called
   - as timeseries?
-- update url when opening modal - required for backend form validation
 - create/update form validation - backend
     - non null
     - non empty
@@ -22,7 +22,6 @@
 
 ## Low Prio
 
-- add logo
 - table ordering
   - fixed to target name for now
   - dynamically
