@@ -14,7 +14,7 @@ services:
     expose:
       - 80
     volumes:
-      - ./re-director-data:/data
+      - re-director-data:/data
     labels:
       - "traefik.http.routers.re-director.rule=Host(`re-director.localhost`) || HostRegexp(`.+`)"
       - "traefik.http.routers.re-director.entrypoints=web"
@@ -25,3 +25,6 @@ services:
     labels:
       - "traefik.http.routers.whoami.entrypoints=web"
       - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+
+volumes:
+  re-director-data:
