@@ -35,11 +35,11 @@ An image of the application can be pulled from [Docker Hub](https://hub.docker.c
 You can run it using the following command:
 ```bash
 docker run \
--p 80:80 \
--v ./re-director-data:/data \
-jensknipper/re-director:latest
+  --name re-director \
+  -p 80:80 \
+  -v re-director-data:/data \
+  jensknipper/re-director:latest
 ```
-make sure to create the folder for the volume first!
 
 ### Docker Compose
 
@@ -53,9 +53,11 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./re-director-data:/data
+      - re-director-data:/data
+
+volumes:
+  re-director-data:
 ```
-make sure to create the folder for the volume first!
 
 ### Docker Compose behind Traefik reverse proxy
 
@@ -72,16 +74,18 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
- 
+
   re-director:
     image: jensknipper/re-director:latest
     expose:
       - 80
     volumes:
-      - ./re-director-data:/data
+      - re-director-data:/data
     labels:
       - "traefik.http.routers.re-director.rule=Host(`re-director.localhost`) || HostRegexp(`.+`)"
       - "traefik.http.routers.re-director.entrypoints=web"
       - "traefik.http.routers.re-director.priority=1"
+
+volumes:
+  re-director-data:
 ```
-make sure to create the folder for the volume first!
