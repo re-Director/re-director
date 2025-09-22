@@ -10,3 +10,7 @@ server:
 logging:
   level:
     root: WARN
+
+org:
+  jooq:
+    no-tips: true
