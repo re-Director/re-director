@@ -1,6 +1,6 @@
 services:
   re-director:
-    image: jensknipper/re-director:latest
+    image: jensknipper/re-director:0.0.2
     ports:
       - "80:80"
     volumes:
