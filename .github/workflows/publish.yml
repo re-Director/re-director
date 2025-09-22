@@ -1,13 +1,8 @@
 name: Java CI with Maven
 
 on:
-  push:
-    branches: [ "master"]
-    paths-ignore:
-      - 'doc/**'
-      - 'docker/**'
-      - '.run/**'
-      - 'README.md'
+  release:
+    types: [published]
 
 env:
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
@@ -15,7 +10,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
