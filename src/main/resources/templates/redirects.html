@@ -46,6 +46,9 @@
                             <b>Target</b>
                         </div>
                         <div>
+                            <b>HTTP Status Code</b>
+                        </div>
+                        <div>
                             <b>Status</b>
                         </div>
                         <div>
@@ -62,14 +65,21 @@
                             <span th:text="${redirect.source}">Source</span>
                         </div>
                         <div>
-                            <span th:text="${redirect.target}">Target</span>
+                            <a th:text="${redirect.target}" th:href="${redirect.target}">Target</a>
+                        </div>
+                        <div th:switch="${redirect.httpStatusCode}">
+                            <span th:case="301" title="Moved Permanently">301</span>
+                            <span th:case="302" title="Found">302</span>
+                            <span th:case="307" title="Temporary Redirect">307</span>
+                            <span th:case="308" title="Permanent Redirect">308</span>
+                            <span th:case="*">Unknown</span>
                         </div>
                         <div>
                             <span th:if="${redirect.status.name() == 'ACTIVE'}">
-                               <i class="fa-solid fa-circle-check pico-color-green-200"></i>
+                               <i class="fa-solid fa-circle-check pico-color-green-200" title="Active"></i>
                             </span>
                             <span th:if="${redirect.status.name() == 'INACTIVE'}">
-                               <i class="fa-solid fa-square-xmark pico-color-red-400"></i>
+                               <i class="fa-solid fa-square-xmark pico-color-red-400" title="Inactive"></i>
                             </span>
                         </div>
                         <div>
