@@ -17,6 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RedirectRepository {
 
+  public static final RedirectHttpStatusCode DEFAULT_REDIRECT =
+      RedirectHttpStatusCode.MOVED_PERMANENTLY;
   private final DSLContext dsl;
 
   public RedirectRepository(DSLContext dsl) {
@@ -26,6 +28,10 @@ public class RedirectRepository {
   @Nullable
   public Redirect findById(int id) {
     return dsl.selectFrom(REDIRECTS).where(REDIRECTS.ID.eq(id)).fetchOneInto(Redirect.class);
+  }
+
+  public boolean redirectAlreadyExists(String source) {
+    return dsl.fetchExists(dsl.selectOne().from(REDIRECTS).where(REDIRECTS.SOURCE.eq(source)));
   }
 
   @Nullable
@@ -71,7 +77,7 @@ public class RedirectRepository {
   }
 
   public int create(String source, String target) {
-    return create(source, target, Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+    return create(source, target, Status.ACTIVE, DEFAULT_REDIRECT);
   }
 
   public void update(int id, String source, String target, RedirectHttpStatusCode statusCode) {

@@ -52,7 +52,7 @@ public class ViewController {
     redirectRepository.create(
         createRedirectRequest.getSource(),
         createRedirectRequest.getTarget(),
-        statusCode.orElse(RedirectHttpStatusCode.FOUND));
+        statusCode.orElse(RedirectHttpStatusCode.MOVED_PERMANENTLY));
     return "redirect:/redirects";
   }
 
@@ -68,7 +68,7 @@ public class ViewController {
         id,
         createRedirectRequest.getSource(),
         createRedirectRequest.getTarget(),
-        statusCode.orElse(RedirectHttpStatusCode.FOUND));
+        statusCode.orElse(RedirectHttpStatusCode.MOVED_PERMANENTLY));
     return "redirect:/redirects";
   }
 

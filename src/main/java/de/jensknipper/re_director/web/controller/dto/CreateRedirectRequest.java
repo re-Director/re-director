@@ -5,7 +5,7 @@ import java.util.Objects;
 public final class CreateRedirectRequest {
   private String source;
   private String target;
-  private int httpStatusCode = 302;
+  private int httpStatusCode = 301;
 
   public String getSource() {
     return source;

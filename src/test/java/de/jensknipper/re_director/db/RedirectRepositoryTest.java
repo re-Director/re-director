@@ -187,7 +187,7 @@ class RedirectRepositoryTest {
     // then
     assertThat(result).isNotNull();
     assertThat(result.target()).isEqualTo(target);
-    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
+    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY);
   }
 
   @Test
