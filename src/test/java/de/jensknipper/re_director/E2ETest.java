@@ -131,6 +131,45 @@ public class E2ETest {
     }
 
     @Test
+    void editWorks() {
+        redirectRepository.create("source", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+
+        page.navigate("/redirects");
+
+        // there is an element as specified and modal is closed
+        Locator tableLine = page.locator("#table-element-0");
+        assertThat(tableLine).hasCount(1);
+        assertThat(tableLine.locator("#source")).hasText("source");
+        assertThat(tableLine.locator("#target")).hasText("target");
+        assertThat(tableLine.locator("#httpStatusCode")).hasText("301");
+        assertThat(page.locator("#modal-update-redirect-1")).not().hasAttribute("open", "");
+
+        // clicking on edit opens the edit-modal
+        tableLine.locator("#edit-button").click();
+        Locator modal = page.locator("#modal-update-redirect-1");
+        assertThat(modal).hasAttribute("open", "");
+
+        // modal can be filled
+        page.locator("#source-input-edit-modal").fill("http://source");
+        page.locator("#target-input-edit-modal").fill("http://target");
+        page.locator("#status-code-input-edit-modal").selectOption("302");
+
+        Locator createButton = page.locator("#confirm-button-edit-modal");
+        assertThat(createButton).hasText("Confirm");
+
+        // clicking create closes the modal
+        createButton.click();
+        assertThat(page.locator("#modal-update-redirect-1")).not().hasAttribute("open", "");
+
+        // a new element should be in the table
+        tableLine = page.locator("#table-element-0");
+        assertThat(tableLine).hasCount(1);
+        assertThat(tableLine.locator("#source")).hasText("http://source");
+        assertThat(tableLine.locator("#target")).hasText("http://target");
+        assertThat(tableLine.locator("#httpStatusCode")).hasText("302");
+    }
+
+    @Test
     void deactivateAndActivateWorks() {
         redirectRepository.create("source", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
 

@@ -151,9 +151,9 @@
                     <h3>Update Redirect</h3>
                 </header>
                 <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${createRedirectRequest}">
-                    <input type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
-                    <input type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
-                    <select th:field="*{httpStatusCode}" aria-label="Select a Redirect HTTP Status Code" required>
+                    <input id="source-input-edit-modal" type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
+                    <input id="target-input-edit-modal" type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
+                    <select id="status-code-input-edit-modal" th:field="*{httpStatusCode}" aria-label="Select a Redirect HTTP Status Code" required>
                         <option disabled value="404" th:selected="${redirect.httpStatusCode == null}">Select a Redirect HTTP Status Code</option>
                         <option value="301" th:selected="${redirect.httpStatusCode == 301}">301: Moved Permanently</option>
                         <option value="302" th:selected="${redirect.httpStatusCode == 302}">302: Found</option>
@@ -165,7 +165,7 @@
                         <button role="button" class="secondary" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)">
                             Cancel
                         </button>
-                        <button autofocus>
+                        <button autofocus id="confirm-button-edit-modal">
                             Confirm
                         </button>
                     </footer>
