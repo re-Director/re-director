@@ -5,6 +5,9 @@ import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.Status;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
+import de.jensknipper.re_director.web.controller.dto.RedirectResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
@@ -31,56 +34,90 @@ public class ViewController {
   @GetMapping("/redirects")
   public String redirects(
       @RequestParam(required = false) String search,
-      @RequestParam(required = false) Status status,
+      @RequestParam(required = false) String status,
       Model model) {
-    model.addAttribute(
+      Status statusFilter = Arrays.stream(Status.values())
+          .filter(it->it.name().equals(status))
+          .findFirst()
+          .orElse(null);
+      List<RedirectResponse> redirects = redirectRepository.findAllFiltered(search, statusFilter).stream()
+          .map(dtoMapper::toRedirectResponse)
+          .collect(Collectors.toList());
+      model.addAttribute(
         "redirects",
-        redirectRepository.findAllFiltered(search, status).stream()
-            .map(dtoMapper::toRedirectResponse)
-            .collect(Collectors.toList())); // thymeleaf needs modifiable list here
+          redirects); // thymeleaf needs modifiable list here
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }
 
   @PostMapping("/redirects")
   public String createRedirect(
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
       @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    Optional<RedirectHttpStatusCode> statusCode =
-        RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode());
+    RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectRepository.create(
-        createRedirectRequest.getSource(),
-        createRedirectRequest.getTarget(),
-        statusCode.orElse(RedirectHttpStatusCode.MOVED_PERMANENTLY));
-    return "redirect:/redirects";
+        createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
+    String params =
+        buildParams(new UrlParam("search", search), new UrlParam("status", status))
+            .orElse("");
+    return "redirect:/redirects" + params;
   }
 
-  @PostMapping("/redirects/{id}")
+  private record UrlParam(String name, String value) {
+    public String getString() {
+      return name + "=" + value;
+    }
+  }
+
+  private Optional<String> buildParams(UrlParam... params) {
+      String paramsString =
+          Arrays.stream(params)
+              .filter(it -> it.value() != null && !it.value().isBlank())
+              .map(UrlParam::getString)
+              .collect(Collectors.joining("&"));
+      if(paramsString.isBlank()) {
+          return Optional.empty();
+      }
+      return Optional.of("?" + paramsString);
+  }
+
+  @PostMapping("/redirects/{id}") // TODO should be put?
   public String updateRedirect(
       @PathVariable int id,
       @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    Optional<RedirectHttpStatusCode> statusCode =
-        RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode());
+    RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectRepository.update(
-        id,
-        createRedirectRequest.getSource(),
-        createRedirectRequest.getTarget(),
-        statusCode.orElse(RedirectHttpStatusCode.MOVED_PERMANENTLY));
-    return "redirect:/redirects";
+        id, createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
+    return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/status/{status}")
   public String setStatus(@PathVariable int id, @PathVariable Status status, Model model) {
     redirectRepository.updateStatus(id, status);
-    return "redirect:/redirects";
+    return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/delete")
   public String deleteRedirect(@PathVariable int id, Model model) {
     redirectRepository.delete(id);
-    return "redirect:/redirects";
+    return "redirect:/redirects"; // TODO preserve filter
+  }
+
+  private RedirectHttpStatusCode getHttpStatusCode(CreateRedirectRequest createRedirectRequest) {
+    return RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode())
+        // if this happens something with validation has gone wrong
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Could not match redirect status code '"
+                        + createRedirectRequest.getHttpStatusCode()
+                        + "' to any of the allowed values: '"
+                        + Arrays.toString(RedirectHttpStatusCode.values())
+                        + "'"));
   }
 }
