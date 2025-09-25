@@ -22,7 +22,7 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 
 ### Java
 
-Clone this repo, make sure to have Java 21 installed and run the following command:
+Clone this repo, make sure to have Java 25 installed and run the following command:
 
 ```bash
 ./mvnw spring-boot:run
