@@ -253,7 +253,6 @@ public class E2ETest {
         // url contains new filter
         assertThat(page).hasURL("/redirects?status=ACTIVE&search=1");
     }
-    // TODO edit
     // TODO 301 default works
     // TODO create, edit, delete, activate/deactivate  should preserve filter
     // TODO validation
