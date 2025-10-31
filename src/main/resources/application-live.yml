@@ -4,6 +4,19 @@ spring:
   devtools:
     add-properties: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    info:
+      show-details: when_authorized
+      roles: ADMIN
+    health:
+      show-details: when_authorized
+      roles: ADMIN
+
 server:
   port: 80
 
