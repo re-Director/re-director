@@ -7,3 +7,12 @@ spring:
     username: sa
     password: sa
     driverClassName: org.sqlite.JDBC
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  tomcat:
+    max-http-request-header-size: 8KB
