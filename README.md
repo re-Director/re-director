@@ -38,7 +38,7 @@ docker run \
   --name re-director \
   -p 80:80 \
   -v re-director-data:/data \
-  jensknipper/re-director:0.0.2
+  jensknipper/re-director:0.0.4
 ```
 
 ### Docker Compose
@@ -49,7 +49,7 @@ Simply save the following code into a `docker-compose.yml` file and run `docker-
 ```yaml
 services:
   re-director:
-    image: jensknipper/re-director:0.0.2
+    image: jensknipper/re-director:0.0.4
     ports:
       - "80:80"
     volumes:
@@ -76,7 +76,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   re-director:
-    image: jensknipper/re-director:0.0.2
+    image: jensknipper/re-director:0.0.4
     expose:
       - 80
     volumes:
@@ -89,3 +89,19 @@ services:
 volumes:
   re-director-data:
 ```
+
+## Release
+
+Whenever there is a new release, new Docker images will be built and published to Docker Hub. 
+Regular commits etc. will not trigger the images to be built.  
+By default `amd64` and `arm64` images will be built.
+
+Before creating a release, make sure that:
+- all tests pass
+- you update the version in the `pom.xml` to the next version
+- update all the mentioned versions in the documentation
+- you are able to run the docker containers - build them locally to do that
+    - run `./mvnw jib:dockerBuild` to create the container locally
+    - use the example files in the `docker` directory
+    - go to http://localhost and check if the application is running
+- create the new release [here](https://github.com/re-Director/re-director/releases)
