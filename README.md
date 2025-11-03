@@ -16,6 +16,8 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 - **Filter Redirects**: Filter you redirects by source, target or status
 - **Pause Redirects**: Option to temporarily pause redirects and resume them at a later time
 - **Different HTTP Status Codes**: Chose between different redirects like: Moved Permanently (301), Found (302), Temporary Redirect (307) and Permanent Redirect (308)
+- **Dark Mode**: perfect for working in dark environments, respects you system default settings
+- **Responsive Design**: easily manage your redirects, even with your phone on the go
 - and more upcoming!
 
 ## Getting Started
