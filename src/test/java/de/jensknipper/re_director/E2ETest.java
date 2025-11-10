@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 import de.jensknipper.re_director.db.RedirectRepository;
 import de.jensknipper.re_director.db.entity.Status;
@@ -20,11 +21,19 @@ import org.junit.jupiter.api.extension.TestWatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class E2ETest {
 
     public static final Path RECORD_VIDEO_DIR = Paths.get("target/playwright");
+
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+        String uniqueDb = "jdbc:sqlite:file::memdb-" + UUID.randomUUID() + ":?mode=memory&cache=shared";
+        registry.add("spring.datasource.url", () -> uniqueDb);
+    }
 
     @RegisterExtension
     private final TestWatcher testWatcher =
@@ -78,12 +87,13 @@ public class E2ETest {
             .setRecordVideoSize(800, 600);
         context = browser.newContext(options);
         page = context.newPage();
+
+        dsl.deleteFrom(REDIRECTS).execute();
     }
 
     @AfterEach
     void cleanup() {
         context.close();
-        dsl.deleteFrom(REDIRECTS).execute();
     }
 
     @Test

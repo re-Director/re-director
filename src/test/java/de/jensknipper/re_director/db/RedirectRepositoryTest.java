@@ -8,19 +8,28 @@ import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.RedirectInformation;
 import de.jensknipper.re_director.db.entity.Status;
 import java.util.List;
+import java.util.UUID;
+
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class RedirectRepositoryTest {
 
   @Autowired private DSLContext dsl;
   @Autowired private RedirectRepository redirectRepository;
+
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+        String uniqueDb = "jdbc:sqlite:file::memdb-" + UUID.randomUUID() + ":?mode=memory&cache=shared";
+        registry.add("spring.datasource.url", () -> uniqueDb);
+    }
 
   @BeforeEach
   void cleanup() {
