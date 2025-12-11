@@ -18,6 +18,22 @@ spring:
       charset: UTF-8
       force: true
 
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: when_authorized
+      roles: ADMIN
+      probes:
+        enabled: true
+
 server:
   tomcat:
     max-http-request-header-size: 8KB
