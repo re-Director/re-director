@@ -12,11 +12,11 @@
       - https://www.docsy.dev/
 - write Doc on how to behind reverse proxies: caddy, nginx
 - update url when opening modal - required for backend form validation
-- default error page
 - doc on how to raise logging level
 - update url when opening modal - required for backend form validation - essential for everything else!
 - make development easier with spring tool suite!
 life
+
 ## Medium Prio
 
 - simplify css
