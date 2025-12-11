@@ -10,15 +10,16 @@
   - theme
       - https://getdoks.org/
       - https://www.docsy.dev/
-- write Doc on how to behind reverse proxies: caddy, nginx
-- update url when opening modal - required for backend form validation
-- doc on how to raise logging level
 - update url when opening modal - required for backend form validation - essential for everything else!
 - make development easier with spring tool suite!
 life
 
 ## Medium Prio
 
+- filter for Status codes
+- doc on how to raise logging level - should we log to a file?
+- write Doc on how to behind reverse proxies: caddy, nginx
+  - nginx users should use nginx proxy manager (NPM)
 - simplify css
     - utility classes for hr in table
 - metrics, eg. last called
@@ -38,6 +39,10 @@ life
     - odd coloring
     - show header next to values in mobile view
     - move styling into css file
-- password protection
 - deletion confirmation modal
-- default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
+- password protection
+  - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
+- Caching
+  - cache findRedirectInformationBySource in RedirectRepository for additional performance gains
+  - update cache on updates
+  - add options to deactivate caching and clear caches
