@@ -1,3 +1,6 @@
+[![Tests](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml)
+[![Publish](https://github.com/re-Director/re-director/actions/workflows/publish.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/publish.yml)
+
 # re:Director
 
 **Manage Redirects Like a Pro**
