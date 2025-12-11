@@ -1,3 +1,14 @@
+spring:
+  thymeleaf:
+    cache: false
+  devtools:
+    add-properties: true
+    restart:
+      enabled: true
+      exclude: resources/**,web-inf/**
+    livereload:
+      enabled: true
+
 management:
   endpoints:
     enabled-by-default: true

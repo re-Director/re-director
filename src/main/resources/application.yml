@@ -18,6 +18,11 @@ spring:
       charset: UTF-8
       force: true
 
+  devtools:
+    add-properties: false
+    restart:
+      enabled: false
+
 management:
   endpoints:
     enabled-by-default: false
