@@ -36,16 +36,16 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
       Model model) {
-      Status statusFilter = Arrays.stream(Status.values())
-          .filter(it->it.name().equals(status))
-          .findFirst()
-          .orElse(null);
-      List<RedirectResponse> redirects = redirectService.findAllFiltered(search, statusFilter).stream()
-          .map(dtoMapper::toRedirectResponse)
-          .collect(Collectors.toList());
-      model.addAttribute(
-        "redirects",
-          redirects); // thymeleaf needs modifiable list here
+    Status statusFilter =
+        Arrays.stream(Status.values())
+            .filter(it -> it.name().equals(status))
+            .findFirst()
+            .orElse(null);
+    List<RedirectResponse> redirects =
+        redirectService.findAllFiltered(search, statusFilter).stream()
+            .map(dtoMapper::toRedirectResponse)
+            .collect(Collectors.toList());
+    model.addAttribute("redirects", redirects); // thymeleaf needs modifiable list here
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }
@@ -58,11 +58,10 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
-      redirectService.create(
+    redirectService.create(
         createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
     String params =
-        buildParams(new UrlParam("search", search), new UrlParam("status", status))
-            .orElse("");
+        buildParams(new UrlParam("search", search), new UrlParam("status", status)).orElse("");
     return "redirect:/redirects" + params;
   }
 
@@ -73,15 +72,15 @@ public class ViewController {
   }
 
   private Optional<String> buildParams(UrlParam... params) {
-      String paramsString =
-          Arrays.stream(params)
-              .filter(it -> it.value() != null && !it.value().isBlank())
-              .map(UrlParam::getString)
-              .collect(Collectors.joining("&"));
-      if(paramsString.isBlank()) {
-          return Optional.empty();
-      }
-      return Optional.of("?" + paramsString);
+    String paramsString =
+        Arrays.stream(params)
+            .filter(it -> it.value() != null && !it.value().isBlank())
+            .map(UrlParam::getString)
+            .collect(Collectors.joining("&"));
+    if (paramsString.isBlank()) {
+      return Optional.empty();
+    }
+    return Optional.of("?" + paramsString);
   }
 
   @PostMapping("/redirects/{id}") // TODO should be put?
@@ -91,20 +90,20 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
-      redirectService.update(
+    redirectService.update(
         id, createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
     return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/status/{status}")
   public String setStatus(@PathVariable int id, @PathVariable Status status, Model model) {
-      redirectService.updateStatus(id, status);
+    redirectService.updateStatus(id, status);
     return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/delete")
   public String deleteRedirect(@PathVariable int id, Model model) {
-      redirectService.delete(id);
+    redirectService.delete(id);
     return "redirect:/redirects"; // TODO preserve filter
   }
 

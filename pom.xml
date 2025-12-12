@@ -158,6 +158,8 @@
 				<configuration>
 					<java>
 						<googleJavaFormat/>
+            <importOrder/>
+            <removeUnusedImports/>
 					</java>
 				</configuration>
 <!--
