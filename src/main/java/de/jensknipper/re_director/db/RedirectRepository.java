@@ -25,11 +25,6 @@ public class RedirectRepository {
     this.dsl = dsl;
   }
 
-  @Nullable
-  public Redirect findById(int id) {
-    return dsl.selectFrom(REDIRECTS).where(REDIRECTS.ID.eq(id)).fetchOneInto(Redirect.class);
-  }
-
   public boolean redirectAlreadyExists(String source) {
     return dsl.fetchExists(dsl.selectOne().from(REDIRECTS).where(REDIRECTS.SOURCE.eq(source)));
   }
@@ -70,14 +65,6 @@ public class RedirectRepository {
                 .returningResult(REDIRECTS.ID)
                 .fetchOne())
         .getValue(REDIRECTS.ID);
-  }
-
-  public int create(String source, String target, RedirectHttpStatusCode statusCode) {
-    return create(source, target, Status.ACTIVE, statusCode);
-  }
-
-  public int create(String source, String target) {
-    return create(source, target, Status.ACTIVE, DEFAULT_REDIRECT);
   }
 
   public void update(int id, String source, String target, RedirectHttpStatusCode statusCode) {

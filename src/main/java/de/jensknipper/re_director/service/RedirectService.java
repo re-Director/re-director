@@ -49,7 +49,7 @@ public class RedirectService {
     }
 
     public void create(String source, String target, RedirectHttpStatusCode statusCode) {
-        redirectRepository.create(source, target, statusCode);
+        redirectRepository.create(source, target, Status.ACTIVE, statusCode);
     }
 
     @CacheEvict(cacheNames = {"redirects"}, allEntries = true)
