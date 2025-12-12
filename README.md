@@ -108,15 +108,16 @@ When the application is healthy a JSON like this is returned
 
 ```json
 {
-  "status": "UP"
+  "status": "UP",
+  ...
 }
 ```
 
 Possible results for the status attribute are:
-- UP
-- DOWN
-- OUT_OF_SERVICE
-- UNKNOWN
+- `UP`
+- `DOWN`
+- `OUT_OF_SERVICE`
+- `UNKNOWN`
 
 ## Logging
 
@@ -124,14 +125,14 @@ By default, a log file named `re-director.log` will be written into the volume o
 Another way to get the logs is the [docker logs command](https://docs.docker.com/reference/cli/docker/container/logs/).
 
 You can raise the logging level by setting the following environment variable: `LOGGING_LEVEL_ROOT`. The following levels are allowed:
-- TRACE
-- DEBUG
-- INFO
-- WARN
-- ERROR
+- `TRACE`
+- `DEBUG`
+- `INFO`
+- `WARN`
+- `ERROR`
 
 Here the severity is ordered from low to high.
-By chosing a higher severity, lower severity logs will not be logged, e.g. the level `ERROR` will only print error logs. The lower ones will include the higher level severities.
+By choosing a higher severity, lower severity logs will not be logged, e.g. the level `ERROR` will only print error logs. The lower ones will include the higher level severities.
 
 The default level is `WARN`.
 
