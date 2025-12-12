@@ -8,6 +8,8 @@ server:
 logging:
   level:
     root: WARN
+  file:
+    name: /data/re-director.log
 
 org:
   jooq:

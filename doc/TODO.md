@@ -15,7 +15,6 @@
 ## Medium Prio
 
 - filter for Status codes
-- doc on how to raise logging level - should we log to a file?
 - write Doc on how to behind reverse proxies: caddy, nginx
   - nginx users should use nginx proxy manager (NPM)
 - simplify css
