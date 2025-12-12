@@ -1,8 +1,8 @@
 package de.jensknipper.re_director.web.controller;
 
-import de.jensknipper.re_director.db.RedirectRepository;
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.Status;
+import de.jensknipper.re_director.service.RedirectService;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
 import de.jensknipper.re_director.web.controller.dto.RedirectResponse;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ViewController {
 
-  private final RedirectRepository redirectRepository;
+  private final RedirectService redirectService;
   private final DtoMapper dtoMapper;
 
-  public ViewController(RedirectRepository redirectRepository, DtoMapper dtoMapper) {
-    this.redirectRepository = redirectRepository;
+  public ViewController(RedirectService redirectService, DtoMapper dtoMapper) {
+    this.redirectService = redirectService;
     this.dtoMapper = dtoMapper;
   }
 
@@ -40,7 +40,7 @@ public class ViewController {
           .filter(it->it.name().equals(status))
           .findFirst()
           .orElse(null);
-      List<RedirectResponse> redirects = redirectRepository.findAllFiltered(search, statusFilter).stream()
+      List<RedirectResponse> redirects = redirectService.findAllFiltered(search, statusFilter).stream()
           .map(dtoMapper::toRedirectResponse)
           .collect(Collectors.toList());
       model.addAttribute(
@@ -58,7 +58,7 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
-    redirectRepository.create(
+      redirectService.create(
         createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
     String params =
         buildParams(new UrlParam("search", search), new UrlParam("status", status))
@@ -91,20 +91,20 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
-    redirectRepository.update(
+      redirectService.update(
         id, createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
     return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/status/{status}")
   public String setStatus(@PathVariable int id, @PathVariable Status status, Model model) {
-    redirectRepository.updateStatus(id, status);
+      redirectService.updateStatus(id, status);
     return "redirect:/redirects"; // TODO preserve filter
   }
 
   @PostMapping("/redirects/{id}/delete")
   public String deleteRedirect(@PathVariable int id, Model model) {
-    redirectRepository.delete(id);
+      redirectService.delete(id);
     return "redirect:/redirects"; // TODO preserve filter
   }
 

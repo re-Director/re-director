@@ -1,6 +1,6 @@
 package de.jensknipper.re_director.web.validation;
 
-import de.jensknipper.re_director.db.RedirectRepository;
+import de.jensknipper.re_director.service.RedirectService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UniqueSourceValidator implements ConstraintValidator<UniqueSource, String> {
 
-  private final RedirectRepository redirectRepository;
+  private final RedirectService redirectService;
 
-  public UniqueSourceValidator(RedirectRepository redirectRepository) {
-    this.redirectRepository = redirectRepository;
+  public UniqueSourceValidator(RedirectService redirectService) {
+    this.redirectService = redirectService;
   }
 
   @Override
@@ -19,6 +19,6 @@ public class UniqueSourceValidator implements ConstraintValidator<UniqueSource, 
     if (value == null) {
       return true;
     }
-    return !redirectRepository.redirectAlreadyExists(value);
+    return !redirectService.redirectAlreadyExists(value);
   }
 }

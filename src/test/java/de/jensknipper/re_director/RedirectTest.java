@@ -4,6 +4,7 @@ import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -13,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import de.jensknipper.re_director.service.RedirectService;
 import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -32,12 +35,16 @@ import org.springframework.test.context.DynamicPropertySource;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedirectTest {
 
-  public static final String requestUrl = "request.com";
-  public static final String targetUrl = "http://target.com";
+    public static final String requestUrl = "request.com";
+    public static final String targetUrl = "http://target.com";
 
-  @Autowired private DSLContext dsl;
+    @Autowired
+    private DSLContext dsl;
+    @Autowired
+    private RedirectService redirectService;
 
-  @LocalServerPort private int port;
+    @LocalServerPort
+    private int port;
 
     @DynamicPropertySource
     static void overrideProps(DynamicPropertyRegistry registry) {
@@ -45,93 +52,94 @@ public class RedirectTest {
         registry.add("spring.datasource.url", () -> uniqueDb);
     }
 
-  @BeforeEach
-  void cleanup() {
-    dsl.deleteFrom(REDIRECTS).execute();
-  }
+    @BeforeEach
+    void cleanup() {
+        dsl.deleteFrom(REDIRECTS).execute();
+        redirectService.clearCache();
+    }
 
-  @Test
-  void testRedirectNotPresent() throws IOException {
-    // given
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    @Test
+    void testRedirectNotPresent() throws IOException {
+        // given
+        OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
+        Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
 
-    // when
-    Response response = client.newCall(request).execute();
+        // when
+        Response response = client.newCall(request).execute();
 
-    // then
-    assertThat(response.code()).isIn(200);
-    assertThat(response.header("Location")).isEqualTo(null);
+        // then
+        assertThat(response.code()).isIn(200);
+        assertThat(response.header("Location")).isEqualTo(null);
 
-    response.close();
-  }
+        response.close();
+    }
 
-  private static Stream<Arguments> provideRedirectHttpStatusCodes() {
-    return Arrays.stream(RedirectHttpStatusCode.values()).map(Arguments::of);
-  }
+    private static Stream<Arguments> provideRedirectHttpStatusCodes() {
+        return Arrays.stream(RedirectHttpStatusCode.values()).map(Arguments::of);
+    }
 
-  @ParameterizedTest
-  @MethodSource("provideRedirectHttpStatusCodes")
-  void testRedirect(RedirectHttpStatusCode statusCode) throws IOException {
-    // given
-    insertRedirect(requestUrl, targetUrl, statusCode);
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    @ParameterizedTest
+    @MethodSource("provideRedirectHttpStatusCodes")
+    void testRedirect(RedirectHttpStatusCode statusCode) throws IOException {
+        // given
+        insertRedirect(requestUrl, targetUrl, statusCode);
+        OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
+        Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
 
-    // when
-    Response response = client.newCall(request).execute();
+        // when
+        Response response = client.newCall(request).execute();
 
-    // then
-    assertThat(response.isRedirect()).isTrue();
-    assertThat(response.code()).isEqualTo(statusCode.getCode());
-    assertThat(response.header("Location")).isEqualTo(targetUrl);
+        // then
+        assertThat(response.isRedirect()).isTrue();
+        assertThat(response.code()).isEqualTo(statusCode.getCode());
+        assertThat(response.header("Location")).isEqualTo(targetUrl);
 
-    response.close();
-  }
+        response.close();
+    }
 
-  @ParameterizedTest
-  @MethodSource("provideRedirectHttpStatusCodes")
-  void testRedirectWithFollow(RedirectHttpStatusCode statusCode) throws IOException {
-    // given
-    String target = "http://localhost:" + port + "/test";
-    insertRedirect(requestUrl, target, statusCode);
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(true).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    @ParameterizedTest
+    @MethodSource("provideRedirectHttpStatusCodes")
+    void testRedirectWithFollow(RedirectHttpStatusCode statusCode) throws IOException {
+        // given
+        String target = "http://localhost:" + port + "/test";
+        insertRedirect(requestUrl, target, statusCode);
+        OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(true).build();
+        Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
 
-    // when
-    Response response = client.newCall(request).execute();
+        // when
+        Response response = client.newCall(request).execute();
 
-    // then
-    assertThat(response.code()).isEqualTo(200);
-    assertThat(response.body()).isNotNull();
-    assertThat(response.body().string()).isEqualTo("it works!");
+        // then
+        assertThat(response.code()).isEqualTo(200);
+        assertThat(response.body()).isNotNull();
+        assertThat(response.body().string()).isEqualTo("it works!");
 
-    response.close();
-  }
+        response.close();
+    }
 
-  private void insertRedirect(String source, String target, RedirectHttpStatusCode statusCode) {
-    dsl.insertInto(REDIRECTS)
-        .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE)
-        .values(source, target, statusCode)
-        .execute();
-  }
+    private void insertRedirect(String source, String target, RedirectHttpStatusCode statusCode) {
+        dsl.insertInto(REDIRECTS)
+            .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE)
+            .values(source, target, statusCode)
+            .execute();
+    }
 
-  private OkHttpClient.Builder createHttpClientWithCustomDns(String... requestUrls) {
-    Map<String, String> customDnsMap =
-        Arrays.stream(requestUrls).collect(Collectors.toMap(s -> s, s -> "localhost"));
+    private OkHttpClient.Builder createHttpClientWithCustomDns(String... requestUrls) {
+        Map<String, String> customDnsMap =
+            Arrays.stream(requestUrls).collect(Collectors.toMap(s -> s, s -> "localhost"));
 
-    Dns customDns =
-        hostname -> {
-          if (customDnsMap.containsKey(hostname)) {
-            try {
-              return List.of(InetAddress.getByName(customDnsMap.get(hostname)));
-            } catch (UnknownHostException e) {
-              throw new RuntimeException("Failed to resolve " + hostname, e);
-            }
-          }
-          return Dns.SYSTEM.lookup(hostname);
-        };
+        Dns customDns =
+            hostname -> {
+                if (customDnsMap.containsKey(hostname)) {
+                    try {
+                        return List.of(InetAddress.getByName(customDnsMap.get(hostname)));
+                    } catch (UnknownHostException e) {
+                        throw new RuntimeException("Failed to resolve " + hostname, e);
+                    }
+                }
+                return Dns.SYSTEM.lookup(hostname);
+            };
 
-    return new OkHttpClient.Builder().dns(customDns);
-  }
+        return new OkHttpClient.Builder().dns(customDns);
+    }
 }

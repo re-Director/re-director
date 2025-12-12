@@ -18,6 +18,11 @@ spring:
       charset: UTF-8
       force: true
 
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=10m
+
   devtools:
     add-properties: false
     restart:

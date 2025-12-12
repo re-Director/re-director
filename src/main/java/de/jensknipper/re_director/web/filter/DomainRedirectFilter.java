@@ -1,7 +1,7 @@
 package de.jensknipper.re_director.web.filter;
 
-import de.jensknipper.re_director.db.RedirectRepository;
 import de.jensknipper.re_director.db.entity.RedirectInformation;
+import de.jensknipper.re_director.service.RedirectService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,10 +13,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class DomainRedirectFilter extends OncePerRequestFilter {
 
-  private final RedirectRepository redirectRepository;
+  private final RedirectService redirectService;
 
-  public DomainRedirectFilter(RedirectRepository redirectRepository) {
-    this.redirectRepository = redirectRepository;
+  public DomainRedirectFilter(RedirectService redirectService) {
+    this.redirectService = redirectService;
   }
 
   @Override
@@ -27,7 +27,7 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
     if (host != null) {
       String normalizedHost = normalizeHost(host);
       RedirectInformation redirectInformation =
-          redirectRepository.findRedirectInformationBySource(normalizedHost);
+          redirectService.findRedirectInformationBySource(normalizedHost);
       if (redirectInformation != null) {
         response.setStatus(redirectInformation.httpStatusCode().getCode());
         response.setHeader("Location", redirectInformation.target());

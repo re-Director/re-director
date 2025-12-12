@@ -11,8 +11,6 @@
       - https://getdoks.org/
       - https://www.docsy.dev/
 - update url when opening modal - required for backend form validation - essential for everything else!
-- make development easier with spring tool suite!
-life
 
 ## Medium Prio
 
@@ -42,7 +40,4 @@ life
 - deletion confirmation modal
 - password protection
   - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
-- Caching
-  - cache findRedirectInformationBySource in RedirectRepository for additional performance gains
-  - update cache on updates
-  - add options to deactivate caching and clear caches
+- Caching - add options clear caches

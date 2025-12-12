@@ -1,5 +1,5 @@
 [![Tests](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml)
-[![Publish](https://github.com/re-Director/re-director/actions/workflows/publish.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/publish.yml)
+[![Release](https://github.com/re-Director/re-director/actions/workflows/publish.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/publish.yml)
 
 # re:Director
 
@@ -133,3 +133,11 @@ Possible results for the status attribute are:
 - DOWN
 - OUT_OF_SERVICE
 - UNKNOWN
+
+## Caching
+
+To keep the latency that Re:Director introduces as small as possible, caching is implemented.
+
+### Deactivate Caching
+
+Set the environment variable `SPRING_CACHE_TYPE=none`
