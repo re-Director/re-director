@@ -40,3 +40,4 @@
 - password protection
   - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
 - Caching - add options clear caches
+- jspecify instead of jakarta validation

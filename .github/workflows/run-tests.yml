@@ -7,7 +7,7 @@ on:
       - 'doc/**'
       - 'docker/**'
       - '.run/**'
-      - 'README.md'
+      - '*.md'
 
 env:
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
