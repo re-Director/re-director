@@ -11,7 +11,7 @@
 
 	<groupId>de.jensknipper</groupId>
 	<artifactId>re-director</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 	<name>re:Director</name>
 	<description>redirect stuff</description>
 
@@ -118,7 +118,7 @@
 				<version>3.5.1</version>
 				<configuration>
 					<from>
-						<image>eclipse-temurin:25-jre</image>
+						<image>eclipse-temurin:25-jre-alpine</image>
 						<platforms>
 							<platform>
 								<architecture>${architecture}</architecture>

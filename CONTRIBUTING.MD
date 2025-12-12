@@ -5,10 +5,12 @@
 You need the following software installed to get started:
 - Git
 - Java JDK 25
+  - easiest to install with SDKMAN
 - Docker
 - Docker Compose
 - a Browser of your choice
-- an IDE of your choice (preferably IntelliJ)
+- an IDE of your choice 
+  - preferably IntelliJ
 
 Do the following steps to make sure you are ready to go:
 - Clone this repo using the following command:
@@ -17,6 +19,11 @@ Do the following steps to make sure you are ready to go:
 - Start the application: `./mvnw spring-boot:run`
 - Make sure it runs on `http://localhost:8080`
 - Have fun!
+
+## Formatting
+
+To ensure a uniform formatting spotless is used.
+Make sure to run `./mvnw spotless:apply` before commiting and pushing.
 
 ## Hot Swap
 
