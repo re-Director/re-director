@@ -108,8 +108,7 @@ When the application is healthy a JSON like this is returned
 
 ```json
 {
-  "status": "UP",
-  ...
+  "status": "UP"
 }
 ```
 
