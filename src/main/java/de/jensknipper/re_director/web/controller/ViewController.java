@@ -50,6 +50,25 @@ public class ViewController {
     return "redirects";
   }
 
+  @GetMapping("/redirects/create")
+  public String redirectsCreateModal(
+    @RequestParam(required = false) String search,
+    @RequestParam(required = false) String status,
+    Model model) {
+    model.addAttribute("isCreatePage", true);
+    return redirects(search, status, model);
+  }
+
+  @GetMapping("/redirects/edit/{id}")
+  public String redirectsEditModal(
+    @PathVariable int id,
+    @RequestParam(required = false) String search,
+    @RequestParam(required = false) String status,
+    Model model) {
+    model.addAttribute("editPageId", id);
+    return redirects(search, status, model);
+  }
+
   @PostMapping("/redirects")
   public String createRedirect(
       @RequestParam(required = false) String search,

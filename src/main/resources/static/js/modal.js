@@ -34,6 +34,10 @@ const openModal = (modal) => {
     html.classList.remove(openingClass);
   }, animationDuration);
   modal.showModal();
+
+  // set path
+  const newUrl = window.location.pathname + modal.dataset.urlAddition + window.location.search;
+  window.history.pushState(null, '', newUrl);
 };
 
 // Close modal
@@ -46,6 +50,11 @@ const closeModal = (modal) => {
     html.style.removeProperty(scrollbarWidthCssVar);
     modal.close();
   }, animationDuration);
+
+  // remove path
+  const currentPath = window.location.pathname;
+  const newUrl = currentPath.slice(0, -modal.dataset.urlAddition.length) + window.location.search;
+  window.history.pushState(null, '', newUrl);
 };
 
 // Close with a click outside

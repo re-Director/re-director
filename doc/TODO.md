@@ -10,7 +10,7 @@
   - theme
       - https://getdoks.org/
       - https://www.docsy.dev/
-- update url when opening modal - required for backend form validation - essential for everything else!
+- backend form validation
 
 ## Medium Prio
 

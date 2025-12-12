@@ -116,7 +116,10 @@
 
         <span th:replace="~{fragments/footer.html}"></span>
 
-        <dialog id="modal-create-redirect">
+        <dialog id="modal-create-redirect"
+                th:attr="open=${isCreatePage != null && isCreatePage ? '' : null}"
+                data-url-addition="/create"
+        >
             <article>
                 <header>
                     <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
@@ -144,7 +147,11 @@
                 </form>
             </article>
         </dialog>
-        <dialog th:each="redirect : ${redirects}" th:id="${'modal-update-redirect-' + redirect.id}">
+        <dialog th:each="redirect : ${redirects}"
+                th:id="${'modal-update-redirect-' + redirect.id}"
+                th:attr="open=${editPageId != null && editPageId == redirect.id ? '' : null}"
+                th:data-url-addition="${'/edit/' + redirect.id}"
+        >
             <article>
                 <header>
                     <button aria-label="Close" rel="prev" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)"></button>
