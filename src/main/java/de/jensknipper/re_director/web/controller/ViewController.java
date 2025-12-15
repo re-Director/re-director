@@ -52,24 +52,14 @@ public class ViewController {
 
   @GetMapping("/redirects/create")
   public String redirectsCreateModal(
-    @RequestParam(required = false) String search,
-    @RequestParam(required = false) String status,
-    Model model) {
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
+      Model model) {
     model.addAttribute("isCreatePage", true);
     return redirects(search, status, model);
   }
 
-  @GetMapping("/redirects/edit/{id}")
-  public String redirectsEditModal(
-    @PathVariable int id,
-    @RequestParam(required = false) String search,
-    @RequestParam(required = false) String status,
-    Model model) {
-    model.addAttribute("editPageId", id);
-    return redirects(search, status, model);
-  }
-
-  @PostMapping("/redirects")
+  @PostMapping("/redirects/create")
   public String createRedirect(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
@@ -84,25 +74,17 @@ public class ViewController {
     return "redirect:/redirects" + params;
   }
 
-  private record UrlParam(String name, String value) {
-    public String getString() {
-      return name + "=" + value;
-    }
+  @GetMapping("/redirects/edit/{id}")
+  public String redirectsEditModal(
+      @PathVariable int id,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
+      Model model) {
+    model.addAttribute("editPageId", id);
+    return redirects(search, status, model);
   }
 
-  private Optional<String> buildParams(UrlParam... params) {
-    String paramsString =
-        Arrays.stream(params)
-            .filter(it -> it.value() != null && !it.value().isBlank())
-            .map(UrlParam::getString)
-            .collect(Collectors.joining("&"));
-    if (paramsString.isBlank()) {
-      return Optional.empty();
-    }
-    return Optional.of("?" + paramsString);
-  }
-
-  @PostMapping("/redirects/{id}") // TODO should be put?
+  @PostMapping("/redirects/edit/{id}")
   public String updateRedirect(
       @PathVariable int id,
       @ModelAttribute CreateRedirectRequest createRedirectRequest,
@@ -137,5 +119,23 @@ public class ViewController {
                         + "' to any of the allowed values: '"
                         + Arrays.toString(RedirectHttpStatusCode.values())
                         + "'"));
+  }
+
+  private record UrlParam(String name, String value) {
+    public String getString() {
+      return name + "=" + value;
+    }
+  }
+
+  private Optional<String> buildParams(UrlParam... params) {
+    String paramsString =
+        Arrays.stream(params)
+            .filter(it -> it.value() != null && !it.value().isBlank())
+            .map(UrlParam::getString)
+            .collect(Collectors.joining("&"));
+    if (paramsString.isBlank()) {
+      return Optional.empty();
+    }
+    return Optional.of("?" + paramsString);
   }
 }

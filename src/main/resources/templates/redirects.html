@@ -125,7 +125,7 @@
                     <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
                     <h3>Create Redirect</h3>
                 </header>
-                <form action="/redirects" method="post" th:object="${createRedirectRequest}">
+                <form action="/redirects/create" method="post" th:object="${createRedirectRequest}">
                     <input id="source-input-create-modal" type="text" placeholder="Source" th:field="*{source}">
                     <div class="alert alert-warning" th:if="${#fields.hasErrors('source')}" th:errors="*{source}"></div>
                     <input id="target-input-create-modal" type="url" placeholder="Target" th:field="*{target}" required minlength="1">
@@ -157,7 +157,7 @@
                     <button aria-label="Close" rel="prev" th:data-target="${'modal-update-redirect-' + redirect.id}" onclick="toggleModal(event)"></button>
                     <h3>Update Redirect</h3>
                 </header>
-                <form action="#" method="post" th:action="@{/redirects/{id}(id=${redirect.id})}" th:object="${createRedirectRequest}">
+                <form action="#" method="post" th:action="@{/redirects/edit/{id}(id=${redirect.id})}" th:object="${createRedirectRequest}">
                     <input id="source-input-edit-modal" type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
                     <input id="target-input-edit-modal" type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
                     <select id="status-code-input-edit-modal" th:field="*{httpStatusCode}" aria-label="Select a Redirect HTTP Status Code" required>
