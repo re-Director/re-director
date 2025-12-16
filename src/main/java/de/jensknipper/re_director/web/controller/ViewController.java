@@ -108,19 +108,30 @@ public class ViewController {
         createRedirectRequest.getSource(),
         createRedirectRequest.getTarget(),
         getHttpStatusCode(createRedirectRequest));
-    return "redirect:/redirects"; // TODO preserve filter
+    return "redirect:/redirects" + getParams(search, status, code);
   }
 
   @PostMapping("/redirects/{id}/status/{newStatus}")
-  public String setStatus(@PathVariable int id, @PathVariable Status newStatus, Model model) {
+  public String setStatus(
+      @PathVariable int id,
+      @PathVariable Status newStatus,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
+      Model model) {
     redirectService.updateStatus(id, newStatus);
-    return "redirect:/redirects"; // TODO preserve filter
+    return "redirect:/redirects" + getParams(search, status, code);
   }
 
   @PostMapping("/redirects/{id}/delete")
-  public String deleteRedirect(@PathVariable int id, Model model) {
+  public String deleteRedirect(
+      @PathVariable int id,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
+      Model model) {
     redirectService.delete(id);
-    return "redirect:/redirects"; // TODO preserve filter
+    return "redirect:/redirects" + getParams(search, status, code);
   }
 
   private List<RedirectResponse> getAllRedirectsFiltered(

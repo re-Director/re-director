@@ -10,7 +10,6 @@
   - theme
       - https://getdoks.org/
       - https://www.docsy.dev/
-- path, query parameter forwarding
 
 ## Medium Prio
 
