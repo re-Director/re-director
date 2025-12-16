@@ -1,10 +1,15 @@
 package de.jensknipper.re_director.web.controller.dto;
 
+import de.jensknipper.re_director.web.validation.IntIn;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
 public final class CreateRedirectRequest {
-  private String source;
-  private String target;
+  @NotNull @NotEmpty private String source;
+  @NotNull @NotEmpty private String target;
+
+  @IntIn({301, 302, 307, 308})
   private int httpStatusCode = 301;
 
   public String getSource() {

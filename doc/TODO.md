@@ -10,7 +10,7 @@
   - theme
       - https://getdoks.org/
       - https://www.docsy.dev/
-- backend form validation
+- path, query parameter forwarding
 
 ## Medium Prio
 
@@ -21,8 +21,6 @@
     - utility classes for hr in table
 - metrics, eg. last called
   - as timeseries?
-- display form validation in frontend
-- path, query parameter forwarding
 
 ## Low Prio
 

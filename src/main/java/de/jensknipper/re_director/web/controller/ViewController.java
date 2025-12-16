@@ -3,9 +3,11 @@ package de.jensknipper.re_director.web.controller;
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.Status;
 import de.jensknipper.re_director.service.RedirectService;
+import de.jensknipper.re_director.service.ValidationService;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
 import de.jensknipper.re_director.web.controller.dto.RedirectResponse;
+import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.*;
 public class ViewController {
 
   private final RedirectService redirectService;
+  private final ValidationService validationService;
   private final DtoMapper dtoMapper;
 
-  public ViewController(RedirectService redirectService, DtoMapper dtoMapper) {
+  public ViewController(RedirectService redirectService, ValidationService validationService, DtoMapper dtoMapper) {
     this.redirectService = redirectService;
+    this.validationService = validationService;
     this.dtoMapper = dtoMapper;
   }
 
@@ -36,16 +40,7 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
       Model model) {
-    Status statusFilter =
-        Arrays.stream(Status.values())
-            .filter(it -> it.name().equals(status))
-            .findFirst()
-            .orElse(null);
-    List<RedirectResponse> redirects =
-        redirectService.findAllFiltered(search, statusFilter).stream()
-            .map(dtoMapper::toRedirectResponse)
-            .collect(Collectors.toList());
-    model.addAttribute("redirects", redirects); // thymeleaf needs modifiable list here
+    model.addAttribute("redirects", getAllRedirectsFiltered(search, status));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }
@@ -63,9 +58,14 @@ public class ViewController {
   public String createRedirect(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
-      @ModelAttribute CreateRedirectRequest createRedirectRequest,
+      @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
+    validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("isCreatePage", true);
+      return redirects(search, status, model);
+    }
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectService.create(
         createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
@@ -87,9 +87,16 @@ public class ViewController {
   @PostMapping("/redirects/edit/{id}")
   public String updateRedirect(
       @PathVariable int id,
-      @ModelAttribute CreateRedirectRequest createRedirectRequest,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status,
+      @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
+    validationService.uniqueSource(bindingResult, createRedirectRequest.getSource(), id);
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("editPageId", id);
+      return redirects(search, status, model);
+    }
     RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectService.update(
         id, createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
@@ -106,6 +113,17 @@ public class ViewController {
   public String deleteRedirect(@PathVariable int id, Model model) {
     redirectService.delete(id);
     return "redirect:/redirects"; // TODO preserve filter
+  }
+
+  private List<RedirectResponse> getAllRedirectsFiltered(String search, String status) {
+    final Status statusFilter =
+        Arrays.stream(Status.values())
+            .filter(it -> it.name().equals(status))
+            .findFirst()
+            .orElse(null);
+    return redirectService.findAllFiltered(search, statusFilter).stream()
+        .map(dtoMapper::toRedirectResponse)
+        .collect(Collectors.toList()); // thymeleaf needs modifiable list here
   }
 
   private RedirectHttpStatusCode getHttpStatusCode(CreateRedirectRequest createRedirectRequest) {

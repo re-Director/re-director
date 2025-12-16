@@ -23,6 +23,10 @@ public class RedirectService {
     return redirectRepository.redirectAlreadyExists(source);
   }
 
+  public boolean redirectAlreadyExists(String source, int id) {
+    return redirectRepository.redirectAlreadyExists(source, id);
+  }
+
   @Nullable
   @Cacheable(cacheNames = {"redirects"})
   public RedirectInformation findRedirectInformationBySource(String source) {

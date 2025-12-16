@@ -1,6 +1,7 @@
 package de.jensknipper.re_director.db;
 
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
+import static org.jooq.impl.DSL.not;
 
 import de.jensknipper.re_director.db.entity.Redirect;
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
@@ -27,6 +28,13 @@ public class RedirectRepository {
 
   public boolean redirectAlreadyExists(String source) {
     return dsl.fetchExists(dsl.selectOne().from(REDIRECTS).where(REDIRECTS.SOURCE.eq(source)));
+  }
+
+  public boolean redirectAlreadyExists(String source, int id) {
+    return dsl.fetchExists(
+        dsl.selectOne()
+            .from(REDIRECTS)
+            .where(REDIRECTS.SOURCE.eq(source).and(not(REDIRECTS.ID.eq(id)))));
   }
 
   @Nullable
