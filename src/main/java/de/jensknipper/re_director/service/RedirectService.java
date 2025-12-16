@@ -33,8 +33,11 @@ public class RedirectService {
     return redirectRepository.findRedirectInformationBySource(source);
   }
 
-  public List<Redirect> findAllFiltered(@Nullable String search, @Nullable Status status) {
-    return redirectRepository.findAllFiltered(search, status);
+  public List<Redirect> findAllFiltered(
+      @Nullable String search,
+      @Nullable Status status,
+      @Nullable RedirectHttpStatusCode httpStatusCodeFilter) {
+    return redirectRepository.findAllFiltered(search, status, httpStatusCodeFilter);
   }
 
   @CacheEvict(

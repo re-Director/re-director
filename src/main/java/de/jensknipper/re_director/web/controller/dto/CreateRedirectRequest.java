@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
+// TODO test validation - mvc test - redirect or not
 public final class CreateRedirectRequest {
   @NotNull @NotEmpty private String source;
   @NotNull @NotEmpty private String target;

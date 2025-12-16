@@ -45,7 +45,10 @@ public class RedirectRepository {
         .fetchOneInto(RedirectInformation.class);
   }
 
-  public List<Redirect> findAllFiltered(@Nullable String search, @Nullable Status status) {
+  public List<Redirect> findAllFiltered(
+      @Nullable String search,
+      @Nullable Status status,
+      @Nullable RedirectHttpStatusCode httpStatusCodeFilter) {
     Condition searchFilterCondition =
         DSL.condition(search == null || search.isBlank())
             .or(
@@ -54,9 +57,12 @@ public class RedirectRepository {
                     .likeIgnoreCase("%" + search + "%")
                     .or(REDIRECTS.TARGET.likeIgnoreCase("%" + search + "%")));
     Condition statusFilterCondition = DSL.condition(status == null).or(REDIRECTS.STATUS.eq(status));
+    Condition httpStatusCodeFilterCondition =
+        DSL.condition(httpStatusCodeFilter == null)
+            .or(REDIRECTS.HTTP_STATUS_CODE.eq(httpStatusCodeFilter));
 
     return dsl.selectFrom(REDIRECTS)
-        .where(searchFilterCondition.and(statusFilterCondition))
+        .where(searchFilterCondition.and(statusFilterCondition).and(httpStatusCodeFilterCondition))
         .fetchInto(Redirect.class);
   }
 

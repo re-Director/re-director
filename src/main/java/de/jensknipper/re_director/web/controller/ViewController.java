@@ -7,6 +7,7 @@ import de.jensknipper.re_director.service.ValidationService;
 import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
 import de.jensknipper.re_director.web.controller.dto.RedirectResponse;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,8 @@ public class ViewController {
   private final ValidationService validationService;
   private final DtoMapper dtoMapper;
 
-  public ViewController(RedirectService redirectService, ValidationService validationService, DtoMapper dtoMapper) {
+  public ViewController(
+      RedirectService redirectService, ValidationService validationService, DtoMapper dtoMapper) {
     this.redirectService = redirectService;
     this.validationService = validationService;
     this.dtoMapper = dtoMapper;
@@ -39,8 +41,9 @@ public class ViewController {
   public String redirects(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
       Model model) {
-    model.addAttribute("redirects", getAllRedirectsFiltered(search, status));
+    model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
     return "redirects";
   }
@@ -49,29 +52,30 @@ public class ViewController {
   public String redirectsCreateModal(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
       Model model) {
     model.addAttribute("isCreatePage", true);
-    return redirects(search, status, model);
+    return redirects(search, status, code, model);
   }
 
   @PostMapping("/redirects/create")
   public String createRedirect(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
       @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
     if (bindingResult.hasErrors()) {
       model.addAttribute("isCreatePage", true);
-      return redirects(search, status, model);
+      return redirects(search, status, code, model);
     }
-    RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectService.create(
-        createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
-    String params =
-        buildParams(new UrlParam("search", search), new UrlParam("status", status)).orElse("");
-    return "redirect:/redirects" + params;
+        createRedirectRequest.getSource(),
+        createRedirectRequest.getTarget(),
+        getHttpStatusCode(createRedirectRequest));
+    return "redirect:/redirects" + getParams(search, status, code);
   }
 
   @GetMapping("/redirects/edit/{id}")
@@ -79,9 +83,10 @@ public class ViewController {
       @PathVariable int id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
       Model model) {
     model.addAttribute("editPageId", id);
-    return redirects(search, status, model);
+    return redirects(search, status, code, model);
   }
 
   @PostMapping("/redirects/edit/{id}")
@@ -89,23 +94,26 @@ public class ViewController {
       @PathVariable int id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
+      @RequestParam(required = false) Integer code,
       @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource(), id);
     if (bindingResult.hasErrors()) {
       model.addAttribute("editPageId", id);
-      return redirects(search, status, model);
+      return redirects(search, status, code, model);
     }
-    RedirectHttpStatusCode statusCode = getHttpStatusCode(createRedirectRequest);
     redirectService.update(
-        id, createRedirectRequest.getSource(), createRedirectRequest.getTarget(), statusCode);
+        id,
+        createRedirectRequest.getSource(),
+        createRedirectRequest.getTarget(),
+        getHttpStatusCode(createRedirectRequest));
     return "redirect:/redirects"; // TODO preserve filter
   }
 
-  @PostMapping("/redirects/{id}/status/{status}")
-  public String setStatus(@PathVariable int id, @PathVariable Status status, Model model) {
-    redirectService.updateStatus(id, status);
+  @PostMapping("/redirects/{id}/status/{newStatus}")
+  public String setStatus(@PathVariable int id, @PathVariable Status newStatus, Model model) {
+    redirectService.updateStatus(id, newStatus);
     return "redirect:/redirects"; // TODO preserve filter
   }
 
@@ -115,13 +123,19 @@ public class ViewController {
     return "redirect:/redirects"; // TODO preserve filter
   }
 
-  private List<RedirectResponse> getAllRedirectsFiltered(String search, String status) {
+  private List<RedirectResponse> getAllRedirectsFiltered(
+      String search, String status, Integer httpStatusCode) {
     final Status statusFilter =
         Arrays.stream(Status.values())
             .filter(it -> it.name().equals(status))
             .findFirst()
             .orElse(null);
-    return redirectService.findAllFiltered(search, statusFilter).stream()
+    final RedirectHttpStatusCode httpStatusCodeFilter =
+        Arrays.stream(RedirectHttpStatusCode.values())
+            .filter(it -> httpStatusCode != null && it.getCode() == httpStatusCode)
+            .findFirst()
+            .orElse(null);
+    return redirectService.findAllFiltered(search, statusFilter, httpStatusCodeFilter).stream()
         .map(dtoMapper::toRedirectResponse)
         .collect(Collectors.toList()); // thymeleaf needs modifiable list here
   }
@@ -139,7 +153,19 @@ public class ViewController {
                         + "'"));
   }
 
-  private record UrlParam(String name, String value) {
+  private String getParams(String search, String status, Integer code) {
+    return buildParams(
+            new UrlParam("search", search),
+            new UrlParam("status", status),
+            new UrlParam("code", code))
+        .orElse("");
+  }
+
+  private record UrlParam(String name, @Nullable String value) {
+    public UrlParam(String name, Object value) {
+      this(name, Optional.ofNullable(value).map(Object::toString).orElse(null));
+    }
+
     public String getString() {
       return name + "=" + value;
     }

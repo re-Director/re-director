@@ -26,6 +26,13 @@
                                     <option value="INACTIVE" th:selected="${param.status != null && param.status[0] == 'INACTIVE'}">Inactive</option>
                                 </select>
                                 <input id="search-input-filter" name="search" placeholder="Filter" autocomplete="search" th:value="${param.search}"/>
+                                <select id="status-code-input-filter" name="code" aria-label="Select a Redirect HTTP Status Code">
+                                    <option value="" th:selected="${param.code == null}">Any HTTP Status Code</option>
+                                    <option value="301" th:selected="${#strings.equals(param.code, '301')}">301: Moved Permanently</option>
+                                    <option value="302" th:selected="${#strings.equals(param.code, '302')}">302: Found</option>
+                                    <option value="307" th:selected="${#strings.equals(param.code, '307')}">307: Temporary Redirect</option>
+                                    <option value="308" th:selected="${#strings.equals(param.code, '308')}">308: Permanent Redirect</option>
+                                </select>
                                 <button id="button-filter">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>

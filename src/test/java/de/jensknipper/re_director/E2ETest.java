@@ -5,6 +5,7 @@ import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
 import com.microsoft.playwright.*;
 import de.jensknipper.re_director.db.RedirectRepository;
+import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.Status;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -221,12 +222,11 @@ public class E2ETest {
 
   @Test
   void filterWorks() {
+    redirectRepository.create("source1", "target", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+    redirectRepository.create("source2", "target", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+    redirectRepository.create("source3", "target1", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
     redirectRepository.create(
-        "source1", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
-    redirectRepository.create(
-        "source2", "target", Status.INACTIVE, RedirectRepository.DEFAULT_REDIRECT);
-    redirectRepository.create(
-        "source3", "target", Status.INACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+        "source4", "target1", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects?status=INACTIVE&search=3");
 
@@ -242,6 +242,7 @@ public class E2ETest {
     // change filter
     page.locator("#status-input-filter").selectOption("ACTIVE");
     page.locator("#search-input-filter").fill("1");
+    page.locator("#status-code-input-filter").selectOption("302");
     page.locator("#button-filter").click();
 
     // filter contains values
@@ -254,7 +255,7 @@ public class E2ETest {
     assertThat(tableLine.locator("#source")).hasText("source1");
 
     // url contains new filter
-    assertThat(page).hasURL("/redirects?status=ACTIVE&search=1");
+    assertThat(page).hasURL("/redirects?status=ACTIVE&search=1&code=302");
   }
   // TODO 301 default works
   // TODO create, edit, delete, activate/deactivate  should preserve filter
