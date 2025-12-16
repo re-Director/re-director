@@ -258,6 +258,7 @@ public class E2ETest {
     assertThat(page).hasURL("/redirects?status=ACTIVE&search=1&code=302");
   }
   // TODO 301 default works
+  // TODO edit keeps status code in dropdown - not default
   // TODO create, edit, delete, activate/deactivate  should preserve filter
   // TODO validation
 }
