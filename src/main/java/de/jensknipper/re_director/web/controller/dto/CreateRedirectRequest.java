@@ -1,6 +1,7 @@
 package de.jensknipper.re_director.web.controller.dto;
 
 import de.jensknipper.re_director.web.validation.IntIn;
+import de.jensknipper.re_director.web.validation.IsUrl;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Objects;
 // TODO test validation - mvc test - redirect or not
 public final class CreateRedirectRequest {
   @NotNull @NotEmpty private String source;
-  @NotNull @NotEmpty private String target;
+  @NotNull @NotEmpty @IsUrl private String target;
 
   @IntIn({301, 302, 307, 308})
   private int httpStatusCode = 301;

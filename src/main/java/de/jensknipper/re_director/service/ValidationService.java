@@ -15,14 +15,14 @@ public class ValidationService {
   public void uniqueSource(BindingResult bindingResult, String source, Integer excludeId) {
     boolean exists = redirectService.redirectAlreadyExists(source, excludeId);
     if (exists) {
-      bindingResult.rejectValue("source", "unique.source", "Source already exists");
+      bindingResult.rejectValue("source", "unique.source", "already exists");
     }
   }
 
   public void uniqueSource(BindingResult bindingResult, String source) {
     boolean exists = redirectService.redirectAlreadyExists(source);
     if (exists) {
-      bindingResult.rejectValue("source", "unique.source", "Source already exists");
+      bindingResult.rejectValue("source", "unique.source", "already exists");
     }
   }
 }

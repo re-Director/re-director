@@ -140,7 +140,7 @@
                     <label for="source-input-create-modal">Source:</label>
                     <input id="source-input-create-modal" type="text" placeholder="Source" th:field="*{source}">
                     <label for="target-input-create-modal">Target</label>
-                    <input id="target-input-create-modal" type="url" placeholder="Target" th:field="*{target}" required minlength="1">
+                    <input id="target-input-create-modal" type="text" placeholder="Target" th:field="*{target}" required minlength="1">
                     <label for="status-code-input-create-modal">Status Code:</label>
                     <select id="status-code-input-create-modal" th:field="*{httpStatusCode}" aria-label="Select a Redirect HTTP Status Code" required>
                         <option disabled value="404">Select a Redirect HTTP Status Code</option>
@@ -155,8 +155,11 @@
                             Please fix the following errors:
                         </small>
                         <ul>
-                            <li th:each="err : ${#fields.errors()}">
-                                <small th:text="${err}" class="pico-color-red-300"></small>
+                            <li th:each="err : ${#fields.detailedErrors()}">
+                                <small class="pico-color-red-300">
+                                    <strong th:text="${err.fieldName}">Field</strong>:
+                                    <span th:text="${err.message}">Error message</span>
+                                </small>
                             </li>
                         </ul>
                     </div>
@@ -189,7 +192,7 @@
                     <label for="source-input-edit-modal">Source:</label>
                     <input id="source-input-edit-modal" type="text" placeholder="Source" name="source" th:value="${redirect.source}" required minlength="1">
                     <label for="target-input-edit-modal">Target</label>
-                    <input id="target-input-edit-modal" type="url" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
+                    <input id="target-input-edit-modal" type="text" placeholder="Target" name="target" th:value="${redirect.target}" required minlength="1">
                     <label for="status-code-input-edit-modal">Status Code:</label>
                     <select id="status-code-input-edit-modal" name="httpStatusCode" aria-label="Select a Redirect HTTP Status Code" required>
                         <option disabled value="404" th:selected="${redirect.httpStatusCode == null}">Select a Redirect HTTP Status Code</option>
@@ -204,8 +207,11 @@
                             Please fix the following errors:
                         </small>
                         <ul>
-                            <li th:each="err : ${#fields.errors()}">
-                                <small th:text="${err}" class="pico-color-red-300"></small>
+                            <li th:each="err : ${#fields.detailedErrors()}">
+                                <small class="pico-color-red-300">
+                                    <strong th:text="${err.fieldName}">Field</strong>:
+                                    <span th:text="${err.message}">Error message</span>
+                                </small>
                             </li>
                         </ul>
                     </div>

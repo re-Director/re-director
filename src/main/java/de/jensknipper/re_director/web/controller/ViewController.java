@@ -69,7 +69,8 @@ public class ViewController {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
     if (bindingResult.hasErrors()) {
       model.addAttribute("isCreatePage", true);
-      return redirects(search, status, code, model);
+      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
+      return "redirects";
     }
     redirectService.create(
         createRedirectRequest.getSource(),
