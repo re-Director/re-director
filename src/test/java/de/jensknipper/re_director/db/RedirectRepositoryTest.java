@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,242 @@ class RedirectRepositoryTest {
   @BeforeEach
   void cleanup() {
     dsl.deleteFrom(REDIRECTS).execute();
+  }
+
+  @Nested
+  class RedirectAlreadyExists {
+
+    @Test
+    void redirectAlreadyExistsShouldReturnFalseWhenNoOtherSource() {
+      // given
+      String source = "source";
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      boolean result = redirectRepository.redirectAlreadyExists(source);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    void redirectAlreadyExistsShouldReturnTrueWhenAnotherSource() {
+      // given
+      String source = "source";
+      redirectRepository.create(
+          "source", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      boolean result = redirectRepository.redirectAlreadyExists(source);
+
+      // then
+      assertThat(result).isTrue();
+    }
+
+    @Test
+    void redirectAlreadyExistsShouldReturnFalseWhenNoOtherSourceAndId() {
+      // given
+      String source = "source";
+      int id =
+          redirectRepository.create(
+              "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      boolean result = redirectRepository.redirectAlreadyExists(source, id);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    void redirectAlreadyExistsShouldReturnFalseWhenSameSourceAndId() {
+      // given
+      String source = "source";
+      int id =
+          redirectRepository.create(
+              "source", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      boolean result = redirectRepository.redirectAlreadyExists(source, id);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    void redirectAlreadyExistsShouldReturnFalseWhenSameSourceAndDifferentId() {
+      // given
+      String source = "source";
+      redirectRepository.create(
+          "source", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+      int id =
+          redirectRepository.create(
+              "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      boolean result = redirectRepository.redirectAlreadyExists(source, id);
+
+      // then
+      assertThat(result).isTrue();
+    }
+  }
+
+  @Nested
+  class FindRedirectInformationBySource {
+
+    @Test
+    void findRedirectInformationBySourceShouldFindRelevant() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(
+          source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
+
+      // then
+      assertThat(result).isNotNull();
+      assertThat(result.target()).isEqualTo(target);
+      assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    }
+
+    @Test
+    void findRedirectInformationBySourceShouldReturnNullWhenNotFound() {
+      // given
+      // when
+      RedirectInformation result = redirectRepository.findRedirectInformationBySource("source");
+
+      // then
+      assertThat(result).isNull();
+    }
+
+    @Test
+    void findRedirectInformationBySourceShouldNotFindInactive() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
+
+      // when
+      RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
+
+      // then
+      assertThat(result).isNull();
+    }
+  }
+
+  @Nested
+  class FindAllFiltered {
+
+    @Test
+    void findAllFilteredShouldListAllWhenNull() {
+      // given
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant2", "irrelevant2", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result = redirectRepository.findAllFiltered(null, null, null);
+
+      // then
+      assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void findAllFilteredShouldListAllWhenEmpty() {
+      // given
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant2", "irrelevant2", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result = redirectRepository.findAllFiltered("", null, null);
+
+      // then
+      assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void findAllFilteredShouldFindBySource() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(
+          source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result = redirectRepository.findAllFiltered("our", null, null);
+
+      // then
+      assertThat(result).hasSize(1);
+      assertThat(result.getFirst().source()).isEqualTo(source);
+    }
+
+    @Test
+    void findAllFilteredShouldFindByTarget() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(
+          source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result = redirectRepository.findAllFiltered("arg", null, null);
+
+      // then
+      assertThat(result).hasSize(1);
+      assertThat(result.getFirst().target()).isEqualTo(target);
+    }
+
+    @Test
+    void findAllFilteredShouldFindByStatus() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(
+          source, target, Status.INACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result = redirectRepository.findAllFiltered(null, Status.INACTIVE, null);
+
+      // then
+      assertThat(result).hasSize(1);
+      assertThat(result.getFirst().status()).isEqualTo(Status.INACTIVE);
+    }
+
+    @Test
+    void findAllFilteredShouldFindByCode() {
+      // given
+      String source = "source";
+      String target = "target";
+      redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
+      redirectRepository.create(
+          "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+
+      // when
+      List<Redirect> result =
+          redirectRepository.findAllFiltered(null, null, RedirectHttpStatusCode.FOUND);
+
+      // then
+      assertThat(result).hasSize(1);
+      assertThat(result.getFirst().httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
+    }
   }
 
   @Test
@@ -105,151 +342,6 @@ class RedirectRepositoryTest {
     assertThat(result).isNull();
     Redirect other = findById(otherId);
     assertThat(other).isNotNull();
-  }
-
-  @Test
-  void findAllFilteredShouldListAllWhenNull() {
-    // given
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant2", "irrelevant2", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result = redirectRepository.findAllFiltered(null, null, null);
-
-    // then
-    assertThat(result).hasSize(2);
-  }
-
-  @Test
-  void findAllFilteredShouldListAllWhenEmpty() {
-    // given
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant2", "irrelevant2", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result = redirectRepository.findAllFiltered("", null, null);
-
-    // then
-    assertThat(result).hasSize(2);
-  }
-
-  @Test
-  void findAllFilteredShouldFindBySource() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(
-        source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result = redirectRepository.findAllFiltered("our", null, null);
-
-    // then
-    assertThat(result).hasSize(1);
-    assertThat(result.getFirst().source()).isEqualTo(source);
-  }
-
-  @Test
-  void findAllFilteredShouldFindByTarget() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(
-        source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result = redirectRepository.findAllFiltered("arg", null, null);
-
-    // then
-    assertThat(result).hasSize(1);
-    assertThat(result.getFirst().target()).isEqualTo(target);
-  }
-
-  @Test
-  void findAllFilteredShouldFindByStatus() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(
-        source, target, Status.INACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result = redirectRepository.findAllFiltered(null, Status.INACTIVE, null);
-
-    // then
-    assertThat(result).hasSize(1);
-    assertThat(result.getFirst().status()).isEqualTo(Status.INACTIVE);
-  }
-
-  @Test
-  void findAllFilteredShouldFindByCode() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    List<Redirect> result =
-        redirectRepository.findAllFiltered(null, null, RedirectHttpStatusCode.FOUND);
-
-    // then
-    assertThat(result).hasSize(1);
-    assertThat(result.getFirst().httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
-  }
-
-  @Test
-  void findRedirectInformationBySourceShouldFindRelevant() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(
-        source, target, Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-
-    // when
-    RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.target()).isEqualTo(target);
-    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY);
-  }
-
-  @Test
-  void findRedirectInformationBySourceShouldReturnNullWhenNotFound() {
-    // given
-    // when
-    RedirectInformation result = redirectRepository.findRedirectInformationBySource("source");
-
-    // then
-    assertThat(result).isNull();
-  }
-
-  @Test
-  void findRedirectInformationBySourceShouldNotFindInactive() {
-    // given
-    String source = "source";
-    String target = "target";
-    redirectRepository.create(source, target, Status.INACTIVE, RedirectHttpStatusCode.FOUND);
-
-    // when
-    RedirectInformation result = redirectRepository.findRedirectInformationBySource(source);
-
-    // then
-    assertThat(result).isNull();
   }
 
   @Nullable

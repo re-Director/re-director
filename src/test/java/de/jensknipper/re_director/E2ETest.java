@@ -43,7 +43,7 @@ public class E2ETest {
             Files.deleteIfExists(page.video().path());
             Files.deleteIfExists(page.video().path().getParent());
           } catch (IOException e) {
-            throw new RuntimeException(e);
+            // do nothing
           }
         }
       };
@@ -117,9 +117,10 @@ public class E2ETest {
     // clicking create opens the create-modal
     page.locator("#create-button").click();
     assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/create");
 
     // modal can be filled out
-    page.locator("#source-input-create-modal").fill("http://source");
+    page.locator("#source-input-create-modal").fill("source");
     page.locator("#target-input-create-modal").fill("http://target");
     page.locator("#status-code-input-create-modal").selectOption("302");
 
@@ -129,11 +130,12 @@ public class E2ETest {
     // clicking create closes the modal
     createButton.click();
     assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects");
 
     // a new element should be in the table
     Locator tableLine = page.locator("#table-element-0");
     assertThat(tableLine).hasCount(1);
-    assertThat(tableLine.locator("#source")).hasText("http://source");
+    assertThat(tableLine.locator("#source")).hasText("source");
     assertThat(tableLine.locator("#target")).hasText("http://target");
     assertThat(tableLine.locator("#httpStatusCode")).hasText("302");
   }
@@ -157,9 +159,10 @@ public class E2ETest {
     tableLine.locator("#edit-button").click();
     Locator modal = page.locator("#modal-update-redirect-1");
     assertThat(modal).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/edit/1");
 
     // modal can be filled
-    page.locator("#source-input-edit-modal").fill("http://source");
+    page.locator("#source-input-edit-modal").fill("source");
     page.locator("#target-input-edit-modal").fill("http://target");
     page.locator("#status-code-input-edit-modal").selectOption("302");
 
@@ -169,11 +172,12 @@ public class E2ETest {
     // clicking create closes the modal
     createButton.click();
     assertThat(page.locator("#modal-update-redirect-1")).not().hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects");
 
     // a new element should be in the table
     tableLine = page.locator("#table-element-0");
     assertThat(tableLine).hasCount(1);
-    assertThat(tableLine.locator("#source")).hasText("http://source");
+    assertThat(tableLine.locator("#source")).hasText("source");
     assertThat(tableLine.locator("#target")).hasText("http://target");
     assertThat(tableLine.locator("#httpStatusCode")).hasText("302");
   }
@@ -222,17 +226,17 @@ public class E2ETest {
 
   @Test
   void filterWorks() {
-    redirectRepository.create("source1", "target", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
-    redirectRepository.create("source2", "target", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
-    redirectRepository.create("source3", "target1", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
     redirectRepository.create(
-        "source4", "target1", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+        "source1", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+    redirectRepository.create("source2", "target", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
+    redirectRepository.create("source3", "target", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
 
-    page.navigate("/redirects?status=INACTIVE&search=3");
+    page.navigate("/redirects?status=INACTIVE&search=3&code=302");
 
     // filter contains values
     assertThat(page.locator("#status-input-filter")).hasValue("INACTIVE");
     assertThat(page.locator("#search-input-filter")).hasValue("3");
+    assertThat(page.locator("#status-code-input-filter")).hasValue("302");
 
     // there is one element
     Locator tableLine = page.locator("#table-element-0");
@@ -242,7 +246,7 @@ public class E2ETest {
     // change filter
     page.locator("#status-input-filter").selectOption("ACTIVE");
     page.locator("#search-input-filter").fill("1");
-    page.locator("#status-code-input-filter").selectOption("302");
+    page.locator("#status-code-input-filter").selectOption("301");
     page.locator("#button-filter").click();
 
     // filter contains values
@@ -255,10 +259,71 @@ public class E2ETest {
     assertThat(tableLine.locator("#source")).hasText("source1");
 
     // url contains new filter
-    assertThat(page).hasURL("/redirects?status=ACTIVE&search=1&code=302");
+    assertThat(page).hasURL("/redirects?status=ACTIVE&search=1&code=301");
   }
+
+  @Test
+  void createEditActivateDeactivateShouldPreserveFilter() {
+    page.navigate("/redirects?search=source&status=ACTIVE&code=302");
+
+    // create a redirect
+    page.locator("#create-button").click();
+    page.locator("#source-input-create-modal").fill("source");
+    page.locator("#target-input-create-modal").fill("http://target");
+    page.locator("#status-code-input-create-modal").selectOption("302");
+    page.locator("#confirm-button-create-modal").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    // edit
+    page.locator("#table-element-0").locator("#edit-button").click();
+    page.locator("#source-input-edit-modal").fill("source");
+    page.locator("#target-input-edit-modal").fill("http://target");
+    page.locator("#status-code-input-edit-modal").selectOption("302");
+    page.locator("#confirm-button-edit-modal").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    // deactivate
+    page.locator("#table-element-0").locator("#deactivate-button").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    page.navigate("/redirects?search=source&status=INACTIVE&code=302");
+
+    // activate
+    page.locator("#table-element-0").locator("#activate-button").click();
+    assertThat(page).hasURL("/redirects?search=source&status=INACTIVE&code=302");
+
+    page.navigate("/redirects?search=source&status=ACTIVE&code=302");
+
+    // delete
+    page.locator("#table-element-0").locator("#delete-button").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+  }
+
+  @Test
+  void openingCreateOrEditUrlShouldOpenModal() {
+    // create
+    page.navigate("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "open");
+
+    // update
+    int id =
+        redirectRepository.create(
+            "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+    page.navigate("/redirects/edit/" + id);
+    assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "open");
+  }
+
+  @Test
+  void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
+    int id =
+      redirectRepository.create(
+        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+
+    page.navigate("/redirects/edit/" + id);
+
+    assertThat(page.locator("#status-code-input-edit-modal")).hasValue("302");
+  }
+
   // TODO 301 default works
-  // TODO edit keeps status code in dropdown - not default
-  // TODO create, edit, delete, activate/deactivate  should preserve filter
-  // TODO validation
+  // TODO validation errors are only shown in the one affected modal
 }

@@ -10,6 +10,9 @@ public class IsUrlValidator implements ConstraintValidator<IsUrl, String> {
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
+    if (value == null) {
+      return false;
+    }
     try {
       new URI(value).toURL();
     } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {

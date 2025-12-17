@@ -28,10 +28,10 @@
                                 <input id="search-input-filter" name="search" placeholder="Filter" autocomplete="search" th:value="${param.search}"/>
                                 <select id="status-code-input-filter" name="code" aria-label="Select a Redirect HTTP Status Code">
                                     <option value="" th:selected="${param.code == null}">Any HTTP Status Code</option>
-                                    <option value="301" th:selected="${#strings.equals(param.code, '301')}">301: Moved Permanently</option>
-                                    <option value="302" th:selected="${#strings.equals(param.code, '302')}">302: Found</option>
-                                    <option value="307" th:selected="${#strings.equals(param.code, '307')}">307: Temporary Redirect</option>
-                                    <option value="308" th:selected="${#strings.equals(param.code, '308')}">308: Permanent Redirect</option>
+                                    <option value="301" th:selected="${param.code != null and param.code[0] == '301'}">301: Moved Permanently</option>
+                                    <option value="302" th:selected="${param.code != null and param.code[0] == '302'}">302: Found</option>
+                                    <option value="307" th:selected="${param.code != null and param.code[0] == '307'}">307: Temporary Redirect</option>
+                                    <option value="308" th:selected="${param.code != null and param.code[0] == '308'}">308: Permanent Redirect</option>
                                 </select>
                                 <button id="button-filter">
                                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -94,19 +94,19 @@
                                 <i class="fa-solid fa-pen pico-color-slate-300" style="margin-right: 0.5em;" title="Edit"></i>
                             </span>
                             <form th:if="${redirect.status.name() == 'INACTIVE'}" method="POST" style="display: inline-block;" action="#"
-                                  th:action="@{/redirects/{id}/status/ACTIVE(id=${redirect.id}, status=${param.status},search=${param.search},code=${param.code})}">
+                                  th:action="@{/redirects/{id}/status/ACTIVE(id=${redirect.id}, search=${param.search},status=${param.status},code=${param.code})}">
                                 <button id="activate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                     <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Start"></i>
                                 </button>
                             </form>
                             <form th:if="${redirect.status.name() == 'ACTIVE'}" method="POST" style="display: inline-block;" action="#"
-                                  th:action="@{/redirects/{id}/status/INACTIVE(id=${redirect.id}, status=${param.status},search=${param.search},code=${param.code})}">
+                                  th:action="@{/redirects/{id}/status/INACTIVE(id=${redirect.id}, search=${param.search},status=${param.status},code=${param.code})}">
                                 <button id="deactivate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                     <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Pause"></i>
                                 </button>
                             </form>
                             <form method="POST" style="display: inline-block;" action="#"
-                                  th:action="@{/redirects/{id}/delete(id=${redirect.id}, status=${param.status},search=${param.search},code=${param.code})}">
+                                  th:action="@{/redirects/{id}/delete(id=${redirect.id}, search=${param.search},status=${param.status},code=${param.code})}">
                                 <button id="delete-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                     <i class="fa-solid fa-trash pico-color-red-300" title="Delete"></i>
                                 </button>
@@ -135,7 +135,7 @@
                     <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
                     <h3>Create Redirect</h3>
                 </header>
-                <form th:action="@{/redirects/create(status=${param.status},search=${param.search},code=${param.code})}"
+                <form th:action="@{/redirects/create(search=${param.search},status=${param.status},code=${param.code})}"
                       method="post" th:object="${createRedirectRequest}">
                     <label for="source-input-create-modal">Source:</label>
                     <input id="source-input-create-modal" type="text" placeholder="Source" th:field="*{source}">
@@ -186,7 +186,7 @@
                     <h3>Update Redirect</h3>
                 </header>
                 <form action="#" method="post"
-                      th:action="@{/redirects/edit/{id}(id=${redirect.id}, status=${param.status},search=${param.search},code=${param.code})}"
+                      th:action="@{/redirects/edit/{id}(id=${redirect.id}, search=${param.search},status=${param.status},code=${param.code})}"
                       th:object="${createRedirectRequest}"
                 >
                     <label for="source-input-edit-modal">Source:</label>
