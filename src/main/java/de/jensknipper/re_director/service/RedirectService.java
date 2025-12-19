@@ -28,6 +28,11 @@ public class RedirectService {
   }
 
   @Nullable
+  public Redirect findById(int id) {
+    return redirectRepository.findById(id);
+  }
+
+  @Nullable
   @Cacheable(cacheNames = {"redirects"})
   public RedirectInformation findRedirectInformationBySource(String source) {
     return redirectRepository.findRedirectInformationBySource(source);
@@ -62,7 +67,7 @@ public class RedirectService {
   }
 
   private void evictFromCacheWithId(int id) {
-    Redirect redirect = redirectRepository.findById(id);
+    Redirect redirect = findById(id);
     if (redirect != null) {
       evictFromCache(redirect.source());
     }

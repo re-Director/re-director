@@ -326,4 +326,5 @@ public class E2ETest {
 
   // TODO 301 default works
   // TODO validation errors are only shown in the one affected modal
+  // TODO test browser back and forward with page.goBack() and page.goForward() - modals should open/close
 }
