@@ -38,6 +38,11 @@ public class RedirectRepository {
   }
 
   @Nullable
+  public Redirect findById(int id) {
+    return dsl.selectFrom(REDIRECTS).where(REDIRECTS.ID.eq(id)).fetchOneInto(Redirect.class);
+  }
+
+  @Nullable
   public RedirectInformation findRedirectInformationBySource(String source) {
     return dsl.select(REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE)
         .from(REDIRECTS)

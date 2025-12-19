@@ -40,21 +40,20 @@ public class RedirectService {
     return redirectRepository.findAllFiltered(search, status, httpStatusCodeFilter);
   }
 
-  @CacheEvict(
-      cacheNames = {"redirects"},
-      key = "#id")
   public void update(int id, String source, String target, RedirectHttpStatusCode statusCode) {
+    evictFromCacheWithId(id);
     redirectRepository.update(id, source, target, statusCode);
   }
 
   public void updateStatus(int id, Status status) {
+    if (Status.INACTIVE.equals(status)) {
+      evictFromCacheWithId(id);
+    }
     redirectRepository.updateStatus(id, status);
   }
 
-  @CacheEvict(
-      cacheNames = {"redirects"},
-      key = "#id")
   public void delete(int id) {
+    evictFromCacheWithId(id);
     redirectRepository.delete(id);
   }
 
@@ -62,10 +61,24 @@ public class RedirectService {
     redirectRepository.create(source, target, Status.ACTIVE, statusCode);
   }
 
+  private void evictFromCacheWithId(int id) {
+    Redirect redirect = redirectRepository.findById(id);
+    if (redirect != null) {
+      evictFromCache(redirect.source());
+    }
+  }
+
+  @CacheEvict(
+      cacheNames = {"redirects"},
+      key = "#source")
+  public void evictFromCache(String source) {
+    // Eviction handled by annotation
+  }
+
   @CacheEvict(
       cacheNames = {"redirects"},
       allEntries = true)
   public void clearCache() {
-    // nothing to do
+    // Eviction handled by annotation
   }
 }

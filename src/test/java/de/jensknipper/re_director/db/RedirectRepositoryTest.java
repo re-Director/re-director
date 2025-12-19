@@ -7,7 +7,6 @@ import de.jensknipper.re_director.db.entity.Redirect;
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.RedirectInformation;
 import de.jensknipper.re_director.db.entity.Status;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import org.jooq.DSLContext;
@@ -288,12 +287,12 @@ class RedirectRepositoryTest {
     redirectRepository.update(id, source, target, RedirectHttpStatusCode.PERMANENT_REDIRECT);
 
     // then
-    Redirect result = findById(id);
+    Redirect result = redirectRepository.findById(id);
     assertThat(result).isNotNull();
     assertThat(result.source()).isEqualTo(source);
     assertThat(result.target()).isEqualTo(target);
     assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.PERMANENT_REDIRECT);
-    Redirect otherResult = findById(otherId);
+    Redirect otherResult = redirectRepository.findById(otherId);
     assertThat(otherResult).isNotNull();
     assertThat(otherResult.source()).isNotEqualTo(source);
     assertThat(otherResult.target()).isNotEqualTo(target);
@@ -314,10 +313,10 @@ class RedirectRepositoryTest {
     redirectRepository.updateStatus(id, Status.INACTIVE);
 
     // then
-    Redirect result = findById(id);
+    Redirect result = redirectRepository.findById(id);
     assertThat(result).isNotNull();
     assertThat(result.status()).isEqualTo(Status.INACTIVE);
-    Redirect otherResult = findById(otherId);
+    Redirect otherResult = redirectRepository.findById(otherId);
     assertThat(otherResult).isNotNull();
     assertThat(otherResult.status()).isNotEqualTo(Status.INACTIVE);
   }
@@ -338,14 +337,9 @@ class RedirectRepositoryTest {
     redirectRepository.delete(id);
 
     // then
-    Redirect result = findById(id);
+    Redirect result = redirectRepository.findById(id);
     assertThat(result).isNull();
-    Redirect other = findById(otherId);
+    Redirect other = redirectRepository.findById(otherId);
     assertThat(other).isNotNull();
-  }
-
-  @Nullable
-  public Redirect findById(int id) {
-    return dsl.selectFrom(REDIRECTS).where(REDIRECTS.ID.eq(id)).fetchOneInto(Redirect.class);
   }
 }

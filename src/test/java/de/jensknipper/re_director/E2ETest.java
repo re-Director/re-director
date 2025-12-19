@@ -316,8 +316,8 @@ public class E2ETest {
   @Test
   void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
     int id =
-      redirectRepository.create(
-        "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+        redirectRepository.create(
+            "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
 
     page.navigate("/redirects/edit/" + id);
 
