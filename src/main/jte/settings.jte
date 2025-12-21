@@ -10,7 +10,24 @@
                 <h1>
                     Settings
                 </h1>
+
+                <hr style="height: 1px; background-color: black; border: none;">
+
+                <div class="grid">
+                    <div>
+                        <h6>Choose a Theme</h6>
+                    </div>
+                    <div>
+                        <select id="theme-selector" onchange="changeTheme(this.value)">
+                            <option value="auto">Auto</option>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                </div>
+
                 <hr style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 0.8em; margin-bottom: 0.8em">
+
                 <div class="grid">
                     <div>
                         <h6>Clear Caches</h6>
