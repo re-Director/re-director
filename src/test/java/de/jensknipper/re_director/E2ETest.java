@@ -321,7 +321,7 @@ public class E2ETest {
     assertThat(page.locator("#status-code-input-edit-modal")).hasValue("302");
   }
 
-  // TODO 301 default works
+  // TODO 301 default works after creating eg. a 308
   // TODO validation errors are only shown in the one affected modal
   // TODO test browser back and forward with page.goBack() and page.goForward() - modals should
   // open/close

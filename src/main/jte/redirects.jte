@@ -16,6 +16,7 @@
 
 @param BindingResult bindingResult
 @param CreateRedirectRequest createRedirectRequest
+@param CreateRedirectRequest editRedirectRequest = null
 @param List<RedirectResponse> redirects
 
 <!DOCTYPE html>
@@ -176,7 +177,9 @@
                             <option value="308">308: Permanent Redirect</option>
                         </select>
 
-                        @template.fragments.fieldErrors(bindingResult = bindingResult)
+                        @if(isCreatePage)
+                            @template.fragments.fieldErrors(bindingResult = bindingResult)
+                        @endif
 
                         <footer>
                             <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
@@ -201,18 +204,24 @@
                     </header>
                     <form action="${"/redirects/" + redirect.id() + "/edit" + urlParams}" method="post">
                         <label for="source-input-edit-modal">Source:</label>
-                        <input id="source-input-edit-modal" type="text" name="source" placeholder="Source" value="${redirect.source()}" required minlength="1">
+                        <input id="source-input-edit-modal" type="text" name="source" placeholder="Source"
+                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getSource() : redirect.source()}"
+                               required minlength="1">
                         <label for="target-input-edit-modal">Target</label>
-                        <input id="target-input-edit-modal" type="text" name="target" placeholder="Target" value="${redirect.target()}" required minlength="1">
+                        <input id="target-input-edit-modal" type="text" name="target" placeholder="Target"
+                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getTarget() : redirect.target()}"
+                               required minlength="1">
                         <label for="status-code-input-edit-modal">Status Code:</label>
                         <select id="status-code-input-edit-modal" name="httpStatusCode" aria-label="Select a Redirect HTTP Status Code" required>
-                            <option value="301" selected="${redirect.httpStatusCode() == 301}">301: Moved Permanently</option>
-                            <option value="302" selected="${redirect.httpStatusCode() == 302}">302: Found</option>
-                            <option value="307" selected="${redirect.httpStatusCode() == 307}">307: Temporary Redirect</option>
-                            <option value="308" selected="${redirect.httpStatusCode() == 308}">308: Permanent Redirect</option>
+                            <option value="301" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 301 : redirect.httpStatusCode() == 301}">301: Moved Permanently</option>
+                            <option value="302" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 302 : redirect.httpStatusCode() == 302}">302: Found</option>
+                            <option value="307" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 307 : redirect.httpStatusCode() == 307}">307: Temporary Redirect</option>
+                            <option value="308" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 308 : redirect.httpStatusCode() == 308}">308: Permanent Redirect</option>
                         </select>
 
-                        @template.fragments.fieldErrors(bindingResult = bindingResult)
+                        @if(editPageId != null && editPageId == redirect.id())
+                            @template.fragments.fieldErrors(bindingResult = bindingResult)
+                        @endif
 
                         <footer>
                             <button role="button" class="secondary" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)">

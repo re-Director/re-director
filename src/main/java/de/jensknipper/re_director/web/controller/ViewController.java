@@ -111,14 +111,14 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
       @RequestParam(required = false) Integer code,
-      @Valid CreateRedirectRequest createRedirectRequest,
+      @Valid CreateRedirectRequest editRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    validationService.uniqueSource(bindingResult, createRedirectRequest.getSource(), id);
+    validationService.uniqueSource(bindingResult, editRedirectRequest.getSource(), id);
     String urlParams = getParams(search, status, code);
     if (bindingResult.hasErrors()) {
       model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
-      model.addAttribute("createRedirectRequest", createRedirectRequest);
+      model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
 
       model.addAttribute("search", search);
       model.addAttribute("status", status);
@@ -127,13 +127,14 @@ public class ViewController {
 
       model.addAttribute("bindingResult", bindingResult);
       model.addAttribute("editPageId", id);
+      model.addAttribute("editRedirectRequest", editRedirectRequest);
       return "redirects";
     }
     redirectService.update(
         id,
-        createRedirectRequest.getSource(),
-        createRedirectRequest.getTarget(),
-        getHttpStatusCode(createRedirectRequest));
+        editRedirectRequest.getSource(),
+        editRedirectRequest.getTarget(),
+        getHttpStatusCode(editRedirectRequest));
     return "redirect:/redirects" + getParams(search, status, code);
   }
 
