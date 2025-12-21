@@ -159,7 +159,7 @@ public class E2ETest {
     tableLine.locator("#edit-button").click();
     Locator modal = page.locator("#modal-update-redirect-1");
     assertThat(modal).hasAttribute("open", "");
-    assertThat(page).hasURL("/redirects/edit/1");
+    assertThat(page).hasURL("/redirects/1/edit");
 
     // modal can be filled
     page.locator("#source-input-edit-modal").fill("source");
@@ -306,7 +306,7 @@ public class E2ETest {
     int id =
         redirectRepository.create(
             "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
-    page.navigate("/redirects/edit/" + id);
+    page.navigate("/redirects/" + id + "/edit");
     assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
   }
 
@@ -316,7 +316,7 @@ public class E2ETest {
         redirectRepository.create(
             "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
 
-    page.navigate("/redirects/edit/" + id);
+    page.navigate("/redirects/" + id + "/edit");
 
     assertThat(page.locator("#status-code-input-edit-modal")).hasValue("302");
   }

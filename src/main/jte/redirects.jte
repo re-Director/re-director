@@ -214,13 +214,13 @@
             @for(var redirect : redirects)
             <dialog id="${"modal-update-redirect-" + redirect.id()}"
                     open="${editPageId != null && editPageId == redirect.id()}"
-                    data-url-addition="${"/edit/" + redirect.id()}">
+                    data-url-addition="${"/" + redirect.id() + "/edit"}">
                 <article>
                     <header>
                         <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
                         <h3>Update Redirect</h3>
                     </header>
-                    <form action="${"/redirects/edit/" + redirect.id() + urlParams}" method="post">
+                    <form action="${"/redirects/" + redirect.id() + "/edit" + urlParams}" method="post">
                         <label for="source-input-edit-modal">Source:</label>
                         <input id="source-input-edit-modal" type="text" name="source" placeholder="Source" value="${redirect.source()}" required minlength="1">
                         <label for="target-input-edit-modal">Target</label>

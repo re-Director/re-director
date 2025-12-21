@@ -87,7 +87,7 @@ public class ViewController {
     return "redirect:/redirects" + getParams(search, status, code);
   }
 
-  @GetMapping("/redirects/edit/{id}")
+  @GetMapping("/redirects/{id}/edit")
   public String redirectsEditModal(
       @PathVariable int id,
       @RequestParam(required = false) String search,
@@ -98,7 +98,7 @@ public class ViewController {
     return redirects(search, status, code, model);
   }
 
-  @PostMapping("/redirects/edit/{id}")
+  @PostMapping("/redirects/{id}/edit")
   public String updateRedirect(
       @PathVariable int id,
       @RequestParam(required = false) String search,
