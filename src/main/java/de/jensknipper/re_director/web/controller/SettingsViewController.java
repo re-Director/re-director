@@ -2,7 +2,6 @@ package de.jensknipper.re_director.web.controller;
 
 import de.jensknipper.re_director.service.RedirectService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -15,7 +14,7 @@ public class SettingsViewController {
   }
 
   @GetMapping("/settings")
-  public String settings(Model model) {
+  public String settings() {
     return "settings";
   }
 
