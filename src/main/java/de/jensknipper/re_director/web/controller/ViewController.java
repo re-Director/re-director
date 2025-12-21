@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 public class ViewController {
@@ -45,9 +46,11 @@ public class ViewController {
       Model model) {
     model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
+
     model.addAttribute("search", search);
     model.addAttribute("status", status);
     model.addAttribute("code", code);
+    model.addAttribute("urlParams", getParams(search, status, code));
     return "redirects";
   }
 
@@ -70,12 +73,16 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
+    String urlParams = getParams(search, status, code);
     if (bindingResult.hasErrors()) {
-      model.addAttribute("createRedirectRequest", createRedirectRequest);
       model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
+      model.addAttribute("createRedirectRequest", createRedirectRequest);
+
       model.addAttribute("search", search);
       model.addAttribute("status", status);
       model.addAttribute("code", code);
+      model.addAttribute("urlParams", urlParams);
+
       model.addAttribute("isCreatePage", true);
       model.addAttribute("bindingResult", bindingResult);
       return "redirects";
@@ -84,7 +91,7 @@ public class ViewController {
         createRedirectRequest.getSource(),
         createRedirectRequest.getTarget(),
         getHttpStatusCode(createRedirectRequest));
-    return "redirect:/redirects" + getParams(search, status, code);
+    return "redirect:/redirects" + urlParams;
   }
 
   @GetMapping("/redirects/{id}/edit")
@@ -108,12 +115,16 @@ public class ViewController {
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource(), id);
+    String urlParams = getParams(search, status, code);
     if (bindingResult.hasErrors()) {
-      model.addAttribute("createRedirectRequest", createRedirectRequest);
       model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
+      model.addAttribute("createRedirectRequest", createRedirectRequest);
+
       model.addAttribute("search", search);
       model.addAttribute("status", status);
       model.addAttribute("code", code);
+      model.addAttribute("urlParams", urlParams);
+
       model.addAttribute("bindingResult", bindingResult);
       model.addAttribute("editPageId", id);
       return "redirects";
@@ -180,32 +191,25 @@ public class ViewController {
   }
 
   private String getParams(String search, String status, Integer code) {
-    return buildParams(
+    List<UrlParam> urlParams =
+        List.of(
             new UrlParam("search", search),
             new UrlParam("status", status),
-            new UrlParam("code", code))
-        .orElse("");
+            new UrlParam("code", code));
+    return getParams(urlParams);
+  }
+
+  private String getParams(List<UrlParam> urlParams) {
+    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+    urlParams.stream()
+        .filter(it -> it.value() != null && !it.value().isBlank())
+        .forEach(it -> uriComponentsBuilder.queryParam(it.name(), it.value()));
+    return uriComponentsBuilder.build().encode().toUriString();
   }
 
   private record UrlParam(String name, @Nullable String value) {
     public UrlParam(String name, Object value) {
       this(name, Optional.ofNullable(value).map(Object::toString).orElse(null));
     }
-
-    public String getString() {
-      return name + "=" + value;
-    }
-  }
-
-  private Optional<String> buildParams(UrlParam... params) {
-    String paramsString =
-        Arrays.stream(params)
-            .filter(it -> it.value() != null && !it.value().isBlank())
-            .map(UrlParam::getString)
-            .collect(Collectors.joining("&"));
-    if (paramsString.isBlank()) {
-      return Optional.empty();
-    }
-    return Optional.of("?" + paramsString);
   }
 }

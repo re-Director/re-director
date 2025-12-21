@@ -9,6 +9,7 @@
 @param String status
 @param String search
 @param Integer code
+@param String urlParams
 
 @param boolean isCreatePage = false
 @param Integer editPageId
@@ -16,28 +17,6 @@
 @param BindingResult bindingResult
 @param CreateRedirectRequest createRedirectRequest
 @param List<RedirectResponse> redirects
-
-!{String urlParams = "";}
-@if(status != null)
-    !{urlParams += "?status=" + status;}
-@endif
-@if(search != null)
-    @if(urlParams.isEmpty())
-        !{urlParams += "?";}
-    @else
-        !{urlParams += "&";}
-    @endif
-    !{urlParams += "&search=" + search;}
-@endif
-@if(code != null)
-    @if(urlParams.isEmpty())
-        !{urlParams += "?";}
-    @else
-        !{urlParams += "&";}
-    @endif
-    !{urlParams += "&code=" + code;}
-@endif
-
 
 <!DOCTYPE html>
 <html lang="en">
