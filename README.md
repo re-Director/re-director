@@ -43,7 +43,7 @@ docker run \
   --name re-director \
   -p 80:80 \
   -v re-director-data:/data \
-  jensknipper/re-director:0.0.5
+  jensknipper/re-director:0.0.6
 ```
 
 ### Docker Compose
@@ -54,7 +54,7 @@ Simply save the following code into a `docker-compose.yml` file and run `docker-
 ```yaml
 services:
   re-director:
-    image: jensknipper/re-director:0.0.5
+    image: jensknipper/re-director:0.0.6
     ports:
       - "80:80"
     volumes:
@@ -81,7 +81,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   re-director:
-    image: jensknipper/re-director:0.0.5
+    image: jensknipper/re-director:0.0.6
     expose:
       - 80
     volumes:

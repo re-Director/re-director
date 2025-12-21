@@ -36,11 +36,13 @@ Regular commits etc. will not trigger the images to be built.
 By default `amd64` and `arm64` images will be built.
 
 Before creating a release, make sure that:
-- all tests pass
+- all tests pass, run: `./mvnw clean verify`
 - you update the version in the `pom.xml` to the next version
-- update all the mentioned versions in the documentation
+- update all the mentioned versions in the documentation and docker examples
 - you are able to run the docker containers - build them locally to do that
     - run `./mvnw jib:dockerBuild` to create the container locally
+      - you might have to temporarily set the `architecture` variable to `arm64`
     - use the example files in the `docker` directory
+      - you might have to temporarily  add e.g. `-amd64` or `-arm64` to the image name to make it work
     - go to http://localhost and check if the application is running
 - create the new release [here](https://github.com/re-Director/re-director/releases)
