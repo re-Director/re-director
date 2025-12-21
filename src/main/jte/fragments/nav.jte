@@ -18,14 +18,11 @@
             </li>
         </ul>
         <ul>
-            <!--
             <li>
-                <button>Login</button>
+                <a href="/settings">
+                    <i title="Settings" class="fa-solid fa-gear"></i>
+                </a>
             </li>
-            <li>
-                <button>Logout</button>
-            </li>
-            -->
         </ul>
     </nav>
     <hr>
