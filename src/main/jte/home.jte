@@ -1,17 +1,9 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>re:Director</title>
-        <link rel="icon" href="/img/re-director.svg" type="image/svg+xml">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="color-scheme" content="light dark">
-        <span th:replace="~{fragments/general/css.html}"></span>
+<!DOCTYPE html>
+<html lang="en">
+    @template.fragments.header()
 
-    </head>
     <body>
-        <span th:replace="~{fragments/nav.html}"></span>
-
+        @template.fragments.nav()
         <main class="container" style="padding-top: 1.5em;">
             <div style="text-align: center;">
                 <h1>
@@ -35,8 +27,7 @@
                 </a>
             </div>
         </main>
-
-        <span th:replace="~{fragments/footer.html}"></span>
-        <span th:replace="~{fragments/general/js.html}"></span>
+        @template.fragments.footer()
+        @template.fragments.js()
     </body>
 </html>

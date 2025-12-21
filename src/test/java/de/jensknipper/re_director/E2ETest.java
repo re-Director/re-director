@@ -192,20 +192,17 @@ public class E2ETest {
     // there is an element which is activated
     Locator tableLine = page.locator("#table-element-0");
     assertThat(tableLine).hasCount(1);
-    assertThat(tableLine.locator("#status").locator("span").locator("i"))
-        .hasAttribute("title", "Active");
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Active");
 
     // clicking pause deactivates it
     tableLine.locator("#deactivate-button").click();
     tableLine = page.locator("#table-element-0");
-    assertThat(tableLine.locator("#status").locator("span").locator("i"))
-        .hasAttribute("title", "Inactive");
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Inactive");
 
     // clicking resume activates it
     tableLine.locator("#activate-button").click();
     tableLine = page.locator("#table-element-0");
-    assertThat(tableLine.locator("#status").locator("span").locator("i"))
-        .hasAttribute("title", "Active");
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Active");
   }
 
   @Test
@@ -303,14 +300,14 @@ public class E2ETest {
   void openingCreateOrEditUrlShouldOpenModal() {
     // create
     page.navigate("/redirects/create");
-    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "open");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
 
     // update
     int id =
         redirectRepository.create(
             "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
     page.navigate("/redirects/edit/" + id);
-    assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "open");
+    assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
   }
 
   @Test
@@ -326,5 +323,6 @@ public class E2ETest {
 
   // TODO 301 default works
   // TODO validation errors are only shown in the one affected modal
-  // TODO test browser back and forward with page.goBack() and page.goForward() - modals should open/close
+  // TODO test browser back and forward with page.goBack() and page.goForward() - modals should
+  // open/close
 }

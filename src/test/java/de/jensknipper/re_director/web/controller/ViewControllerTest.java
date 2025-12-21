@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import de.jensknipper.re_director.service.RedirectService;
 import de.jensknipper.re_director.service.ValidationService;
 import de.jensknipper.re_director.web.controller.dto.DtoMapper;
+import gg.jte.springframework.boot.autoconfigure.JteAutoConfiguration;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ViewController.class)
-@Import({ValidationService.class, DtoMapper.class, RedirectService.class})
+@Import({
+  ValidationService.class,
+  DtoMapper.class,
+  RedirectService.class,
+  JteAutoConfiguration.class
+})
 class ViewControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -34,6 +40,13 @@ class ViewControllerTest {
 
   @Nested
   class ListRedirects {
+    @Test
+    void shouldAllow_listRedirects() throws Exception {
+      mockMvc
+          .perform(get("/redirects"))
+          .andExpect(status().isOk())
+          .andExpect(view().name("redirects"));
+    }
 
     @Test
     void shouldAllow_listRedirects_nullFilter() throws Exception {

@@ -18,6 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>25</java.version>
+    <jte.version>3.2.1</jte.version>
 
 		<architecture>amd64</architecture>
 	</properties>
@@ -41,10 +42,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
@@ -55,6 +52,17 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
+
+    <dependency>
+      <groupId>gg.jte</groupId>
+      <artifactId>jte-spring-boot-starter-3</artifactId>
+      <version>${jte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>gg.jte</groupId>
+      <artifactId>jte</artifactId>
+      <version>${jte.version}</version>
+    </dependency>
 
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -156,6 +164,26 @@
 				</configuration>
 			</plugin>
 
+      <plugin>
+        <groupId>gg.jte</groupId>
+        <artifactId>jte-maven-plugin</artifactId>
+        <version>${jte.version}</version>
+        <executions>
+          <execution>
+            <id>jte-generate</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.basedir}/src/main/jte</sourceDirectory>
+              <contentType>Html</contentType>
+              <targetDirectory>target/generated-sources/jte</targetDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
 				<artifactId>spotless-maven-plugin</artifactId>
@@ -182,9 +210,11 @@
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
+        <version>3.19.22</version>
 				<executions>
 					<execution>
-						<goals>
+            <phase>generate-sources</phase>
+            <goals>
 							<goal>generate</goal>
 						</goals>
 					</execution>
@@ -193,7 +223,7 @@
 					<dependency>
 						<groupId>org.jooq</groupId>
 						<artifactId>jooq-meta-extensions-liquibase</artifactId>
-						<version>3.20.10</version>
+            <version>3.19.22</version>
 					</dependency>
 				</dependencies>
 				<configuration>

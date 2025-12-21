@@ -45,6 +45,9 @@ public class ViewController {
       Model model) {
     model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
+    model.addAttribute("search", search);
+    model.addAttribute("status", status);
+    model.addAttribute("code", code);
     return "redirects";
   }
 
@@ -63,13 +66,18 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
       @RequestParam(required = false) Integer code,
-      @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
+      @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
     if (bindingResult.hasErrors()) {
-      model.addAttribute("isCreatePage", true);
+      model.addAttribute("createRedirectRequest", createRedirectRequest);
       model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
+      model.addAttribute("search", search);
+      model.addAttribute("status", status);
+      model.addAttribute("code", code);
+      model.addAttribute("isCreatePage", true);
+      model.addAttribute("bindingResult", bindingResult);
       return "redirects";
     }
     redirectService.create(
@@ -96,13 +104,19 @@ public class ViewController {
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
       @RequestParam(required = false) Integer code,
-      @Valid @ModelAttribute CreateRedirectRequest createRedirectRequest,
+      @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource(), id);
     if (bindingResult.hasErrors()) {
+      model.addAttribute("createRedirectRequest", createRedirectRequest);
+      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
+      model.addAttribute("search", search);
+      model.addAttribute("status", status);
+      model.addAttribute("code", code);
+      model.addAttribute("bindingResult", bindingResult);
       model.addAttribute("editPageId", id);
-      return redirects(search, status, code, model);
+      return "redirects";
     }
     redirectService.update(
         id,

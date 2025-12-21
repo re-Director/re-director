@@ -1,11 +1,10 @@
 spring:
-  thymeleaf:
-    cache: false
   devtools:
     add-properties: true
     restart:
       enabled: true
       exclude: resources/**,web-inf/**
+      additional-paths: /src/main/jte
     livereload:
       enabled: true
 
@@ -18,3 +17,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+gg:
+  jte:
+    developmentMode: true
+    usePrecompiledTemplates: false

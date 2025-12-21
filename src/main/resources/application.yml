@@ -55,3 +55,8 @@ server:
     include-stacktrace: NEVER
     whitelabel:
       enabled: false
+
+gg:
+  jte:
+    developmentMode: false
+    usePrecompiledTemplates: true
