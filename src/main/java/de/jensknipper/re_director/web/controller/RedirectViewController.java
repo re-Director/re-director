@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,22 +19,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
-public class ViewController {
+public class RedirectViewController {
 
   private final RedirectService redirectService;
   private final ValidationService validationService;
   private final DtoMapper dtoMapper;
 
-  public ViewController(
+  public RedirectViewController(
       RedirectService redirectService, ValidationService validationService, DtoMapper dtoMapper) {
     this.redirectService = redirectService;
     this.validationService = validationService;
     this.dtoMapper = dtoMapper;
-  }
-
-  @GetMapping("/")
-  public String home(Model model) {
-    return "home";
   }
 
   @GetMapping("/redirects")
@@ -175,7 +169,7 @@ public class ViewController {
             .orElse(null);
     return redirectService.findAllFiltered(search, statusFilter, httpStatusCodeFilter).stream()
         .map(dtoMapper::toRedirectResponse)
-        .collect(Collectors.toList()); // thymeleaf needs modifiable list here
+        .toList();
   }
 
   private RedirectHttpStatusCode getHttpStatusCode(CreateRedirectRequest createRedirectRequest) {
