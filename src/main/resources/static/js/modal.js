@@ -37,7 +37,7 @@ const openModal = (modal) => {
 
   // set path
   const newUrl = window.location.pathname + modal.dataset.urlAddition + window.location.search;
-  window.history.pushState(null, '', newUrl);
+  window.history.pushState({}, '', newUrl);
 };
 
 // Close modal
@@ -54,7 +54,7 @@ const closeModal = (modal) => {
   // remove path
   const currentPath = window.location.pathname;
   const newUrl = currentPath.slice(0, -modal.dataset.urlAddition.length) + window.location.search;
-  window.history.pushState(null, '', newUrl);
+  window.history.pushState({}, '', newUrl);
 };
 
 // Close with a click outside
@@ -70,6 +70,11 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && visibleModal) {
     closeModal(visibleModal);
   }
+});
+
+// Reload page on back button press
+window.addEventListener('popstate', (e) => {
+  location.reload();
 });
 
 // Get scrollbar width
