@@ -182,7 +182,7 @@
                         @endif
 
                         <footer>
-                            <button role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
+                            <button id="close-button-create-modal" role="button" class="secondary" data-target="modal-create-redirect" onclick="toggleModal(event)">
                                 Cancel
                             </button>
                             <button autofocus id="confirm-button-create-modal">

@@ -321,8 +321,29 @@ public class E2ETest {
     assertThat(page.locator("#status-code-input-edit-modal")).hasValue("302");
   }
 
+  @Test
+  void backAndForwardBrowserButtonShouldUpdateUrlAndHandleModal() {
+    page.navigate("/redirects");
+    page.locator("#create-button").click();
+    page.locator("#close-button-create-modal").click();
+
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    page.goBack();
+    assertThat(page).hasURL("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    page.goBack();
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    page.goForward();
+    assertThat(page).hasURL("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    page.goForward();
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+  }
+
   // TODO 301 default works after creating eg. a 308
   // TODO validation errors are only shown in the one affected modal
-  // TODO test browser back and forward with page.goBack() and page.goForward() - modals should
   // open/close
 }
