@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.8</version>
+		<version>3.5.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -19,6 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>25</java.version>
     <jte.version>3.2.1</jte.version>
+    <jooq.version>3.20.10</jooq.version>
 
 		<architecture>amd64</architecture>
 	</properties>
@@ -182,7 +183,7 @@
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
 				<artifactId>spotless-maven-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.1</version>
 				<configuration>
 					<java>
 						<googleJavaFormat/>
@@ -205,7 +206,7 @@
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
-        <version>3.19.22</version>
+        <version>${jooq.version}</version>
 				<executions>
 					<execution>
             <phase>generate-sources</phase>
@@ -218,10 +219,14 @@
 					<dependency>
 						<groupId>org.jooq</groupId>
 						<artifactId>jooq-meta-extensions-liquibase</artifactId>
-            <version>3.19.22</version>
+            <version>${jooq.version}</version>
 					</dependency>
 				</dependencies>
 				<configuration>
+          <jdbc>
+            <driver>org.sqlite.JDBC</driver>
+            <url>jdbc:sqlite::memory:</url>
+          </jdbc>
 					<generator>
 						<database>
 							<name>org.jooq.meta.extensions.liquibase.LiquibaseDatabase</name>
@@ -233,10 +238,6 @@
 								<property>
 									<key>scripts</key>
 									<value>db/changelog/db.changelog-master.yaml</value>
-								</property>
-								<property>
-									<key>useParsingConnection</key>
-									<value>true</value>
 								</property>
 							</properties>
 							<forcedTypes>
