@@ -118,14 +118,14 @@
                                     <form method="POST" style="display: inline-block;"
                                           action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + urlParams}">
                                         <button id="deactivate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                            <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Pause"></i>
+                                            <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Deactivate"></i>
                                         </button>
                                     </form>
                                 @elseif(Status.INACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
                                           action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + urlParams}">
                                         <button id="activate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                            <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Start"></i>
+                                            <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Activate"></i>
                                         </button>
                                     </form>
                                 @endif

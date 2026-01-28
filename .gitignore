@@ -3,6 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+/jte-classes/
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

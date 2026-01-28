@@ -4,6 +4,6 @@ root = true
 end_of_line = lf
 charset = utf-8
 
-[*.{java,yml,yaml,xml}]
+[*.{java,yml,yaml,xml,js}]
 indent_style = space
 indent_size = 2

@@ -64,82 +64,10 @@ volumes:
   re-director-data:
 ```
 
-### Docker Compose behind Traefik reverse proxy
+### Docker Compose behind reverse proxy
 
-You might have quite a few applications running behind a Traefik reverse proxy. The configuration should then look like this.
+There is some documentation on how to run re:Director behind a reverse proxy on the [website](https://re-director.github.io/docs/installation/reverse-proxy/).
 
-```yaml
-services:
-  traefik:
-    image: traefik:v3.4
-    command:
-      - "--providers.docker"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+## Configuration
 
-  re-director:
-    image: jensknipper/re-director:0.0.6
-    expose:
-      - 80
-    volumes:
-      - re-director-data:/data
-    labels:
-      - "traefik.http.routers.re-director.rule=Host(`re-director.localhost`) || HostRegexp(`.+`)"
-      - "traefik.http.routers.re-director.entrypoints=web"
-      - "traefik.http.routers.re-director.priority=1"
-
-volumes:
-  re-director-data:
-```
-
-## Health Checks
-
-Re:Director uses [Spring Actuator](https://docs.spring.io/spring-boot/how-to/actuator.html) to do health checks.
-  
-The following checks are available.
-- overall health: `/actuator/health`
-- liveness: `/actuator/health/liveness`
-- readiness: `/actuator/health/readiness`
-
-When the application is healthy a JSON like this is returned
-
-```json
-{
-  "status": "UP"
-}
-```
-
-Possible results for the status attribute are:
-- `UP`
-- `DOWN`
-- `OUT_OF_SERVICE`
-- `UNKNOWN`
-
-## Logging
-
-By default, a log file named `re-director.log` will be written into the volume of the container. 
-Another way to get the logs is the [docker logs command](https://docs.docker.com/reference/cli/docker/container/logs/).
-
-You can raise the logging level by setting the following environment variable: `LOGGING_LEVEL_ROOT`. The following levels are allowed:
-- `TRACE`
-- `DEBUG`
-- `INFO`
-- `WARN`
-- `ERROR`
-
-Here the severity is ordered from low to high.
-By choosing a higher severity, lower severity logs will not be logged, e.g. the level `ERROR` will only print error logs. The lower ones will include the higher level severities.
-
-The default level is `WARN`.
-
-
-## Caching
-
-To keep the latency that Re:Director introduces as small as possible, caching is implemented.
-
-### Deactivate Caching
-
-Set the environment variable `SPRING_CACHE_TYPE=none`
+Documentation on how to configure re:Director can be found on the [website](https://re-director.github.io/docs/configuration/health-checks/).
