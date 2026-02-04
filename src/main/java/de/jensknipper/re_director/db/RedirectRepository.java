@@ -7,12 +7,12 @@ import de.jensknipper.re_director.db.entity.Redirect;
 import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
 import de.jensknipper.re_director.db.entity.RedirectInformation;
 import de.jensknipper.re_director.db.entity.Status;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository

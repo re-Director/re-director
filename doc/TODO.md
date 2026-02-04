@@ -22,7 +22,7 @@
 ## Medium Prio
 
 - write Doc on how to behind reverse proxies: caddy, nginx
-- jspecify (+nullaway?) instead of jakarta validation
+- automated checks with jspecify and nullaway
 - redirect tester
     - like https://domain-forward.com/url-redirect-tester-tool/
     - or https://redirect.pizza/tester?url=http://blog.jensknipper.de
