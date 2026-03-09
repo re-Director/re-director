@@ -67,8 +67,8 @@
 
 		<dependency>
 			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator</artifactId>
-			<version>0.52</version>
+			<artifactId>webjars-locator-lite</artifactId>
+			<version>1.1.0</version>
 		</dependency>
     <dependency>
       <groupId>org.webjars</groupId>
