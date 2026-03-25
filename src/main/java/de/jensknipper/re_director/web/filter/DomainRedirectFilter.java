@@ -31,6 +31,7 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
       if (redirectInformation != null) {
         response.setStatus(redirectInformation.httpStatusCode().getCode());
         response.setHeader("Location", redirectInformation.target());
+        return;
       }
     }
     filterChain.doFilter(request, response);

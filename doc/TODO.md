@@ -20,6 +20,7 @@
   - preserve path option
   - CSV import
 - add test for database migrations not breaking the app
+- migrate from jooq-meta-extensions-liquibase to testcontainers variant due to deprecation
 
 ## Medium Prio
 

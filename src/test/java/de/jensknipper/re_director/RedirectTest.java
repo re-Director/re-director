@@ -112,6 +112,24 @@ public class RedirectTest {
     response.close();
   }
 
+  @Test
+  void testRedirectWithPath() throws IOException {
+    // given
+    insertRedirect(requestUrl, targetUrl, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
+    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port + "/additional-path").build();
+
+    // when
+    Response response = client.newCall(request).execute();
+
+    // then
+    assertThat(response.isRedirect()).isTrue();
+    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.header("Location")).isEqualTo(targetUrl);
+
+    response.close();
+  }
+
   private void insertRedirect(String source, String target, RedirectHttpStatusCode statusCode) {
     dsl.insertInto(REDIRECTS)
         .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE)
