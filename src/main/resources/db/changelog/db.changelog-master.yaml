@@ -11,3 +11,9 @@ databaseChangeLog:
   - include:
       file: changes/v0004_update_redirects_table_add_http_status_code_column.sql
       relativeToChangelogFile: true
+  - changeSet:
+      id: tag-v0004
+      author: migration-test
+      changes:
+        - tagDatabase:
+            tag: v0004
