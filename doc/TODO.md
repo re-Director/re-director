@@ -14,15 +14,17 @@
 - metrics, eg. last called
     - as timeseries?
       - QuestDb, ChronoDB, InfluxDB embedded
+    - other options: store only last 30 days (configurable) with cleanup job
 - variable redirects, add different redirects (subdomains etc.) to hosts
   - maybe look at npm or other SaaS solutions
   - preserve path option
+  - CSV import
 - add test for database migrations not breaking the app
 
 ## Medium Prio
 
 - write Doc on how to behind reverse proxies: caddy, nginx
-- automated checks with jspecify and nullaway
+- automated checks with nullaway
 - redirect tester
     - like https://domain-forward.com/url-redirect-tester-tool/
     - or https://redirect.pizza/tester?url=http://blog.jensknipper.de
