@@ -117,7 +117,8 @@ public class RedirectTest {
     // given
     insertRedirect(requestUrl, targetUrl, RedirectHttpStatusCode.MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port + "/additional-path").build();
+    Request request =
+        new Request.Builder().url("http://" + requestUrl + ":" + port + "/additional-path").build();
 
     // when
     Response response = client.newCall(request).execute();

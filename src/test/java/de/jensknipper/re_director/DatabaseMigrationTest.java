@@ -1,5 +1,13 @@
 package de.jensknipper.re_director;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import de.jensknipper.re_director.db.entity.Redirect;
+import de.jensknipper.re_director.service.RedirectService;
+import java.sql.Connection;
+import java.util.List;
+import java.util.UUID;
+import javax.sql.DataSource;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -12,13 +20,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.liquibase.enabled=false"})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = {"spring.liquibase.enabled=false"})
 class DatabaseMigrationTest {
 
   @DynamicPropertySource
@@ -27,25 +31,25 @@ class DatabaseMigrationTest {
     registry.add("spring.datasource.url", () -> uniqueDb);
   }
 
-  @Autowired
-  DataSource dataSource;
-  @Autowired
-  DSLContext dsl;
+  @Autowired DataSource dataSource;
+  @Autowired DSLContext dsl;
+  @Autowired RedirectService redirectService;
 
   @Test
-  void shouldMigrateFromV1ToLatest_withExistingData() throws Exception {
+  void migrationWithData() throws Exception {
 
     try (Connection connection = dataSource.getConnection()) {
 
-      Liquibase liquibase = new Liquibase(
-        "db/changelog/db.changelog-master.yaml",
-        new ClassLoaderResourceAccessor(),
-        new JdbcConnection(connection)
-      );
+      Liquibase liquibase =
+          new Liquibase(
+              "db/changelog/db.changelog-master.yaml",
+              new ClassLoaderResourceAccessor(),
+              new JdbcConnection(connection));
 
       liquibase.update("v0004", new Contexts(), new LabelExpression());
 
-      dsl.execute("""
+      dsl.execute(
+          """
                 INSERT INTO redirects (source, target)
                 VALUES ('example-source', 'example-target')
             """);
@@ -53,8 +57,8 @@ class DatabaseMigrationTest {
       liquibase.update(new Contexts(), new LabelExpression());
     }
 
-    var record = dsl.fetchOne("SELECT * FROM redirects WHERE id = 1");
+    List<Redirect> records = redirectService.findAllFiltered(null, null, null);
 
-    assertThat(record).isNotNull();
+    assertThat(records).isNotEmpty();
   }
 }
