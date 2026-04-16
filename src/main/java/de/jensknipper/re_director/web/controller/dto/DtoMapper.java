@@ -11,6 +11,7 @@ public final class DtoMapper {
         redirect.id(),
         redirect.source(),
         redirect.target(),
+        redirect.pathForwarding(),
         redirect.httpStatusCode().getCode(),
         redirect.status());
   }

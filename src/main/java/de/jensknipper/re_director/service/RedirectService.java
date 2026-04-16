@@ -49,9 +49,14 @@ public class RedirectService {
     return redirectRepository.findAllFiltered(search, status, httpStatusCodeFilter);
   }
 
-  public void update(int id, String source, String target, RedirectHttpStatusCode statusCode) {
+  public void update(
+      int id,
+      String source,
+      String target,
+      boolean pathForwarding,
+      RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
-    redirectRepository.update(id, source, target, statusCode);
+    redirectRepository.update(id, source, target, pathForwarding, statusCode);
   }
 
   public void updateStatus(int id, Status status) {
@@ -66,8 +71,9 @@ public class RedirectService {
     redirectRepository.delete(id);
   }
 
-  public void create(String source, String target, RedirectHttpStatusCode statusCode) {
-    redirectRepository.create(source, target, Status.ACTIVE, statusCode);
+  public void create(
+      String source, String target, boolean pathForwarding, RedirectHttpStatusCode statusCode) {
+    redirectRepository.create(source, target, Status.ACTIVE, pathForwarding, statusCode);
   }
 
   private void evictFromCacheWithId(int id) {

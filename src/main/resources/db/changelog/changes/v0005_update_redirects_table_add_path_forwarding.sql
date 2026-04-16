@@ -1,0 +1,1 @@
+ALTER TABLE redirects ADD COLUMN path_forwarding boolean NOT NULL DEFAULT FALSE;

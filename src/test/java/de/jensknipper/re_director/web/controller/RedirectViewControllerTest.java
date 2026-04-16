@@ -73,23 +73,25 @@ class RedirectViewControllerTest {
 
     private static Stream<Arguments> provideValidFields() {
       return Stream.of(
-          Arguments.of("source", "http://valid", "301"),
-          Arguments.of("source", "https://valid", "302"),
-          Arguments.of("source", "http://valid:8080", "307"),
-          Arguments.of("source", "ftp://valid", "308"));
+          Arguments.of("source", "http://valid", "true", "301"),
+          Arguments.of("source", "https://valid", "false", "302"),
+          Arguments.of("source", "http://valid:8080", "false", "307"),
+          Arguments.of("source", "ftp://valid", "false", "308"));
     }
 
     @ParameterizedTest
     @MethodSource("provideValidFields")
-    void shouldAllow_validationCreate(String source, String target, String httpStatusCode)
+    void shouldAllow_validationCreate(
+        String source, String target, String pathForwarding, String httpStatusCode)
         throws Exception {
       mockMvc
           .perform(
               post("/redirects/create")
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                  .param("source", "source")
-                  .param("target", "http://valid")
-                  .param("httpStatusCode", "301"))
+                  .param("source", source)
+                  .param("target", target)
+                  .param("pathForwarding", pathForwarding)
+                  .param("httpStatusCode", httpStatusCode))
           .andExpect(status().is3xxRedirection())
           .andExpect(redirectedUrl("/redirects"));
     }
@@ -109,6 +111,7 @@ class RedirectViewControllerTest {
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", invalidSource)
                   .param("target", "http://valid")
+                  .param("pathForwarding", "false")
                   .param("httpStatusCode", "301"))
           .andExpect(status().isOk())
           .andExpect(view().name("redirects"))
@@ -134,6 +137,7 @@ class RedirectViewControllerTest {
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", "source")
                   .param("target", invalidTarget)
+                  .param("pathForwarding", "false")
                   .param("httpStatusCode", "301"))
           .andExpect(status().isOk())
           .andExpect(view().name("redirects"))
@@ -158,6 +162,7 @@ class RedirectViewControllerTest {
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", "source")
                   .param("target", "http://valid")
+                  .param("pathForwarding", "false")
                   .param("httpStatusCode", invalidCode))
           .andExpect(status().isOk())
           .andExpect(view().name("redirects"))

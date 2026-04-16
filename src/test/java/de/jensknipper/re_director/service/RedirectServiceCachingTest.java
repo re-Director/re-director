@@ -26,9 +26,18 @@ class RedirectServiceCachingTest {
 
   private static final Redirect exampleRedirect =
       new Redirect(
-          0, "source", "target", Status.ACTIVE, LocalDateTime.now(), RedirectHttpStatusCode.FOUND);
+          0,
+          "source",
+          "target",
+          Status.ACTIVE,
+          LocalDateTime.now(),
+          RedirectHttpStatusCode.FOUND,
+          false);
   private static final RedirectInformation exampleRedirectInformation =
-      new RedirectInformation(exampleRedirect.target(), exampleRedirect.httpStatusCode());
+      new RedirectInformation(
+          exampleRedirect.target(),
+          exampleRedirect.httpStatusCode(),
+          exampleRedirect.pathForwarding());
 
   @BeforeEach
   void beforeEach() {
@@ -38,7 +47,7 @@ class RedirectServiceCachingTest {
 
     when(redirectRepository.findById(exampleRedirect.id())).thenReturn(exampleRedirect);
     when(redirectRepository.findRedirectInformationBySource("dummy"))
-        .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND));
+        .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND, false));
     redirectService.findRedirectInformationBySource("dummy");
   }
 
@@ -62,6 +71,7 @@ class RedirectServiceCachingTest {
         exampleRedirect.id(),
         exampleRedirect.source(),
         exampleRedirect.target(),
+        exampleRedirect.pathForwarding(),
         exampleRedirect.httpStatusCode());
 
     // when
@@ -102,6 +112,18 @@ class RedirectServiceCachingTest {
   void delete_shouldEvictValueFromCache() {
     // given
     redirectService.delete(exampleRedirect.id());
+
+    // when
+    Optional<RedirectInformation> result = getRedirectFromCache();
+
+    // then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void clearCache_shouldEvictCache() {
+    // given
+    redirectService.clearCache();
 
     // when
     Optional<RedirectInformation> result = getRedirectFromCache();

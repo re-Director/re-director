@@ -8,4 +8,5 @@ public record Redirect(
     String target,
     Status status,
     LocalDateTime createdAt,
-    RedirectHttpStatusCode httpStatusCode) {}
+    RedirectHttpStatusCode httpStatusCode,
+    boolean pathForwarding) {}

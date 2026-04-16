@@ -84,6 +84,7 @@ public class RedirectViewController {
     redirectService.create(
         createRedirectRequest.getSource(),
         createRedirectRequest.getTarget(),
+        createRedirectRequest.isPathForwarding(),
         getHttpStatusCode(createRedirectRequest));
     return "redirect:/redirects" + urlParams;
   }
@@ -128,6 +129,7 @@ public class RedirectViewController {
         id,
         editRedirectRequest.getSource(),
         editRedirectRequest.getTarget(),
+        editRedirectRequest.isPathForwarding(),
         getHttpStatusCode(editRedirectRequest));
     return "redirect:/redirects" + getParams(search, status, code);
   }

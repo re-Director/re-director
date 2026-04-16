@@ -10,6 +10,8 @@ public final class CreateRedirectRequest {
   @NotNull @NotEmpty private String source;
   @NotNull @NotEmpty @IsUrl private String target;
 
+  private boolean pathForwarding = false;
+
   @IntIn({301, 302, 307, 308})
   private int httpStatusCode = 301;
 
@@ -29,6 +31,14 @@ public final class CreateRedirectRequest {
     this.target = target;
   }
 
+  public boolean isPathForwarding() {
+    return pathForwarding;
+  }
+
+  public void setPathForwarding(boolean pathForwarding) {
+    this.pathForwarding = pathForwarding;
+  }
+
   public int getHttpStatusCode() {
     return httpStatusCode;
   }
@@ -43,12 +53,13 @@ public final class CreateRedirectRequest {
     CreateRedirectRequest that = (CreateRedirectRequest) o;
     return httpStatusCode == that.httpStatusCode
         && Objects.equals(source, that.source)
-        && Objects.equals(target, that.target);
+        && Objects.equals(target, that.target)
+        && Objects.equals(pathForwarding, that.pathForwarding);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(source, target, httpStatusCode);
+    return Objects.hash(source, target, pathForwarding, httpStatusCode);
   }
 
   @Override
@@ -59,6 +70,9 @@ public final class CreateRedirectRequest {
         + '\''
         + ", target='"
         + target
+        + '\''
+        + ", pathForwarding='"
+        + pathForwarding
         + '\''
         + ", httpStatusCode="
         + httpStatusCode

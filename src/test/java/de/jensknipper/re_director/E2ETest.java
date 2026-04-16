@@ -143,7 +143,7 @@ public class E2ETest {
   @Test
   void editWorks() {
     redirectRepository.create(
-        "source", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+        "source", "target", Status.ACTIVE, false, RedirectRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -185,7 +185,7 @@ public class E2ETest {
   @Test
   void deactivateAndActivateWorks() {
     redirectRepository.create(
-        "source", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+        "source", "target", Status.ACTIVE, false, RedirectRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -208,7 +208,7 @@ public class E2ETest {
   @Test
   void deleteWorks() {
     redirectRepository.create(
-        "source", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
+        "source", "target", Status.ACTIVE, false, RedirectRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -224,9 +224,11 @@ public class E2ETest {
   @Test
   void filterWorks() {
     redirectRepository.create(
-        "source1", "target", Status.ACTIVE, RedirectRepository.DEFAULT_REDIRECT);
-    redirectRepository.create("source2", "target", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
-    redirectRepository.create("source3", "target", Status.INACTIVE, RedirectHttpStatusCode.FOUND);
+        "source1", "target", Status.ACTIVE, false, RedirectRepository.DEFAULT_REDIRECT);
+    redirectRepository.create(
+        "source2", "target", Status.INACTIVE, false, RedirectHttpStatusCode.FOUND);
+    redirectRepository.create(
+        "source3", "target", Status.INACTIVE, false, RedirectHttpStatusCode.FOUND);
 
     page.navigate("/redirects?status=INACTIVE&search=3&code=302");
 
@@ -305,7 +307,7 @@ public class E2ETest {
     // update
     int id =
         redirectRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+            "irrelevant", "irrelevant", Status.ACTIVE, false, RedirectHttpStatusCode.FOUND);
     page.navigate("/redirects/" + id + "/edit");
     assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
   }
@@ -314,7 +316,7 @@ public class E2ETest {
   void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
     int id =
         redirectRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, RedirectHttpStatusCode.FOUND);
+            "irrelevant", "irrelevant", Status.ACTIVE, false, RedirectHttpStatusCode.FOUND);
 
     page.navigate("/redirects/" + id + "/edit");
 
