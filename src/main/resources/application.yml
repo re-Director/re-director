@@ -7,6 +7,10 @@ spring:
     username: sa
     password: sa
     driverClassName: org.sqlite.JDBC
+    hikari:
+      connection-init-sql: >
+        PRAGMA journal_mode=WAL;
+        PRAGMA synchronous=NORMAL;
 
   servlet:
     multipart:
