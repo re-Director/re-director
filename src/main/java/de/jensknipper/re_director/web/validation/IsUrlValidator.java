@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import org.jspecify.annotations.Nullable;
 
 public class IsUrlValidator implements ConstraintValidator<IsUrl, String> {
@@ -16,7 +15,7 @@ public class IsUrlValidator implements ConstraintValidator<IsUrl, String> {
       return false;
     }
     try {
-      URL _ = new URI(value).toURL();
+      new URI(value).toURL();
     } catch (MalformedURLException | URISyntaxException | IllegalArgumentException _) {
       return false;
     }
