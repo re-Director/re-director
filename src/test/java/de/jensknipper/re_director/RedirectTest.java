@@ -33,8 +33,8 @@ import org.springframework.test.context.DynamicPropertySource;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RedirectTest {
 
-  public static final String requestUrl = "request.com";
-  public static final String targetUrl = "http://target.com";
+  public static final String REQUEST_URL = "request.com";
+  public static final String TARGET_URL = "http://target.com";
 
   @Autowired private DSLContext dsl;
   @Autowired private RedirectService redirectService;
@@ -56,15 +56,15 @@ public class RedirectTest {
   @Test
   void testRedirectNotPresent() throws IOException {
     // given
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
     // when
     Response response = client.newCall(request).execute();
 
     // then
-    assertThat(response.code()).isIn(200);
-    assertThat(response.header("Location")).isEqualTo(null);
+    assertThat(response.code()).isEqualTo(200);
+    assertThat(response.header("Location")).isNull();
 
     response.close();
   }
@@ -77,9 +77,9 @@ public class RedirectTest {
   @MethodSource("provideRedirectHttpStatusCodes")
   void testRedirect(RedirectHttpStatusCode statusCode) throws IOException {
     // given
-    insertRedirect(requestUrl, targetUrl, statusCode);
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    insertRedirect(REQUEST_URL, TARGET_URL, statusCode);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
     // when
     Response response = client.newCall(request).execute();
@@ -87,7 +87,7 @@ public class RedirectTest {
     // then
     assertThat(response.isRedirect()).isTrue();
     assertThat(response.code()).isEqualTo(statusCode.getCode());
-    assertThat(response.header("Location")).isEqualTo(targetUrl);
+    assertThat(response.header("Location")).isEqualTo(TARGET_URL);
 
     response.close();
   }
@@ -97,9 +97,9 @@ public class RedirectTest {
   void testRedirectWithFollow(RedirectHttpStatusCode statusCode) throws IOException {
     // given
     String target = "http://localhost:" + port + "/test";
-    insertRedirect(requestUrl, target, statusCode);
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(true).build();
-    Request request = new Request.Builder().url("http://" + requestUrl + ":" + port).build();
+    insertRedirect(REQUEST_URL, target, statusCode);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(true).build();
+    Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
     // when
     Response response = client.newCall(request).execute();
@@ -115,10 +115,12 @@ public class RedirectTest {
   @Test
   void testRedirectWithPath() throws IOException {
     // given
-    insertRedirect(requestUrl, targetUrl, RedirectHttpStatusCode.MOVED_PERMANENTLY);
-    OkHttpClient client = createHttpClientWithCustomDns(requestUrl).followRedirects(false).build();
+    insertRedirect(REQUEST_URL, TARGET_URL, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
-        new Request.Builder().url("http://" + requestUrl + ":" + port + "/additional-path").build();
+        new Request.Builder()
+            .url("http://" + REQUEST_URL + ":" + port + "/additional-path")
+            .build();
 
     // when
     Response response = client.newCall(request).execute();
@@ -126,7 +128,7 @@ public class RedirectTest {
     // then
     assertThat(response.isRedirect()).isTrue();
     assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
-    assertThat(response.header("Location")).isEqualTo(targetUrl);
+    assertThat(response.header("Location")).isEqualTo(TARGET_URL);
 
     response.close();
   }

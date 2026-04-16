@@ -1,6 +1,5 @@
 package de.jensknipper.re_director.web.controller;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -103,7 +102,7 @@ class RedirectViewControllerTest {
     @MethodSource("provideInvalidSourceFields")
     void shouldFail_validationCreate_whenSourceFieldIsInvalid(String invalidSource)
         throws Exception {
-      when(redirectService.redirectAlreadyExists(eq("duplicate"))).thenReturn(true);
+      when(redirectService.redirectAlreadyExists("duplicate")).thenReturn(true);
       mockMvc
           .perform(
               post("/redirects/create")

@@ -7,6 +7,8 @@ import de.jensknipper.re_director.db.entity.RedirectInformation;
 import de.jensknipper.re_director.db.entity.Status;
 import java.util.List;
 import org.jspecify.annotations.Nullable;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedirectService {
   private final RedirectRepository redirectRepository;
+  private final CacheManager cacheManager;
 
-  public RedirectService(RedirectRepository redirectRepository) {
+  public RedirectService(RedirectRepository redirectRepository, CacheManager cacheManager) {
     this.redirectRepository = redirectRepository;
+    this.cacheManager = cacheManager;
   }
 
   public boolean redirectAlreadyExists(String source) {
@@ -69,15 +73,11 @@ public class RedirectService {
   private void evictFromCacheWithId(int id) {
     Redirect redirect = findById(id);
     if (redirect != null) {
-      evictFromCache(redirect.source());
+      Cache cache = cacheManager.getCache("redirects");
+      if (cache != null) {
+        cache.evict(redirect.source());
+      }
     }
-  }
-
-  @CacheEvict(
-      cacheNames = {"redirects"},
-      key = "#source")
-  public void evictFromCache(String source) {
-    // Eviction handled by annotation
   }
 
   @CacheEvict(

@@ -2,13 +2,15 @@ package de.jensknipper.re_director.web.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.jspecify.annotations.Nullable;
 
 public class IntInValidator implements ConstraintValidator<IntIn, Integer> {
 
-  private Set<Integer> allowedValues;
+  private Set<Integer> allowedValues = Collections.emptySet();
 
   @Override
   public void initialize(IntIn constraintAnnotation) {
@@ -16,7 +18,7 @@ public class IntInValidator implements ConstraintValidator<IntIn, Integer> {
   }
 
   @Override
-  public boolean isValid(Integer value, ConstraintValidatorContext context) {
+  public boolean isValid(@Nullable Integer value, ConstraintValidatorContext context) {
     if (value == null || allowedValues.contains(value)) {
       return true;
     }

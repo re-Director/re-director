@@ -1,7 +1,6 @@
 package de.jensknipper.re_director.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import de.jensknipper.re_director.db.RedirectRepository;
@@ -33,11 +32,12 @@ class RedirectServiceCachingTest {
 
   @BeforeEach
   void beforeEach() {
-    when(redirectRepository.findRedirectInformationBySource(eq(exampleRedirect.source())))
+    when(redirectRepository.findRedirectInformationBySource(exampleRedirect.source()))
         .thenReturn(exampleRedirectInformation);
     redirectService.findRedirectInformationBySource(exampleRedirect.source());
 
-    when(redirectRepository.findRedirectInformationBySource(eq("dummy")))
+    when(redirectRepository.findById(exampleRedirect.id())).thenReturn(exampleRedirect);
+    when(redirectRepository.findRedirectInformationBySource("dummy"))
         .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND));
     redirectService.findRedirectInformationBySource("dummy");
   }
@@ -49,7 +49,7 @@ class RedirectServiceCachingTest {
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result.isPresent());
+    assertThat(result).isPresent();
     assertThat(result.map(RedirectInformation::target)).hasValue(exampleRedirect.target());
     assertThat(result.map(RedirectInformation::httpStatusCode))
         .hasValue(exampleRedirect.httpStatusCode());
@@ -68,7 +68,7 @@ class RedirectServiceCachingTest {
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result.isEmpty());
+    assertThat(result).isEmpty();
   }
 
   @Test
@@ -80,19 +80,19 @@ class RedirectServiceCachingTest {
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result.isEmpty());
+    assertThat(result).isEmpty();
   }
 
   @Test
   void updateStatus_toActive_shouldNotEvictValueFromCache() {
     // given
-    redirectService.updateStatus(exampleRedirect.id(), Status.INACTIVE);
+    redirectService.updateStatus(exampleRedirect.id(), Status.ACTIVE);
 
     // when
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result.isPresent());
+    assertThat(result).isPresent();
     assertThat(result.map(RedirectInformation::target)).hasValue(exampleRedirect.target());
     assertThat(result.map(RedirectInformation::httpStatusCode))
         .hasValue(exampleRedirect.httpStatusCode());
@@ -107,7 +107,7 @@ class RedirectServiceCachingTest {
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result.isEmpty());
+    assertThat(result).isEmpty();
   }
 
   private Optional<RedirectInformation> getRedirectFromCache() {

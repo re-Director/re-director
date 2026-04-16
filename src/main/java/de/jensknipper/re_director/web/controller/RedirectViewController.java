@@ -138,8 +138,7 @@ public class RedirectViewController {
       @PathVariable Status newStatus,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
-      Model model) {
+      @RequestParam(required = false) Integer code) {
     redirectService.updateStatus(id, newStatus);
     return "redirect:/redirects" + getParams(search, status, code);
   }
@@ -149,14 +148,13 @@ public class RedirectViewController {
       @PathVariable int id,
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
-      Model model) {
+      @RequestParam(required = false) Integer code) {
     redirectService.delete(id);
     return "redirect:/redirects" + getParams(search, status, code);
   }
 
   private List<RedirectResponse> getAllRedirectsFiltered(
-      String search, String status, Integer httpStatusCode) {
+      String search, String status, @Nullable Integer httpStatusCode) {
     final Status statusFilter =
         Arrays.stream(Status.values())
             .filter(it -> it.name().equals(status))

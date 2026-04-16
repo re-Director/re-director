@@ -42,7 +42,7 @@ public class E2ETest {
           try {
             Files.deleteIfExists(page.video().path());
             Files.deleteIfExists(page.video().path().getParent());
-          } catch (IOException e) {
+          } catch (IOException _) {
             // do nothing
           }
         }
