@@ -176,6 +176,15 @@
                             <option value="307">307: Temporary Redirect</option>
                             <option value="308">308: Permanent Redirect</option>
                         </select>
+                        <fieldset>
+                            <label>
+                                <input type="checkbox"
+                                       id="path-forwarding-input-create-modal"
+                                       name="pathForwarding"
+                                       checked="${createRedirectRequest.isPathForwarding()}" />
+                                Path Forwarding
+                            </label>
+                        </fieldset>
 
                         @if(isCreatePage)
                             @template.fragments.fieldErrors(bindingResult = bindingResult)
@@ -218,6 +227,15 @@
                             <option value="307" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 307 : redirect.httpStatusCode() == 307}">307: Temporary Redirect</option>
                             <option value="308" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 308 : redirect.httpStatusCode() == 308}">308: Permanent Redirect</option>
                         </select>
+                       <fieldset>
+                            <label>
+                                <input type="checkbox"
+                                       id="path-forwarding-input-edit-modal"
+                                       name="pathForwarding"
+                                       checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isPathForwarding() : redirect.pathForwarding()}" />
+                                Path Forwarding
+                            </label>
+                        </fieldset>
 
                         @if(editPageId != null && editPageId == redirect.id())
                             @template.fragments.fieldErrors(bindingResult = bindingResult)

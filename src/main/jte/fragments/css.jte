@@ -11,4 +11,11 @@
         position: sticky;
         top: 100vh;
     }
+
+    [data-tooltip]::before {
+        max-width: max(100%, 15rem);
+        width: max-content;
+        white-space: initial;
+        text-indent: 0;
+    }
 </style>

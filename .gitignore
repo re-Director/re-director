@@ -38,4 +38,6 @@ build/
 
 # sqlite database file
 sqlite.db
+sqlite.db-shm
+sqlite.db-wal
 docker/re-director-data/
