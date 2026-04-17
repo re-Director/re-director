@@ -2,6 +2,7 @@
 
 ## High Prio
 
+- documentation on how to create redirects after installation
 - spring: accept trailing slash
 - deletion confirmation modal
 - table ordering
@@ -17,10 +18,9 @@
     - other options: store only last 30 days (configurable) with cleanup job
 - variable redirects, add different redirects (subdomains etc.) to hosts
   - maybe look at npm or other SaaS solutions
-  - preserve path option
+  - preserve path option - path forwarding
+  - allow path in host
   - CSV import
-- add test for database migrations not breaking the app
-- migrate from jooq-meta-extensions-liquibase to testcontainers variant due to deprecation
 
 ## Medium Prio
 

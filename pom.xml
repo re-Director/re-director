@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.12</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.12</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
 
-	<groupId>de.jensknipper</groupId>
-	<artifactId>re-director</artifactId>
-	<version>0.0.7</version>
-	<name>re:Director</name>
-	<description>redirect stuff</description>
+  <groupId>de.jensknipper</groupId>
+  <artifactId>re-director</artifactId>
+  <version>0.0.7</version>
+  <name>re:Director</name>
+  <description>redirect stuff</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>25</java.version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>25</java.version>
     <jte.version>3.2.3</jte.version>
     <jooq.version>3.21.0</jooq.version>
+    <sqlite.version>3.51.3.0</sqlite.version>
 
-		<architecture>amd64</architecture>
-	</properties>
+    <architecture>amd64</architecture>
+  </properties>
 
-	<dependencies>
+  <dependencies>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jooq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jooq</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>gg.jte</groupId>
@@ -60,35 +61,35 @@
       <version>${jte.version}</version>
     </dependency>
 
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator-lite</artifactId>
-			<version>1.1.3</version>
-		</dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>webjars-locator-lite</artifactId>
+      <version>1.1.3</version>
+    </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>font-awesome</artifactId>
       <version>7.2.0</version>
     </dependency>
     <dependency>
-			<groupId>org.webjars.npm</groupId>
-			<artifactId>picocss__pico</artifactId>
-			<version>2.1.1</version>
-		</dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>picocss__pico</artifactId>
+      <version>2.1.1</version>
+    </dependency>
 
 
-		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.51.3.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>${sqlite.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>org.jspecify</groupId>
@@ -97,70 +98,75 @@
       <scope>compile</scope>
     </dependency>
 
-		<dependency>
-			<groupId>com.microsoft.playwright</groupId>
-			<artifactId>playwright</artifactId>
-			<version>1.58.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp-jvm</artifactId>
-			<version>5.3.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>1.58.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-webmvc-test</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp-jvm</artifactId>
+      <version>5.3.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
 
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<from>
-						<image>eclipse-temurin:25-jre-alpine</image>
-						<platforms>
-							<platform>
-								<architecture>${architecture}</architecture>
-								<os>linux</os>
-							</platform>
-						</platforms>
-					</from>
-					<to>
-						<image>jensknipper/${project.artifactId}</image>
-						<tags>
-							<tag>latest-${architecture}</tag>
-							<tag>${project.version}-${architecture}</tag>
-						</tags>
-					</to>
-					<container>
-						<mainClass>de.jensknipper.re_director.ReDirectorApplication</mainClass>
-						<user>1000</user>
-						<environment>
-							<SPRING_PROFILES_ACTIVE>live</SPRING_PROFILES_ACTIVE>
-						</environment>
-					</container>
-					<extraDirectories>
-						<permissions>
-							<permission>
-								<file>/data</file>
-								<mode>777</mode>
-							</permission>
-						</permissions>
-					</extraDirectories>
-				</configuration>
-			</plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <from>
+            <image>eclipse-temurin:25-jre-alpine</image>
+            <platforms>
+              <platform>
+                <architecture>${architecture}</architecture>
+                <os>linux</os>
+              </platform>
+            </platforms>
+          </from>
+          <to>
+            <image>jensknipper/${project.artifactId}</image>
+            <tags>
+              <tag>latest-${architecture}</tag>
+              <tag>${project.version}-${architecture}</tag>
+            </tags>
+          </to>
+          <container>
+            <mainClass>de.jensknipper.re_director.ReDirectorApplication</mainClass>
+            <user>1000</user>
+            <environment>
+              <SPRING_PROFILES_ACTIVE>live</SPRING_PROFILES_ACTIVE>
+            </environment>
+          </container>
+          <extraDirectories>
+            <permissions>
+              <permission>
+                <file>/data</file>
+                <mode>777</mode>
+              </permission>
+            </permissions>
+          </extraDirectories>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>gg.jte</groupId>
@@ -182,87 +188,101 @@
         </executions>
       </plugin>
 
-			<plugin>
-				<groupId>com.diffplug.spotless</groupId>
-				<artifactId>spotless-maven-plugin</artifactId>
-				<version>3.2.1</version>
-				<configuration>
-					<java>
-						<googleJavaFormat/>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>3.2.1</version>
+        <configuration>
+          <java>
+            <googleJavaFormat/>
             <importOrder/>
             <removeUnusedImports/>
-					</java>
-				</configuration>
-<!--
-				<executions>
-					<execution>
-						<goals>
-							<goal>apply</goal>
-						</goals>
-						<phase>compile</phase>
-					</execution>
-				</executions>
--->
-			</plugin>
+          </java>
+        </configuration>
+        <!--
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>apply</goal>
+                    </goals>
+                    <phase>compile</phase>
+                  </execution>
+                </executions>
+        -->
+      </plugin>
 
-			<plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-        <version>${jooq.version}</version>
-				<executions>
-					<execution>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <executions>
+          <execution>
             <phase>generate-sources</phase>
             <goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.jooq</groupId>
-						<artifactId>jooq-meta-extensions-liquibase</artifactId>
-            <version>${jooq.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
+              <goal>update</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <driver>org.sqlite.JDBC</driver>
+          <url>jdbc:sqlite:${project.build.directory}/jooq-codegen.sqlite</url>
+          <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>${sqlite.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+        <version>${jooq.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>${sqlite.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
           <jdbc>
             <driver>org.sqlite.JDBC</driver>
-            <url>jdbc:sqlite::memory:</url>
+            <url>jdbc:sqlite:${project.build.directory}/jooq-codegen.sqlite</url>
           </jdbc>
-					<generator>
-						<database>
-							<name>org.jooq.meta.extensions.liquibase.LiquibaseDatabase</name>
-							<properties>
-								<property>
-									<key>rootPath</key>
-									<value>${basedir}/src/main/resources</value>
-								</property>
-								<property>
-									<key>scripts</key>
-									<value>db/changelog/db.changelog-master.yaml</value>
-								</property>
-							</properties>
-							<forcedTypes>
-								<forcedType>
-									<userType>de.jensknipper.re_director.db.entity.Status</userType>
-									<enumConverter>true</enumConverter>
-									<includeExpression>.*\.STATUS</includeExpression>
-								</forcedType>
-								<forcedType>
-									<userType>de.jensknipper.re_director.db.entity.RedirectHttpStatusCode</userType>
-									<enumConverter>true</enumConverter>
-									<includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
-								</forcedType>
-							</forcedTypes>
-						</database>
-						<target>
-							<packageName>de.jensknipper.re_director.database</packageName>
-							<directory>target/generated-sources/jooq</directory>
-						</target>
-					</generator>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
+          <generator>
+            <database>
+              <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
+              <forcedTypes>
+                <forcedType>
+                  <userType>de.jensknipper.re_director.db.entity.Status</userType>
+                  <enumConverter>true</enumConverter>
+                  <includeExpression>.*\.STATUS</includeExpression>
+                </forcedType>
+                <forcedType>
+                  <userType>de.jensknipper.re_director.db.entity.RedirectHttpStatusCode</userType>
+                  <enumConverter>true</enumConverter>
+                  <includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
+                </forcedType>
+              </forcedTypes>
+            </database>
+            <target>
+              <packageName>de.jensknipper.re_director.database</packageName>
+              <directory>target/generated-sources/jooq</directory>
+            </target>
+          </generator>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
