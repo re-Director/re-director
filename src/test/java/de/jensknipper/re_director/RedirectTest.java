@@ -77,7 +77,7 @@ public class RedirectTest {
   @MethodSource("provideRedirectHttpStatusCodes")
   void testRedirect(RedirectHttpStatusCode statusCode) throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, false, statusCode);
+    insertRedirect(REQUEST_URL, TARGET_URL, false, false, statusCode);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
@@ -97,7 +97,7 @@ public class RedirectTest {
   void testRedirectWithFollow(RedirectHttpStatusCode statusCode) throws IOException {
     // given
     String target = "http://localhost:" + port + "/test";
-    insertRedirect(REQUEST_URL, target, false, statusCode);
+    insertRedirect(REQUEST_URL, target, false, false, statusCode);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(true).build();
     Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
@@ -113,9 +113,9 @@ public class RedirectTest {
   }
 
   @Test
-  void testRedirectWithPath() throws IOException {
+  void testRedirectWithPathAndQuery() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(REQUEST_URL, TARGET_URL, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
         new Request.Builder()
@@ -134,14 +134,14 @@ public class RedirectTest {
   }
 
   @Test
-  void testRedirectWithPathAndPathForwarding() throws IOException {
+  void testRedirectWithPathAndQueryAndPathForwardingActive() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, true, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(REQUEST_URL, TARGET_URL, true, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
-      new Request.Builder()
-        .url("http://" + REQUEST_URL + ":" + port + "/additional-path?a=1&b=2")
-        .build();
+        new Request.Builder()
+            .url("http://" + REQUEST_URL + ":" + port + "/additional-path?a=1&b=2")
+            .build();
 
     // when
     Response response = client.newCall(request).execute();
@@ -154,10 +154,62 @@ public class RedirectTest {
     response.close();
   }
 
-  private void insertRedirect(String source, String target, boolean pathForwarding, RedirectHttpStatusCode statusCode) {
+  @Test
+  void testRedirectWithPathAndQueryAndQueryForwardingActive() throws IOException {
+    // given
+    insertRedirect(REQUEST_URL, TARGET_URL, false, true, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request =
+        new Request.Builder()
+            .url("http://" + REQUEST_URL + ":" + port + "/additional-path?a=1&b=2")
+            .build();
+
+    // when
+    Response response = client.newCall(request).execute();
+
+    // then
+    assertThat(response.isRedirect()).isTrue();
+    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.header("Location")).isEqualTo(TARGET_URL + "?a=1&b=2");
+
+    response.close();
+  }
+
+  @Test
+  void testRedirectWithPathAndQueryAndQueryAndPathForwardingActive() throws IOException {
+    // given
+    insertRedirect(REQUEST_URL, TARGET_URL, true, true, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request =
+        new Request.Builder()
+            .url("http://" + REQUEST_URL + ":" + port + "/additional-path?a=1&b=2")
+            .build();
+
+    // when
+    Response response = client.newCall(request).execute();
+
+    // then
+    assertThat(response.isRedirect()).isTrue();
+    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.header("Location")).isEqualTo(TARGET_URL + "/additional-path?a=1&b=2");
+
+    response.close();
+  }
+
+  private void insertRedirect(
+      String source,
+      String target,
+      boolean pathForwarding,
+      boolean pqueryForwarding,
+      RedirectHttpStatusCode statusCode) {
     dsl.insertInto(REDIRECTS)
-        .columns(REDIRECTS.SOURCE, REDIRECTS.TARGET, REDIRECTS.PATH_FORWARDING, REDIRECTS.HTTP_STATUS_CODE)
-        .values(source, target, pathForwarding, statusCode)
+        .columns(
+            REDIRECTS.SOURCE,
+            REDIRECTS.TARGET,
+            REDIRECTS.PATH_FORWARDING,
+            REDIRECTS.QUERY_FORWARDING,
+            REDIRECTS.HTTP_STATUS_CODE)
+        .values(source, target, pathForwarding, pqueryForwarding, statusCode)
         .execute();
   }
 

@@ -1,0 +1,1 @@
+ALTER TABLE redirects ADD COLUMN query_forwarding boolean NOT NULL DEFAULT FALSE;

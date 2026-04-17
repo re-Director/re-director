@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,11 +38,17 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
   }
 
   private String getTarget(RedirectInformation redirectInformation, HttpServletRequest request) {
+    StringBuilder newUrl = new StringBuilder(redirectInformation.target());
     String path = request.getRequestURI();
     if (redirectInformation.pathForwarding() && path != null) {
-      return redirectInformation.target() + path;
+      newUrl.append(path);
     }
-    return redirectInformation.target();
+    String query = request.getQueryString();
+    if (redirectInformation.queryForwarding() && query != null) {
+      newUrl.append("?");
+      newUrl.append(query);
+    }
+    return newUrl.toString();
   }
 
   private String normalizeHost(String host) {

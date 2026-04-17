@@ -44,7 +44,11 @@ public class RedirectRepository {
 
   @Nullable
   public RedirectInformation findRedirectInformationBySource(String source) {
-    return dsl.select(REDIRECTS.TARGET, REDIRECTS.HTTP_STATUS_CODE, REDIRECTS.PATH_FORWARDING)
+    return dsl.select(
+            REDIRECTS.TARGET,
+            REDIRECTS.HTTP_STATUS_CODE,
+            REDIRECTS.PATH_FORWARDING,
+            REDIRECTS.QUERY_FORWARDING)
         .from(REDIRECTS)
         .where(REDIRECTS.SOURCE.eq(source).and(REDIRECTS.STATUS.eq(Status.ACTIVE)))
         .fetchOneInto(RedirectInformation.class);
@@ -76,6 +80,7 @@ public class RedirectRepository {
       String target,
       Status status,
       boolean pathForwarding,
+      boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     return Objects.requireNonNull(
             dsl.insertInto(REDIRECTS)
@@ -84,8 +89,9 @@ public class RedirectRepository {
                     REDIRECTS.TARGET,
                     REDIRECTS.STATUS,
                     REDIRECTS.PATH_FORWARDING,
+                    REDIRECTS.QUERY_FORWARDING,
                     REDIRECTS.HTTP_STATUS_CODE)
-                .values(source, target, status, pathForwarding, statusCode)
+                .values(source, target, status, pathForwarding, queryForwarding, statusCode)
                 .returningResult(REDIRECTS.ID)
                 .fetchOne())
         .getValue(REDIRECTS.ID);
@@ -96,11 +102,13 @@ public class RedirectRepository {
       String source,
       String target,
       boolean pathForwarding,
+      boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     dsl.update(REDIRECTS)
         .set(REDIRECTS.SOURCE, source)
         .set(REDIRECTS.TARGET, target)
         .set(REDIRECTS.PATH_FORWARDING, pathForwarding)
+        .set(REDIRECTS.QUERY_FORWARDING, queryForwarding)
         .set(REDIRECTS.HTTP_STATUS_CODE, statusCode)
         .where(REDIRECTS.ID.eq(id))
         .execute();

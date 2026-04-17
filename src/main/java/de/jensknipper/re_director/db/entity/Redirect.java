@@ -9,4 +9,5 @@ public record Redirect(
     Status status,
     LocalDateTime createdAt,
     RedirectHttpStatusCode httpStatusCode,
-    boolean pathForwarding) {}
+    boolean pathForwarding,
+    boolean queryForwarding) {}

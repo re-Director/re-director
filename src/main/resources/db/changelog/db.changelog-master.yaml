@@ -20,3 +20,6 @@ databaseChangeLog:
   - include:
       file: changes/v0005_update_redirects_table_add_path_forwarding.sql
       relativeToChangelogFile: true
+  - include:
+      file: changes/v0006_update_redirects_table_add_query_forwarding.sql
+      relativeToChangelogFile: true

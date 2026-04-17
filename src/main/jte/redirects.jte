@@ -184,6 +184,13 @@
                                        checked="${createRedirectRequest.isPathForwarding()}" />
                                 Path Forwarding
                             </label>
+                            <label>
+                                <input type="checkbox"
+                                       id="query-forwarding-input-create-modal"
+                                       name="queryForwarding"
+                                       checked="${createRedirectRequest.isQueryForwarding()}" />
+                                Query Forwarding
+                            </label>
                         </fieldset>
 
                         @if(isCreatePage)
@@ -235,6 +242,13 @@
                                        checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isPathForwarding() : redirect.pathForwarding()}" />
                                 Path Forwarding
                             </label>
+                           <label>
+                               <input type="checkbox"
+                                      id="query-forwarding-input-edit-modal"
+                                      name="queryForwarding"
+                                      checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isQueryForwarding() : redirect.queryForwarding()}" />
+                               Query Forwarding
+                           </label>
                         </fieldset>
 
                         @if(editPageId != null && editPageId == redirect.id())

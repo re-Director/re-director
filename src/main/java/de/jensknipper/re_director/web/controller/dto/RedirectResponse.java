@@ -7,5 +7,6 @@ public record RedirectResponse(
     String source,
     String target,
     boolean pathForwarding,
+    boolean queryForwarding,
     int httpStatusCode,
     Status status) {}

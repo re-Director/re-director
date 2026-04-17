@@ -54,9 +54,10 @@ public class RedirectService {
       String source,
       String target,
       boolean pathForwarding,
+      boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
-    redirectRepository.update(id, source, target, pathForwarding, statusCode);
+    redirectRepository.update(id, source, target, pathForwarding, queryForwarding, statusCode);
   }
 
   public void updateStatus(int id, Status status) {
@@ -72,8 +73,13 @@ public class RedirectService {
   }
 
   public void create(
-      String source, String target, boolean pathForwarding, RedirectHttpStatusCode statusCode) {
-    redirectRepository.create(source, target, Status.ACTIVE, pathForwarding, statusCode);
+      String source,
+      String target,
+      boolean pathForwarding,
+      boolean queryForwarding,
+      RedirectHttpStatusCode statusCode) {
+    redirectRepository.create(
+        source, target, Status.ACTIVE, pathForwarding, queryForwarding, statusCode);
   }
 
   private void evictFromCacheWithId(int id) {

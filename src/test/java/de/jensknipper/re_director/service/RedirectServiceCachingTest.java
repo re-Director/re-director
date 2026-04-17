@@ -32,12 +32,14 @@ class RedirectServiceCachingTest {
           Status.ACTIVE,
           LocalDateTime.now(),
           RedirectHttpStatusCode.FOUND,
+          false,
           false);
   private static final RedirectInformation exampleRedirectInformation =
       new RedirectInformation(
           exampleRedirect.target(),
           exampleRedirect.httpStatusCode(),
-          exampleRedirect.pathForwarding());
+          exampleRedirect.pathForwarding(),
+          exampleRedirect.queryForwarding());
 
   @BeforeEach
   void beforeEach() {
@@ -47,7 +49,7 @@ class RedirectServiceCachingTest {
 
     when(redirectRepository.findById(exampleRedirect.id())).thenReturn(exampleRedirect);
     when(redirectRepository.findRedirectInformationBySource("dummy"))
-        .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND, false));
+        .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND, false, false));
     redirectService.findRedirectInformationBySource("dummy");
   }
 
@@ -72,6 +74,7 @@ class RedirectServiceCachingTest {
         exampleRedirect.source(),
         exampleRedirect.target(),
         exampleRedirect.pathForwarding(),
+        exampleRedirect.queryForwarding(),
         exampleRedirect.httpStatusCode());
 
     // when
