@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,14 +31,22 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
           redirectService.findRedirectInformationBySource(normalizedHost);
       if (redirectInformation != null) {
         response.setStatus(redirectInformation.httpStatusCode().getCode());
-        response.setHeader("Location", redirectInformation.target());
+        response.setHeader("Location", getTarget(redirectInformation, request));
         return;
       }
     }
     filterChain.doFilter(request, response);
   }
 
-  private static String normalizeHost(String host) {
+  private String getTarget(RedirectInformation redirectInformation, HttpServletRequest request) {
+    String path = request.getRequestURI();
+    if (redirectInformation.pathForwarding() && path != null) {
+      return redirectInformation.target() + path;
+    }
+    return redirectInformation.target();
+  }
+
+  private String normalizeHost(String host) {
     int portStartIndex = host.indexOf(":");
     if (portStartIndex >= 0) {
       return host.substring(0, portStartIndex);

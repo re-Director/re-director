@@ -15,7 +15,7 @@ You need the following software installed to get started:
 Do the following steps to make sure you are ready to go:
 - Clone this repo using the following command:
   `git clone git@github.com:re-Director/re-director.git`
-- Change into the repos directory and make sure everything the tests are running and everything compiles: `./mvnw verify`
+- Change into the repo's directory and make sure the tests are running and everything compiles: `./mvnw verify`
 - Start the application: `./mvnw spring-boot:run`
 - Make sure it runs on `http://localhost:8080`
 - Have fun!
@@ -23,7 +23,7 @@ Do the following steps to make sure you are ready to go:
 ## Formatting
 
 To ensure a uniform formatting spotless is used.
-Make sure to run `./mvnw spotless:apply` before commiting and pushing.
+Make sure to run `./mvnw spotless:apply` before committing and pushing.
 
 ## Hot Swap
 
@@ -43,7 +43,7 @@ Before creating a release, make sure that:
     - run `./mvnw jib:dockerBuild` to create the container locally
       - you might have to temporarily set the `architecture` variable to `arm64`
     - use the example files in the `docker` directory
-      - you might have to temporarily  add e.g. `-amd64` or `-arm64` to the image name to make it work
+      - you might have to temporarily add e.g. `-amd64` or `-arm64` to the image name to make it work
     - go to http://localhost and check if the application is running
 - create the new release [here](https://github.com/re-Director/re-director/releases)
 

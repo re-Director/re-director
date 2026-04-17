@@ -3,7 +3,6 @@
 ## High Prio
 
 - documentation on how to create redirects after installation
-- spring: accept trailing slash
 - deletion confirmation modal
 - table ordering
     - fixed to insertion order for now
@@ -18,8 +17,7 @@
     - other options: store only last 30 days (configurable) with cleanup job
 - variable redirects, add different redirects (subdomains etc.) to hosts
   - maybe look at npm or other SaaS solutions
-  - preserve path option - path forwarding
-  - allow path in host
+  - disallow path in host - add path based redirects to source-target redirect
   - CSV import
 
 ## Medium Prio
@@ -35,7 +33,7 @@
 ## Low Prio
 
 - if redirect inactive or no match, redirect temporarily to own domain / default page, currently it looks like that this is then hosted under the target domain
-  - needs current domain name
+  - needs current domain name - base url
 - table
     - odd coloring
     - show header next to values in mobile view
