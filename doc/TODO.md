@@ -19,6 +19,7 @@
   - maybe look at npm or other SaaS solutions
   - disallow path in host - add path based redirects to source-target redirect
   - CSV import
+  - query string forwarding
 
 ## Medium Prio
 
