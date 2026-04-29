@@ -64,3 +64,11 @@ gg:
   jte:
     developmentMode: false
     usePrecompiledTemplates: true
+
+re-director:
+  test-redirects:
+    max-redirects: 10
+    client:
+      timeout-in-ms: 3000
+      max-header-keys: 50
+      max-header-values: 5
