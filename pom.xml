@@ -268,12 +268,12 @@
               <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
               <forcedTypes>
                 <forcedType>
-                  <userType>de.jensknipper.re_director.db.entity.Status</userType>
+                  <userType>de.jensknipper.re_director.common.db.Status</userType>
                   <enumConverter>true</enumConverter>
                   <includeExpression>.*\.STATUS</includeExpression>
                 </forcedType>
                 <forcedType>
-                  <userType>de.jensknipper.re_director.db.entity.RedirectHttpStatusCode</userType>
+                  <userType>de.jensknipper.re_director.common.db.RedirectHttpStatusCode</userType>
                   <enumConverter>true</enumConverter>
                   <includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
                 </forcedType>

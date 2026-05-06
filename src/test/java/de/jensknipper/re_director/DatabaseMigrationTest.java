@@ -2,8 +2,8 @@ package de.jensknipper.re_director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.jensknipper.re_director.db.entity.Redirect;
-import de.jensknipper.re_director.service.RedirectService;
+import de.jensknipper.re_director.manage_redirects.Redirect;
+import de.jensknipper.re_director.manage_redirects.ManageRedirectsService;
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +33,8 @@ class DatabaseMigrationTest {
 
   @Autowired DataSource dataSource;
   @Autowired DSLContext dsl;
-  @Autowired RedirectService redirectService;
+  @Autowired
+  ManageRedirectsService manageRedirectsService;
 
   @Test
   void migrationWithData() throws Exception {
@@ -57,7 +58,7 @@ class DatabaseMigrationTest {
       liquibase.update(new Contexts(), new LabelExpression());
     }
 
-    List<Redirect> records = redirectService.findAllFiltered(null, null, null);
+    List<Redirect> records = manageRedirectsService.findAllFiltered(null, null, null);
 
     assertThat(records).isNotEmpty();
   }

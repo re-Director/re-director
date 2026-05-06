@@ -4,9 +4,9 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
 import com.microsoft.playwright.*;
-import de.jensknipper.re_director.db.RedirectRepository;
-import de.jensknipper.re_director.db.entity.RedirectHttpStatusCode;
-import de.jensknipper.re_director.db.entity.Status;
+import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
+import de.jensknipper.re_director.common.db.Status;
+import de.jensknipper.re_director.manage_redirects.ManageRedirectsRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +51,7 @@ public class E2ETest {
   @LocalServerPort private int port;
 
   @Autowired private DSLContext dsl;
-  @Autowired private RedirectRepository redirectRepository;
+  @Autowired private ManageRedirectsRepository manageRedirectsRepository;
 
   private static Playwright playwright;
   private static Browser browser;
@@ -142,8 +142,8 @@ public class E2ETest {
 
   @Test
   void editWorks() {
-    redirectRepository.create(
-        "source", "target", Status.ACTIVE, false, false, RedirectRepository.DEFAULT_REDIRECT);
+    manageRedirectsRepository.create(
+        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -184,8 +184,8 @@ public class E2ETest {
 
   @Test
   void deactivateAndActivateWorks() {
-    redirectRepository.create(
-        "source", "target", Status.ACTIVE, false, false, RedirectRepository.DEFAULT_REDIRECT);
+    manageRedirectsRepository.create(
+        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -207,8 +207,8 @@ public class E2ETest {
 
   @Test
   void deleteWorks() {
-    redirectRepository.create(
-        "source", "target", Status.ACTIVE, false, false, RedirectRepository.DEFAULT_REDIRECT);
+    manageRedirectsRepository.create(
+        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -223,11 +223,11 @@ public class E2ETest {
 
   @Test
   void filterWorks() {
-    redirectRepository.create(
-        "source1", "target", Status.ACTIVE, false, false, RedirectRepository.DEFAULT_REDIRECT);
-    redirectRepository.create(
+    manageRedirectsRepository.create(
+        "source1", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
+    manageRedirectsRepository.create(
         "source2", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
-    redirectRepository.create(
+    manageRedirectsRepository.create(
         "source3", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
 
     page.navigate("/redirects?status=INACTIVE&search=3&code=302");
@@ -306,7 +306,7 @@ public class E2ETest {
 
     // update
     int id =
-        redirectRepository.create(
+        manageRedirectsRepository.create(
             "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
     page.navigate("/redirects/" + id + "/edit");
     assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
@@ -315,7 +315,7 @@ public class E2ETest {
   @Test
   void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
     int id =
-        redirectRepository.create(
+        manageRedirectsRepository.create(
             "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
 
     page.navigate("/redirects/" + id + "/edit");

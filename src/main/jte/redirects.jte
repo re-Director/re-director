@@ -1,9 +1,9 @@
-@import de.jensknipper.re_director.db.entity.Status
-@import de.jensknipper.re_director.web.controller.dto.CreateRedirectRequest
+@import de.jensknipper.re_director.common.db.Status
+@import de.jensknipper.re_director.manage_redirects.dto.CreateRedirectRequest
 @import gg.jte.support.ForSupport
 
 @import java.util.List
-@import de.jensknipper.re_director.web.controller.dto.RedirectResponse
+@import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
 @import org.springframework.validation.BindingResult
 
 @param String status
