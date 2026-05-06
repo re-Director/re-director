@@ -1,8 +1,12 @@
 package de.jensknipper.re_director.filter_redirects;
 
+import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsRepository;
+import java.util.UUID;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,11 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-
-import java.util.UUID;
-
-import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class FilterRedirectsRepositoryTest {
@@ -40,14 +39,14 @@ class FilterRedirectsRepositoryTest {
     String source = "source";
     String target = "target";
     manageRedirectsRepository.create(
-      source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+        source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
     manageRedirectsRepository.create(
-      "irrelevant",
-      "irrelevant",
-      Status.ACTIVE,
-      false,
-      false,
-      RedirectHttpStatusCode.MOVED_PERMANENTLY);
+        "irrelevant",
+        "irrelevant",
+        Status.ACTIVE,
+        false,
+        false,
+        RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
     // when
     RedirectInformation result = filterRedirectsRepository.findRedirectInformationBySource(source);
@@ -62,7 +61,8 @@ class FilterRedirectsRepositoryTest {
   void findRedirectInformationBySourceShouldReturnNullWhenNotFound() {
     // given
     // when
-    RedirectInformation result = filterRedirectsRepository.findRedirectInformationBySource("source");
+    RedirectInformation result =
+        filterRedirectsRepository.findRedirectInformationBySource("source");
 
     // then
     assertThat(result).isNull();
@@ -74,7 +74,7 @@ class FilterRedirectsRepositoryTest {
     String source = "source";
     String target = "target";
     manageRedirectsRepository.create(
-      source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+        source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
 
     // when
     RedirectInformation result = filterRedirectsRepository.findRedirectInformationBySource(source);

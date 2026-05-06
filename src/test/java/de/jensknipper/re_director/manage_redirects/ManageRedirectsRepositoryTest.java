@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-
 import java.util.List;
 import java.util.UUID;
 import org.jooq.DSLContext;
@@ -242,7 +241,8 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result = manageRedirectsRepository.findAllFiltered(null, Status.INACTIVE, null);
+      List<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(null, Status.INACTIVE, null);
 
       // then
       assertThat(result).hasSize(1);

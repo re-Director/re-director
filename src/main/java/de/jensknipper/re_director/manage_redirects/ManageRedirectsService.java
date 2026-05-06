@@ -2,7 +2,6 @@ package de.jensknipper.re_director.manage_redirects;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-
 import java.util.List;
 import org.jspecify.annotations.Nullable;
 import org.springframework.cache.Cache;
@@ -15,7 +14,8 @@ public class ManageRedirectsService {
   private final ManageRedirectsRepository manageRedirectsRepository;
   private final CacheManager cacheManager;
 
-  public ManageRedirectsService(ManageRedirectsRepository manageRedirectsRepository, CacheManager cacheManager) {
+  public ManageRedirectsService(
+      ManageRedirectsRepository manageRedirectsRepository, CacheManager cacheManager) {
     this.manageRedirectsRepository = manageRedirectsRepository;
     this.cacheManager = cacheManager;
   }
@@ -48,7 +48,8 @@ public class ManageRedirectsService {
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
-    manageRedirectsRepository.update(id, source, target, pathForwarding, queryForwarding, statusCode);
+    manageRedirectsRepository.update(
+        id, source, target, pathForwarding, queryForwarding, statusCode);
   }
 
   public void updateStatus(int id, Status status) {

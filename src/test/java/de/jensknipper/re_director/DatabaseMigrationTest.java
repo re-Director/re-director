@@ -2,8 +2,8 @@ package de.jensknipper.re_director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.jensknipper.re_director.manage_redirects.Redirect;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsService;
+import de.jensknipper.re_director.manage_redirects.Redirect;
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
@@ -33,8 +33,7 @@ class DatabaseMigrationTest {
 
   @Autowired DataSource dataSource;
   @Autowired DSLContext dsl;
-  @Autowired
-  ManageRedirectsService manageRedirectsService;
+  @Autowired ManageRedirectsService manageRedirectsService;
 
   @Test
   void migrationWithData() throws Exception {

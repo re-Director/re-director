@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
 import de.jensknipper.re_director.common.validation.ValidationService;
+import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
 import de.jensknipper.re_director.manage_redirects.dto.DtoMapper;
 import gg.jte.springframework.boot.autoconfigure.JteAutoConfiguration;
 import java.util.stream.Stream;
@@ -36,8 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class ManageRedirectsViewControllerTest {
 
   @Autowired private MockMvc mockMvc;
-  @MockitoBean
-  ManageRedirectsService manageRedirectsService;
+  @MockitoBean ManageRedirectsService manageRedirectsService;
   @MockitoBean FilterRedirectsService filterRedirectsService;
   @MockitoBean CacheManager cacheManager;
 

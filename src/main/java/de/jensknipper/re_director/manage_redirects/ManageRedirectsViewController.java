@@ -25,7 +25,9 @@ public class ManageRedirectsViewController {
   private final DtoMapper dtoMapper;
 
   public ManageRedirectsViewController(
-    ManageRedirectsService manageRedirectsService, ValidationService validationService, DtoMapper dtoMapper) {
+      ManageRedirectsService manageRedirectsService,
+      ValidationService validationService,
+      DtoMapper dtoMapper) {
     this.manageRedirectsService = manageRedirectsService;
     this.validationService = validationService;
     this.dtoMapper = dtoMapper;
@@ -168,7 +170,9 @@ public class ManageRedirectsViewController {
             .filter(it -> httpStatusCode != null && it.getCode() == httpStatusCode)
             .findFirst()
             .orElse(null);
-    return manageRedirectsService.findAllFiltered(search, statusFilter, httpStatusCodeFilter).stream()
+    return manageRedirectsService
+        .findAllFiltered(search, statusFilter, httpStatusCodeFilter)
+        .stream()
         .map(dtoMapper::toRedirectResponse)
         .toList();
   }

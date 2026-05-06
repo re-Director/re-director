@@ -8,9 +8,9 @@ import de.jensknipper.re_director.common.db.Status;
 import de.jensknipper.re_director.filter_redirects.FilterRedirectsRepository;
 import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
 import de.jensknipper.re_director.filter_redirects.RedirectInformation;
-import de.jensknipper.re_director.manage_redirects.Redirect;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsRepository;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsService;
+import de.jensknipper.re_director.manage_redirects.Redirect;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class RedirectCachingTest {
 
-  @Autowired
-  ManageRedirectsService manageRedirectsService;
+  @Autowired ManageRedirectsService manageRedirectsService;
   @Autowired FilterRedirectsService filterRedirectsService;
 
   @Autowired CacheManager cacheManager;

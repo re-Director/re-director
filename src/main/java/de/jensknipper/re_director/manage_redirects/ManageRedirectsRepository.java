@@ -5,7 +5,6 @@ import static org.jooq.impl.DSL.not;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-
 import java.util.List;
 import java.util.Objects;
 import org.jooq.Condition;

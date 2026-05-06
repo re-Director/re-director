@@ -143,7 +143,12 @@ public class E2ETest {
   @Test
   void editWorks() {
     manageRedirectsRepository.create(
-        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -185,7 +190,12 @@ public class E2ETest {
   @Test
   void deactivateAndActivateWorks() {
     manageRedirectsRepository.create(
-        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -208,7 +218,12 @@ public class E2ETest {
   @Test
   void deleteWorks() {
     manageRedirectsRepository.create(
-        "source", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
 
     page.navigate("/redirects");
 
@@ -224,7 +239,12 @@ public class E2ETest {
   @Test
   void filterWorks() {
     manageRedirectsRepository.create(
-        "source1", "target", Status.ACTIVE, false, false, ManageRedirectsRepository.DEFAULT_REDIRECT);
+        "source1",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
     manageRedirectsRepository.create(
         "source2", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
     manageRedirectsRepository.create(
