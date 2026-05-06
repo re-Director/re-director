@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.12</version>
+    <version>4.0.6</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -18,9 +18,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>25</java.version>
-    <jte.version>3.2.3</jte.version>
-    <jooq.version>3.21.0</jooq.version>
-    <sqlite.version>3.51.3.0</sqlite.version>
+    <jte.version>3.2.4</jte.version>
+    <jooq.version>3.21.2</jooq.version>
+    <sqlite.version>3.53.0.0</sqlite.version>
 
     <architecture>amd64</architecture>
   </properties>
@@ -51,8 +51,8 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-liquibase</artifactId>
     </dependency>
 
     <dependency>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>1.58.0</version>
+      <version>1.59.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -109,11 +109,11 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.boot</groupId>-->
-<!--      <artifactId>spring-boot-starter-webmvc-test</artifactId>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock-standalone</artifactId>
@@ -204,7 +204,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.4.0</version>
         <configuration>
           <java>
             <googleJavaFormat/>
@@ -212,16 +212,6 @@
             <removeUnusedImports/>
           </java>
         </configuration>
-        <!--
-                <executions>
-                  <execution>
-                    <goals>
-                      <goal>apply</goal>
-                    </goals>
-                    <phase>compile</phase>
-                  </execution>
-                </executions>
-        -->
       </plugin>
 
       <plugin>

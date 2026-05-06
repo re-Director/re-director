@@ -34,9 +34,9 @@ public class RedirectViewController {
 
   @GetMapping("/redirects")
   public String redirects(
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code,
       Model model) {
     model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
@@ -50,9 +50,9 @@ public class RedirectViewController {
 
   @GetMapping("/redirects/create")
   public String redirectsCreateModal(
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code,
       Model model) {
     model.addAttribute("isCreatePage", true);
     return redirects(search, status, code, model);
@@ -60,9 +60,9 @@ public class RedirectViewController {
 
   @PostMapping("/redirects/create")
   public String createRedirect(
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code,
       @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
@@ -93,9 +93,9 @@ public class RedirectViewController {
   @GetMapping("/redirects/{id}/edit")
   public String redirectsEditModal(
       @PathVariable int id,
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code,
       Model model) {
     model.addAttribute("editPageId", id);
     return redirects(search, status, code, model);
@@ -104,9 +104,9 @@ public class RedirectViewController {
   @PostMapping("/redirects/{id}/edit")
   public String updateRedirect(
       @PathVariable int id,
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code,
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code,
       @Valid CreateRedirectRequest editRedirectRequest,
       BindingResult bindingResult,
       Model model) {
@@ -140,9 +140,9 @@ public class RedirectViewController {
   public String setStatus(
       @PathVariable int id,
       @PathVariable Status newStatus,
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code) {
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code) {
     redirectService.updateStatus(id, newStatus);
     return "redirect:/redirects" + getParams(search, status, code);
   }
@@ -150,15 +150,15 @@ public class RedirectViewController {
   @PostMapping("/redirects/{id}/delete")
   public String deleteRedirect(
       @PathVariable int id,
-      @RequestParam(required = false) String search,
-      @RequestParam(required = false) String status,
-      @RequestParam(required = false) Integer code) {
+      @Nullable @RequestParam(required = false) String search,
+      @Nullable @RequestParam(required = false) String status,
+      @Nullable @RequestParam(required = false) Integer code) {
     redirectService.delete(id);
     return "redirect:/redirects" + getParams(search, status, code);
   }
 
   private List<RedirectResponse> getAllRedirectsFiltered(
-      String search, String status, @Nullable Integer httpStatusCode) {
+      @Nullable String search, @Nullable String status, @Nullable Integer httpStatusCode) {
     final Status statusFilter =
         Arrays.stream(Status.values())
             .filter(it -> it.name().equals(status))
@@ -187,7 +187,8 @@ public class RedirectViewController {
                         + "'"));
   }
 
-  private String getParams(String search, String status, Integer code) {
+  private String getParams(
+      @Nullable String search, @Nullable String status, @Nullable Integer code) {
     List<UrlParam> urlParams =
         List.of(
             new UrlParam("search", search),
@@ -205,7 +206,7 @@ public class RedirectViewController {
   }
 
   private record UrlParam(String name, @Nullable String value) {
-    public UrlParam(String name, Object value) {
+    public UrlParam(String name, @Nullable Object value) {
       this(name, Optional.ofNullable(value).map(Object::toString).orElse(null));
     }
   }
