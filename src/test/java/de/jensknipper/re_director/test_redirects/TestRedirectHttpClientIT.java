@@ -27,7 +27,7 @@ class TestRedirectHttpClientIT {
 
   @ParameterizedTest
   @ValueSource(ints = {200, 301, 400, 401, 402, 403, 404, 500, 501, 502, 503, 504})
-  void statusCodeTest(int statusCode, WireMockRuntimeInfo runtimeInfo) throws Exception {
+  void statusCodeTest(int statusCode, WireMockRuntimeInfo runtimeInfo) {
     // given
     stubFor(head(urlEqualTo(URL)).willReturn(aResponse().withStatus(statusCode)));
 
@@ -44,7 +44,7 @@ class TestRedirectHttpClientIT {
   }
 
   @Test
-  void timeoutTest(WireMockRuntimeInfo runtimeInfo) throws Exception {
+  void timeoutTest(WireMockRuntimeInfo runtimeInfo) {
     // given
     stubFor(
         head(urlEqualTo(URL))

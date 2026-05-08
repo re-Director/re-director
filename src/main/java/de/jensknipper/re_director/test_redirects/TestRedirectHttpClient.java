@@ -29,7 +29,7 @@ public class TestRedirectHttpClient {
     this.clientProperties = clientProperties;
   }
 
-  public TestRedirectHttpClientResponse call(URI uri) throws InterruptedException {
+  public TestRedirectHttpClientResponse call(URI uri) {
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(uri)
@@ -51,8 +51,11 @@ public class TestRedirectHttpClient {
           safeHeaders, response.statusCode(), duration, false);
     } catch (IOException e) {
       LOG.debug("Could not perform HEAD request to '{}', error: '{}'", uri, e.getMessage());
-      return TestRedirectHttpClientResponse.ERROR;
+    } catch (InterruptedException e) {
+      LOG.debug("Thread got interrupted during request to '{}', error: '{}'", uri, e.getMessage());
+      Thread.currentThread().interrupt();
     }
+    return TestRedirectHttpClientResponse.ERROR;
   }
 
   private Map<String, List<String>> safeHeaders(@Nullable HttpHeaders httpHeaders) {

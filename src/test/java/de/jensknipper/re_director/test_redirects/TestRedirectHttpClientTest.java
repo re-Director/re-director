@@ -81,17 +81,16 @@ class TestRedirectHttpClientTest {
     assertThat(response.headers().get("another-key")).contains("value");
   }
 
-
   @Test
   void call_should_sanitize_values() throws Exception {
     Map<String, List<String>> headers =
-      Map.of("key", List.of("v\ra\nl\n\ru\n\re"), "another-key", List.of("value"));
+        Map.of("key", List.of("v\ra\nl\n\ru\n\re"), "another-key", List.of("value"));
     HttpResponse<Void> responseMock = new HttpResponseMock(200, headers);
     when(httpClient.send(any(), eq(HttpResponse.BodyHandlers.discarding())))
-      .thenReturn(responseMock);
+        .thenReturn(responseMock);
 
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-      testRedirectHttpClient.call(URI);
+        testRedirectHttpClient.call(URI);
 
     assertThat(response.error()).isFalse();
     assertThat(response.headers().get("key")).contains("value");
