@@ -16,13 +16,13 @@
                     Redirects
                 </a>
             </li>
-            <li>
-                <a href="/test-redirect">
-                    Test
-                </a>
-            </li>
         </ul>
         <ul>
+            <li>
+                <a href="/test-redirect">
+                    Test-Tool
+                </a>
+            </li>
             <li>
                 <a href="/settings">
                     <i title="Settings" class="fa-solid fa-gear"></i>

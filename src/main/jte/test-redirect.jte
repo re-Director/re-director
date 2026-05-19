@@ -27,7 +27,7 @@
                 </p>
                 <form action="/test-redirect"  method="get">
                     <fieldset role="group">
-                        <input id="url-input-test-redirect" name="url" placeholder="example.com" value="${url}"/>
+                        <input id="url-input-test-redirect" name="url" placeholder="https://example.com" value="${url}"/>
                         <button>
                             Test
                         </button>

@@ -2,6 +2,8 @@
 
 ## High Prio
 
+- better debug logging
+- normalize / url endings
 - documentation on how to create redirects after installation
 - deletion confirmation modal
 - table ordering
@@ -19,15 +21,11 @@
   - maybe look at npm or other SaaS solutions
   - disallow path in host - add path based redirects to source-target redirect
   - CSV import
-  - query string forwarding
 
 ## Medium Prio
 
 - write Doc on how to behind reverse proxies: caddy, nginx
 - automated checks with nullaway
-- redirect tester
-    - like https://domain-forward.com/url-redirect-tester-tool/
-    - or https://redirect.pizza/tester?url=http://blog.jensknipper.de
 - broken links checker
     - periodically check target for 4xx or 5xx status code
 
