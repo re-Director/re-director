@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class TestRedirectService {
   public static final List<String> ALLOWED_URI_SCHEMES = List.of("http", "https");
   public static final List<String> CLOUD_META_ADDRESSES =
       List.of("169.254.169.254", "metadata.google.internal", "100.100.100.200", "192.0.0.192");
-  public static final String LOCATION_HEADER = "location";
+  public static final String LOCATION_HEADER = "Location";
 
   private final TestRedirectHttpClient testRedirectHttpClient;
   private final TestRedirectsProperties testRedirectsProperties;
@@ -62,7 +63,10 @@ public class TestRedirectService {
       }
 
       String location =
-          Optional.ofNullable(response.headers().get(LOCATION_HEADER)).stream()
+          Stream.of(
+                  response.headers().get(LOCATION_HEADER),
+                  response.headers().get(LOCATION_HEADER.toLowerCase()))
+              .filter(Objects::nonNull)
               .flatMap(Collection::stream)
               .findFirst()
               .orElse(null);
@@ -80,7 +84,10 @@ public class TestRedirectService {
 
       urlToTest = location;
     }
-    LOG.debug("Maximum redirects ({}) reached for URL: {}", testRedirectsProperties.maxRedirects(), urlToTest);
+    LOG.debug(
+        "Maximum redirects ({}) reached for URL: {}",
+        testRedirectsProperties.maxRedirects(),
+        urlToTest);
     return new TestRedirectResult(result, TestRedirectResult.ExitCode.MAX_REDIRECTS);
   }
 

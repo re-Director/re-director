@@ -44,7 +44,7 @@ public class TestRedirectHttpClient {
       long duration = System.currentTimeMillis() - start;
       if (response == null) {
         LOG.debug("No response from HEAD request to '{}'", uri);
-        return TestRedirectHttpClientResponse.ERROR;
+        return TestRedirectHttpClientResponse.FAULTY;
       }
       Map<String, List<String>> safeHeaders = safeHeaders(response.headers());
       return new TestRedirectHttpClientResponse(
@@ -55,7 +55,7 @@ public class TestRedirectHttpClient {
       LOG.debug("Thread got interrupted during request to '{}', error: '{}'", uri, e.getMessage());
       Thread.currentThread().interrupt();
     }
-    return TestRedirectHttpClientResponse.ERROR;
+    return TestRedirectHttpClientResponse.FAULTY;
   }
 
   private Map<String, List<String>> safeHeaders(@Nullable HttpHeaders httpHeaders) {
@@ -66,7 +66,7 @@ public class TestRedirectHttpClient {
         .limit(clientProperties.maxHeaderKeys())
         .collect(
             Collectors.toMap(
-                it->it.getKey().toLowerCase(),
+                Map.Entry::getKey,
                 e ->
                     e.getValue().stream()
                         .limit(clientProperties.maxHeaderValues())
@@ -80,7 +80,7 @@ public class TestRedirectHttpClient {
 
   public record TestRedirectHttpClientResponse(
       Map<String, List<String>> headers, int statusCode, long duration, boolean error) {
-    private static final TestRedirectHttpClientResponse ERROR =
+    private static final TestRedirectHttpClientResponse FAULTY =
         new TestRedirectHttpClientResponse(Map.of(), 0, 0, true);
   }
 }
