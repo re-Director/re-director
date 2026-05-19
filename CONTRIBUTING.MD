@@ -40,7 +40,7 @@ Before creating a release, make sure that:
 - you update the version in the `pom.xml` to the next version
 - update all the mentioned versions in the documentation and docker examples
 - you are able to run the docker containers - build them locally to do that
-    - run `./mvnw jib:dockerBuild` to create the container locally
+    - run `./mvnw jib:dockerBuild` to create the container locally (needs docker installed)
       - you might have to temporarily set the `architecture` variable to `arm64`
     - use the example files in the `docker` directory
       - you might have to temporarily add e.g. `-amd64` or `-arm64` to the image name to make it work
