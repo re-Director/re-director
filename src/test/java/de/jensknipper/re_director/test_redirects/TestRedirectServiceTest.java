@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class TestRedirectServiceTest {
-  public static final String LOCATION_HEADER = "Location";
+  public static final String LOCATION_HEADER = "location";
 
   private final TestRedirectHttpClient testRedirectHttpClient = mock(TestRedirectHttpClient.class);
   private final TestRedirectsProperties testRedirectsProperties = new TestRedirectsProperties(2);

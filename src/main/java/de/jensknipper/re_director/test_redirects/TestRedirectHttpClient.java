@@ -66,7 +66,7 @@ public class TestRedirectHttpClient {
         .limit(clientProperties.maxHeaderKeys())
         .collect(
             Collectors.toMap(
-                Map.Entry::getKey,
+                it->it.getKey().toLowerCase(),
                 e ->
                     e.getValue().stream()
                         .limit(clientProperties.maxHeaderValues())

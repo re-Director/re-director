@@ -22,3 +22,7 @@ gg:
   jte:
     developmentMode: true
     usePrecompiledTemplates: false
+
+logging:
+  level:
+    de.jensknipper.re_director: DEBUG

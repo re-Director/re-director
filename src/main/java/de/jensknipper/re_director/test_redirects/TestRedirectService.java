@@ -18,7 +18,7 @@ public class TestRedirectService {
   public static final List<String> ALLOWED_URI_SCHEMES = List.of("http", "https");
   public static final List<String> CLOUD_META_ADDRESSES =
       List.of("169.254.169.254", "metadata.google.internal", "100.100.100.200", "192.0.0.192");
-  public static final String LOCATION_HEADER = "Location";
+  public static final String LOCATION_HEADER = "location";
 
   private final TestRedirectHttpClient testRedirectHttpClient;
   private final TestRedirectsProperties testRedirectsProperties;
@@ -80,6 +80,7 @@ public class TestRedirectService {
 
       urlToTest = location;
     }
+    LOG.debug("Maximum redirects ({}) reached for URL: {}", testRedirectsProperties.maxRedirects(), urlToTest);
     return new TestRedirectResult(result, TestRedirectResult.ExitCode.MAX_REDIRECTS);
   }
 
