@@ -16,6 +16,11 @@
                     Redirects
                 </a>
             </li>
+            <li>
+                <a href="/test-redirect">
+                    Test
+                </a>
+            </li>
         </ul>
         <ul>
             <li>

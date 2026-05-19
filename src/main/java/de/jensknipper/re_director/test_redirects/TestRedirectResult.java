@@ -8,6 +8,10 @@ public record TestRedirectResult(List<Step> steps, ExitCode code) {
   public static final TestRedirectResult EMPTY =
       new TestRedirectResult(List.of(), ExitCode.UNDEFINED);
 
+  public boolean hasError() {
+    return code != ExitCode.SUCCESS && code != ExitCode.UNDEFINED;
+  }
+
   public record Step(
       String from,
       @Nullable String to,
