@@ -10,7 +10,3 @@ logging:
     root: WARN
   file:
     name: /data/re-director.log
-
-org:
-  jooq:
-    no-tips: true

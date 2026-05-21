@@ -148,6 +148,17 @@ public class ManageRedirectsViewController {
     return "redirect:/redirects" + getParams(search, status, code);
   }
 
+  @GetMapping("/redirects/{id}/delete")
+  public String redirectsDeleteModal(
+    @PathVariable int id,
+    @Nullable @RequestParam(required = false) String search,
+    @Nullable @RequestParam(required = false) String status,
+    @Nullable @RequestParam(required = false) Integer code,
+    Model model) {
+    model.addAttribute("deletePageId", id);
+    return redirects(search, status, code, model);
+  }
+
   @PostMapping("/redirects/{id}/delete")
   public String deleteRedirect(
       @PathVariable int id,

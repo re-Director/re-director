@@ -5,7 +5,6 @@
 - better debug logging
 - normalize / url endings
 - documentation on how to create redirects after installation
-- deletion confirmation modal
 - table ordering
     - fixed to insertion order for now
       - make it by hostname

@@ -13,6 +13,7 @@
 
 @param boolean isCreatePage = false
 @param Integer editPageId
+@param Integer deletePageId
 
 @param BindingResult bindingResult
 @param CreateRedirectRequest createRedirectRequest
@@ -129,12 +130,9 @@
                                         </button>
                                     </form>
                                 @endif
-                                <form method="POST" style="display: inline-block;"
-                                      action="${"/redirects/" + redirect.id() + "/delete" + urlParams}">
-                                    <button id="delete-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                <span id="delete-button" data-target="${"modal-delete-redirect-" + redirect.id()}" onclick="toggleModal(event)">
                                         <i class="fa-solid fa-trash pico-color-red-300" title="Delete"></i>
-                                    </button>
-                                </form>
+                                </span>
                             </div>
                         </div>
                         @if(index + 1 == redirects.size())
@@ -266,6 +264,32 @@
                     </form>
                 </article>
             </dialog>
+            @endfor
+
+            @for(var redirect : redirects)
+                <dialog id="${"modal-delete-redirect-" + redirect.id()}"
+                        open="${deletePageId != null && deletePageId == redirect.id()}"
+                        data-url-addition="${"/" + redirect.id() + "/delete"}">
+                    <article>
+                        <header>
+                            <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
+                            <h3>Delete Redirect</h3>
+                        </header>
+                        <form action="${"/redirects/" + redirect.id() + "/delete" + urlParams}" method="post">
+                            <p>
+                                Deleting the redirect is permanent. Are you sure?
+                            </p>
+                            <footer>
+                                <button role="button" class="secondary" data-target="${"modal-delete-redirect-" + redirect.id()}" onclick="toggleModal(event)">
+                                    Cancel
+                                </button>
+                                <button autofocus id="confirm-button-delete-modal">
+                                    Confirm
+                                </button>
+                            </footer>
+                        </form>
+                    </article>
+                </dialog>
             @endfor
 
             @template.fragments.footer()

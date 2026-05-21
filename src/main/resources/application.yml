@@ -65,6 +65,10 @@ gg:
     developmentMode: false
     usePrecompiledTemplates: true
 
+org:
+  jooq:
+    no-tips: true
+
 re-director:
   test-redirects:
     max-redirects: 10

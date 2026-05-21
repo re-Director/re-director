@@ -111,7 +111,7 @@ public class E2ETest {
     page.navigate("/redirects");
 
     // create-modal is closed and table is empty
-    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
     assertThat(page.locator("#table-element-0")).hasCount(0);
 
     // clicking create opens the create-modal
@@ -129,7 +129,7 @@ public class E2ETest {
 
     // clicking create closes the modal
     createButton.click();
-    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
     assertThat(page).hasURL("/redirects");
 
     // a new element should be in the table
@@ -171,12 +171,12 @@ public class E2ETest {
     page.locator("#target-input-edit-modal").fill("http://target");
     page.locator("#status-code-input-edit-modal").selectOption("302");
 
-    Locator createButton = page.locator("#confirm-button-edit-modal");
-    assertThat(createButton).hasText("Confirm");
+    Locator editButton = page.locator("#confirm-button-edit-modal");
+    assertThat(editButton).hasText("Confirm");
 
     // clicking create closes the modal
-    createButton.click();
-    assertThat(page.locator("#modal-update-redirect-1")).not().hasAttribute("open", "");
+    editButton.click();
+    assertThat(page.locator("#modal-update-redirect-1")).not().isVisible();
     assertThat(page).hasURL("/redirects");
 
     // a new element should be in the table
@@ -231,8 +231,20 @@ public class E2ETest {
     Locator tableLine = page.locator("#table-element-0");
     assertThat(tableLine).hasCount(1);
 
-    // there is none after clicking delete
+    // clicking on delete opens the delete-modal
     tableLine.locator("#delete-button").click();
+    Locator modal = page.locator("#modal-delete-redirect-1");
+    assertThat(modal).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/1/delete");
+
+    // clicking create closes the modal
+    Locator createButton = page.locator("#confirm-button-delete-modal");
+    assertThat(createButton).hasText("Confirm");
+    createButton.click();
+    assertThat(page.locator("#modal-delete-redirect-1")).not().isVisible();
+    assertThat(page).hasURL("/redirects");
+
+    // there is none
     assertThat(page.locator("#table-element-0")).hasCount(0);
   }
 
@@ -315,6 +327,7 @@ public class E2ETest {
 
     // delete
     page.locator("#table-element-0").locator("#delete-button").click();
+    page.locator("#confirm-button-delete-modal").click();
     assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
   }
 
@@ -350,19 +363,19 @@ public class E2ETest {
     page.locator("#close-button-create-modal").click();
 
     assertThat(page).hasURL("/redirects");
-    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
     page.goBack();
     assertThat(page).hasURL("/redirects/create");
     assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
     page.goBack();
     assertThat(page).hasURL("/redirects");
-    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
     page.goForward();
     assertThat(page).hasURL("/redirects/create");
     assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
     page.goForward();
     assertThat(page).hasURL("/redirects");
-    assertThat(page.locator("#modal-create-redirect")).not().hasAttribute("open", "");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
   }
 
   // TODO 301 default works after creating eg. a 308
