@@ -2,14 +2,10 @@
 
 ## High Prio
 
-- better debug logging
-- normalize / url endings
-- documentation on how to create redirects after installation
 - table ordering
     - fixed to insertion order for now
       - make it by hostname
     - dynamically
-- pagination
 - password protection
     - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
 - metrics, eg. last called
@@ -20,10 +16,18 @@
   - maybe look at npm or other SaaS solutions
   - disallow path in host - add path based redirects to source-target redirect
   - CSV import
+- better debug logging
+- normalize / url endings
+- pagination
+  - allow different page sizes
+  - add proper navigation with first, last, previous, next, current
+- write Documentation
+    - how to create redirects after installation
+    - how to use testing redirects feature
+    - how to host behind reverse proxies: caddy, nginx
 
 ## Medium Prio
 
-- write Doc on how to behind reverse proxies: caddy, nginx
 - automated checks with nullaway
 - broken links checker
     - periodically check target for 4xx or 5xx status code

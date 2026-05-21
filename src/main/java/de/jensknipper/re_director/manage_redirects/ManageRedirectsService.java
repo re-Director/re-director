@@ -2,11 +2,12 @@ package de.jensknipper.re_director.manage_redirects;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-import java.util.List;
 import org.jspecify.annotations.Nullable;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,11 +34,13 @@ public class ManageRedirectsService {
     return manageRedirectsRepository.findById(id);
   }
 
-  public List<Redirect> findAllFiltered(
+  public Page<Redirect> findAllFiltered(
       @Nullable String search,
       @Nullable Status status,
-      @Nullable RedirectHttpStatusCode httpStatusCodeFilter) {
-    return manageRedirectsRepository.findAllFiltered(search, status, httpStatusCodeFilter);
+      @Nullable RedirectHttpStatusCode httpStatusCodeFilter,
+      Pageable pageable) {
+    return manageRedirectsRepository.findAllFiltered(
+        search, status, httpStatusCodeFilter, pageable);
   }
 
   public void update(

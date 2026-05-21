@@ -7,6 +7,7 @@ import com.microsoft.playwright.*;
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsRepository;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +39,7 @@ public class E2ETest {
   private final TestWatcher testWatcher =
       new TestWatcher() {
         @Override
-        public void testSuccessful(ExtensionContext context) {
+        public void testSuccessful(@Nonnull ExtensionContext context) {
           try {
             Files.deleteIfExists(page.video().path());
             Files.deleteIfExists(page.video().path().getParent());
@@ -378,7 +379,8 @@ public class E2ETest {
     assertThat(page.locator("#modal-create-redirect")).not().isVisible();
   }
 
-  // TODO 301 default works after creating eg. a 308
-  // TODO validation errors are only shown in the one affected modal
+  // 301 default works after creating e.g. a 308
+  // validation errors are only shown in the one affected modal
   // open/close
+  // pagination
 }

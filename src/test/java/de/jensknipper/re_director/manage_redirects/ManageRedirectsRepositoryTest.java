@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-import java.util.List;
 import java.util.UUID;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -148,7 +149,8 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result = manageRedirectsRepository.findAllFiltered(null, null, null);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(null, null, null, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(2);
@@ -173,7 +175,8 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result = manageRedirectsRepository.findAllFiltered("", null, null);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered("", null, null, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(2);
@@ -195,11 +198,12 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result = manageRedirectsRepository.findAllFiltered("our", null, null);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered("our", null, null, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(1);
-      assertThat(result.getFirst().source()).isEqualTo(source);
+      assertThat(result.getContent().getFirst().source()).isEqualTo(source);
     }
 
     @Test
@@ -218,11 +222,12 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result = manageRedirectsRepository.findAllFiltered("arg", null, null);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered("arg", null, null, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(1);
-      assertThat(result.getFirst().target()).isEqualTo(target);
+      assertThat(result.getContent().getFirst().target()).isEqualTo(target);
     }
 
     @Test
@@ -241,12 +246,13 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result =
-          manageRedirectsRepository.findAllFiltered(null, Status.INACTIVE, null);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(
+              null, Status.INACTIVE, null, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(1);
-      assertThat(result.getFirst().status()).isEqualTo(Status.INACTIVE);
+      assertThat(result.getContent().getFirst().status()).isEqualTo(Status.INACTIVE);
     }
 
     @Test
@@ -265,12 +271,33 @@ class ManageRedirectsRepositoryTest {
           RedirectHttpStatusCode.MOVED_PERMANENTLY);
 
       // when
-      List<Redirect> result =
-          manageRedirectsRepository.findAllFiltered(null, null, RedirectHttpStatusCode.FOUND);
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(
+              null, null, RedirectHttpStatusCode.FOUND, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(1);
-      assertThat(result.getFirst().httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
+      assertThat(result.getContent().getFirst().httpStatusCode())
+          .isEqualTo(RedirectHttpStatusCode.FOUND);
+    }
+
+    @Test
+    void findAllFilteredShouldFindPaged() {
+      // given
+      String source = "source";
+      String target = "target";
+      manageRedirectsRepository.create(
+          source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+      manageRedirectsRepository.create(
+          "irrelevant2", "irrelevant2", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+
+      // when
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(null, null, null, Pageable.ofSize(1));
+
+      // then
+      assertThat(result).hasSize(1);
+      assertThat(result.getContent().getFirst().source()).isEqualTo(source);
     }
   }
 

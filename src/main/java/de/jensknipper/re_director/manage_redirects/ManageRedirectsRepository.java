@@ -11,6 +11,9 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,10 +43,12 @@ public class ManageRedirectsRepository {
     return dsl.selectFrom(REDIRECTS).where(REDIRECTS.ID.eq(id)).fetchOneInto(Redirect.class);
   }
 
-  public List<Redirect> findAllFiltered(
+  public Page<Redirect> findAllFiltered(
       @Nullable String search,
       @Nullable Status status,
-      @Nullable RedirectHttpStatusCode httpStatusCodeFilter) {
+      @Nullable RedirectHttpStatusCode httpStatusCodeFilter,
+      Pageable pageable) {
+
     Condition searchFilterCondition =
         DSL.condition(search == null || search.isBlank())
             .or(
@@ -56,9 +61,20 @@ public class ManageRedirectsRepository {
         DSL.condition(httpStatusCodeFilter == null)
             .or(REDIRECTS.HTTP_STATUS_CODE.eq(httpStatusCodeFilter));
 
-    return dsl.selectFrom(REDIRECTS)
-        .where(searchFilterCondition.and(statusFilterCondition).and(httpStatusCodeFilterCondition))
-        .fetchInto(Redirect.class);
+    Condition combinedCondition =
+        searchFilterCondition.and(statusFilterCondition).and(httpStatusCodeFilterCondition);
+
+    int totalElements = dsl.fetchCount(dsl.selectFrom(REDIRECTS).where(combinedCondition));
+
+    List<Redirect> content =
+        dsl.selectFrom(REDIRECTS)
+            .where(combinedCondition)
+            .orderBy(REDIRECTS.ID.asc())
+            .limit(pageable.getPageSize())
+            .offset(pageable.getOffset())
+            .fetchInto(Redirect.class);
+
+    return new PageImpl<>(content, pageable, totalElements);
   }
 
   public int create(

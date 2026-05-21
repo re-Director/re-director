@@ -1,15 +1,16 @@
 @import de.jensknipper.re_director.common.db.Status
+@import de.jensknipper.re_director.manage_redirects.ManageRedirectsViewController
 @import de.jensknipper.re_director.manage_redirects.dto.CreateRedirectRequest
 @import gg.jte.support.ForSupport
 
-@import java.util.List
+@import org.springframework.data.domain.Page
 @import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
 @import org.springframework.validation.BindingResult
 
 @param String status
 @param String search
 @param Integer code
-@param String urlParams
+@param ManageRedirectsViewController.PageContext pageContext
 
 @param boolean isCreatePage = false
 @param Integer editPageId
@@ -18,7 +19,7 @@
 @param BindingResult bindingResult
 @param CreateRedirectRequest createRedirectRequest
 @param CreateRedirectRequest editRedirectRequest = null
-@param List<RedirectResponse> redirects
+@param Page<RedirectResponse> redirects
 
 <!DOCTYPE html>
 <html lang="en">
@@ -117,14 +118,14 @@
                                 </span>
                                 @if(Status.ACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
-                                          action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + urlParams}">
+                                          action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + pageContext.baseParams()}">
                                         <button id="deactivate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Deactivate"></i>
                                         </button>
                                     </form>
                                 @elseif(Status.INACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
-                                          action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + urlParams}">
+                                          action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + pageContext.baseParams()}">
                                         <button id="activate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Activate"></i>
                                         </button>
@@ -135,7 +136,7 @@
                                 </span>
                             </div>
                         </div>
-                        @if(index + 1 == redirects.size())
+                        @if(index + 1 == redirects.getSize())
                             <hr style="height: 1px; background-color: black; border: none;">
                         @else
                             <hr style="width: 90%; margin-left: auto; margin-right: auto; margin-top: 0.8em; margin-bottom: 0.8em">
@@ -147,8 +148,19 @@
                     @endfor
                     @if(!redirects.isEmpty())
                         <div class="grid">
-                            <div style="text-align: left;">
-                                Showing <b>${"1-" + redirects.size()}</b> of <b>${redirects.size()}</b>
+                            <div>
+                                Showing <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
+                            </div>
+                            <div>
+                                @if(redirects.hasPrevious())
+                                    <a href="${pageContext.previousUrlParams()}">← Previous</a>
+                                @endif
+
+                                <span>Page ${redirects.getNumber() + 1} of ${redirects.getTotalPages()}</span>
+
+                                @if(redirects.hasNext())
+                                    <a href="${pageContext.nextUrlParams()}">Next →</a>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -161,7 +173,7 @@
                         <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
                         <h3>Create Redirect</h3>
                     </header>
-                    <form action="${"/redirects/create" + urlParams}" method="post">
+                    <form action="${"/redirects/create" + pageContext.baseParams()}" method="post">
                         <label for="source-input-create-modal">Source:</label>
                         <input id="source-input-create-modal" type="text" name="source" placeholder="Source" value="${createRedirectRequest.getSource()}">
                         <label for="target-input-create-modal">Target</label>
@@ -216,7 +228,7 @@
                         <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
                         <h3>Update Redirect</h3>
                     </header>
-                    <form action="${"/redirects/" + redirect.id() + "/edit" + urlParams}" method="post">
+                    <form action="${"/redirects/" + redirect.id() + "/edit" + pageContext.baseParams()}" method="post">
                         <label for="source-input-edit-modal">Source:</label>
                         <input id="source-input-edit-modal" type="text" name="source" placeholder="Source"
                                value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getSource() : redirect.source()}"
@@ -275,7 +287,7 @@
                             <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
                             <h3>Delete Redirect</h3>
                         </header>
-                        <form action="${"/redirects/" + redirect.id() + "/delete" + urlParams}" method="post">
+                        <form action="${"/redirects/" + redirect.id() + "/delete" + pageContext.baseParams()}" method="post">
                             <p>
                                 Deleting the redirect is permanent. Are you sure?
                             </p>
