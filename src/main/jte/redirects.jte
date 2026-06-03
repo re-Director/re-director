@@ -1,6 +1,6 @@
 @import de.jensknipper.re_director.common.db.Status
-@import de.jensknipper.re_director.manage_redirects.ManageRedirectsViewController
 @import de.jensknipper.re_director.manage_redirects.dto.CreateRedirectRequest
+@import de.jensknipper.re_director.manage_redirects.PageContext
 @import gg.jte.support.ForSupport
 
 @import org.springframework.data.domain.Page
@@ -10,7 +10,9 @@
 @param String status
 @param String search
 @param Integer code
-@param ManageRedirectsViewController.PageContext pageContext
+@param String sort
+@param String direction
+@param PageContext pageContext
 
 @param boolean isCreatePage = false
 @param Integer editPageId
@@ -49,6 +51,9 @@
                                     <option value="307" selected="${Integer.valueOf(307).equals(code)}">307: Temporary Redirect</option>
                                     <option value="308" selected="${Integer.valueOf(308).equals(code)}">308: Permanent Redirect</option>
                                 </select>
+                                <input type="hidden" name="sort" value="${sort}">
+                                <input type="hidden" name="direction" value="${direction}">
+                                <input type="hidden" name="size" value="${redirects.getSize()}">
                                 <button id="button-filter">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
@@ -63,13 +68,43 @@
                 </div>
                 <div class="grid">
                         <div>
-                            <b>Source</b>
+                            <a href="${pageContext.withSort(PageContext.SORT_SOURCE).toParams()}" class="unstyled-link">
+                                <b>Source</b>
+                                @if(sort.equals(PageContext.SORT_SOURCE))
+                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                        <i class="fa-solid fa-sort-up"></i>
+                                    @endif
+                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                        <i class="fa-solid fa-sort-down"></i>
+                                    @endif
+                                @endif
+                            </a>
                         </div>
                         <div>
-                            <b>Target</b>
+                            <a href="${pageContext.withSort(PageContext.SORT_TARGET).toParams()}" class="unstyled-link">
+                                <b>Target</b>
+                                @if(sort.equals(PageContext.SORT_TARGET))
+                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                        <i class="fa-solid fa-sort-up"></i>
+                                    @endif
+                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                        <i class="fa-solid fa-sort-down"></i>
+                                    @endif
+                                @endif
+                            </a>
                         </div>
                         <div>
-                            <b>HTTP Status Code</b>
+                            <a href="${pageContext.withSort(PageContext.SORT_HTTP_STATUS_CODE).toParams()}" class="unstyled-link">
+                                <b>HTTP Status Code</b>
+                                @if(sort.equals(PageContext.SORT_HTTP_STATUS_CODE))
+                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                        <i class="fa-solid fa-sort-up"></i>
+                                    @endif
+                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                        <i class="fa-solid fa-sort-down"></i>
+                                    @endif
+                                @endif
+                            </a>
                         </div>
                         <div>
                             <b>Status</b>
@@ -118,14 +153,14 @@
                                 </span>
                                 @if(Status.ACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
-                                          action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + pageContext.baseParams()}">
+                                          action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + pageContext.toParams()}">
                                         <button id="deactivate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Deactivate"></i>
                                         </button>
                                     </form>
                                 @elseif(Status.INACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
-                                          action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + pageContext.baseParams()}">
+                                          action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + pageContext.toParams()}">
                                         <button id="activate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Activate"></i>
                                         </button>
@@ -153,13 +188,13 @@
                             </div>
                             <div>
                                 @if(redirects.hasPrevious())
-                                    <a href="${pageContext.previousUrlParams()}">← Previous</a>
+                                    <a href="${pageContext.withPage(pageContext.page()-1).toParams()}">← Previous</a>
                                 @endif
 
                                 <span>Page ${redirects.getNumber() + 1} of ${redirects.getTotalPages()}</span>
 
                                 @if(redirects.hasNext())
-                                    <a href="${pageContext.nextUrlParams()}">Next →</a>
+                                    <a href="${pageContext.withPage(pageContext.page()+1).toParams()}">Next →</a>
                                 @endif
                             </div>
                         </div>
@@ -173,7 +208,7 @@
                         <button aria-label="Close" rel="prev" data-target="modal-create-redirect" onclick="toggleModal(event)"></button>
                         <h3>Create Redirect</h3>
                     </header>
-                    <form action="${"/redirects/create" + pageContext.baseParams()}" method="post">
+                    <form action="${"/redirects/create" + pageContext.toParams()}" method="post">
                         <label for="source-input-create-modal">Source:</label>
                         <input id="source-input-create-modal" type="text" name="source" placeholder="Source" value="${createRedirectRequest.getSource()}">
                         <label for="target-input-create-modal">Target</label>
@@ -228,7 +263,7 @@
                         <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
                         <h3>Update Redirect</h3>
                     </header>
-                    <form action="${"/redirects/" + redirect.id() + "/edit" + pageContext.baseParams()}" method="post">
+                    <form action="${"/redirects/" + redirect.id() + "/edit" + pageContext.toParams()}" method="post">
                         <label for="source-input-edit-modal">Source:</label>
                         <input id="source-input-edit-modal" type="text" name="source" placeholder="Source"
                                value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getSource() : redirect.source()}"
@@ -287,7 +322,7 @@
                             <button aria-label="Close" rel="prev" data-target="${"modal-update-redirect-" + redirect.id()}" onclick="toggleModal(event)"></button>
                             <h3>Delete Redirect</h3>
                         </header>
-                        <form action="${"/redirects/" + redirect.id() + "/delete" + pageContext.baseParams()}" method="post">
+                        <form action="${"/redirects/" + redirect.id() + "/delete" + pageContext.toParams()}" method="post">
                             <p>
                                 Deleting the redirect is permanent. Are you sure?
                             </p>

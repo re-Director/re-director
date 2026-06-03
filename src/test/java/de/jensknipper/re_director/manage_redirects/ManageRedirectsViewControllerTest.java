@@ -80,6 +80,14 @@ class ManageRedirectsViewControllerTest {
           .andExpect(status().isOk())
           .andExpect(view().name("redirects"));
     }
+
+    @Test
+    void shouldAllow_listRedirects_withSort() throws Exception {
+      mockMvc
+          .perform(get("/redirects").param("sort", "source").param("direction", "DESC"))
+          .andExpect(status().isOk())
+          .andExpect(view().name("redirects"));
+    }
   }
 
   @Nested

@@ -1,5 +1,7 @@
 package de.jensknipper.re_director.manage_redirects;
 
+import static de.jensknipper.re_director.manage_redirects.PageContext.*;
+
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
 import de.jensknipper.re_director.common.validation.ValidationService;
@@ -8,8 +10,6 @@ import de.jensknipper.re_director.manage_redirects.dto.DtoMapper;
 import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse;
 import jakarta.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,13 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 public class ManageRedirectsViewController {
 
-  public static final String DEFAULT_PAGE_SIZE = "20";
-  public static final String DEFAULT_PAGE = "0";
   private final ManageRedirectsService manageRedirectsService;
   private final ValidationService validationService;
   private final DtoMapper dtoMapper;
@@ -44,17 +41,27 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       Model model) {
+    String normalizedSort = normalizeSort(sort);
+    String normalizedDirection = normalizeDirection(direction);
     model.addAttribute(
-        "redirects", getAllRedirectsFiltered(search, status, code, createPageable(page, size)));
+        "redirects",
+        getAllRedirectsFiltered(
+            search, status, code, createPageable(page, size, normalizedSort, normalizedDirection)));
     model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
 
     model.addAttribute("search", search);
     model.addAttribute("status", status);
     model.addAttribute("code", code);
-    model.addAttribute("pageContext", PageContext.of(search, status, code, page, size));
+    model.addAttribute("sort", normalizedSort);
+    model.addAttribute("direction", normalizedDirection);
+    model.addAttribute(
+        "pageContext",
+        new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size));
     return "redirects";
   }
 
@@ -63,11 +70,13 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       Model model) {
     model.addAttribute("isCreatePage", true);
-    return redirects(search, status, code, page, size, model);
+    return redirects(search, status, code, sort, direction, page, size, model);
   }
 
   @PostMapping("/redirects/create")
@@ -75,21 +84,28 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
-    PageContext pageContext = PageContext.of(search, status, code, page, size);
+    String normalizedSort = normalizeSort(sort);
+    String normalizedDirection = normalizeDirection(direction);
+    PageContext pageContext =
+        new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size);
     if (bindingResult.hasErrors()) {
-      model.addAttribute(
-          "redirects", getAllRedirectsFiltered(search, status, code, createPageable(page, size)));
+      PageRequest pageable = createPageable(page, size, normalizedSort, normalizedDirection);
+      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code, pageable));
       model.addAttribute("createRedirectRequest", createRedirectRequest);
 
       model.addAttribute("search", search);
       model.addAttribute("status", status);
       model.addAttribute("code", code);
+      model.addAttribute("sort", normalizedSort);
+      model.addAttribute("direction", normalizedDirection);
       model.addAttribute("pageContext", pageContext);
 
       model.addAttribute("isCreatePage", true);
@@ -102,7 +118,7 @@ public class ManageRedirectsViewController {
         createRedirectRequest.isPathForwarding(),
         createRedirectRequest.isQueryForwarding(),
         getHttpStatusCode(createRedirectRequest));
-    return "redirect:/redirects" + pageContext.baseParams();
+    return "redirect:/redirects" + pageContext.toParams();
   }
 
   @GetMapping("/redirects/{id}/edit")
@@ -111,11 +127,13 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       Model model) {
     model.addAttribute("editPageId", id);
-    return redirects(search, status, code, page, size, model);
+    return redirects(search, status, code, sort, direction, page, size, model);
   }
 
   @PostMapping("/redirects/{id}/edit")
@@ -124,21 +142,28 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       @Valid CreateRedirectRequest editRedirectRequest,
       BindingResult bindingResult,
       Model model) {
     validationService.uniqueSource(bindingResult, editRedirectRequest.getSource(), id);
-    PageContext pageContext = PageContext.of(search, status, code, page, size);
+    String normalizedSort = normalizeSort(sort);
+    String normalizedDirection = normalizeDirection(direction);
+    PageContext pageContext =
+        new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size);
     if (bindingResult.hasErrors()) {
-      model.addAttribute(
-          "redirects", getAllRedirectsFiltered(search, status, code, createPageable(page, size)));
+      PageRequest pageable = createPageable(page, size, normalizedSort, normalizedDirection);
+      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code, pageable));
       model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
 
       model.addAttribute("search", search);
       model.addAttribute("status", status);
       model.addAttribute("code", code);
+      model.addAttribute("sort", normalizedSort);
+      model.addAttribute("direction", normalizedDirection);
       model.addAttribute("pageContext", pageContext);
 
       model.addAttribute("bindingResult", bindingResult);
@@ -153,7 +178,7 @@ public class ManageRedirectsViewController {
         editRedirectRequest.isPathForwarding(),
         editRedirectRequest.isQueryForwarding(),
         getHttpStatusCode(editRedirectRequest));
-    return "redirect:/redirects" + getParams(search, status, code, page, size);
+    return "redirect:/redirects" + pageContext.toParams();
   }
 
   @PostMapping("/redirects/{id}/status/{newStatus}")
@@ -163,10 +188,16 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
     manageRedirectsService.updateStatus(id, newStatus);
-    return "redirect:/redirects" + getParams(search, status, code, page, size);
+    String normalizedSort = normalizeSort(sort);
+    String normalizedDirection = normalizeDirection(direction);
+    return "redirect:/redirects"
+        + new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size)
+            .toParams();
   }
 
   @GetMapping("/redirects/{id}/delete")
@@ -175,11 +206,13 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
       Model model) {
     model.addAttribute("deletePageId", id);
-    return redirects(search, status, code, page, size, model);
+    return redirects(search, status, code, sort, direction, page, size, model);
   }
 
   @PostMapping("/redirects/{id}/delete")
@@ -188,14 +221,20 @@ public class ManageRedirectsViewController {
       @Nullable @RequestParam(required = false) String search,
       @Nullable @RequestParam(required = false) String status,
       @Nullable @RequestParam(required = false) Integer code,
+      @RequestParam(defaultValue = DEFAULT_SORT) String sort,
+      @RequestParam(defaultValue = DEFAULT_DIRECTION) String direction,
       @RequestParam(defaultValue = DEFAULT_PAGE) int page,
       @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
     manageRedirectsService.delete(id);
-    return "redirect:/redirects" + getParams(search, status, code, page, size);
+    String normalizedSort = normalizeSort(sort);
+    String normalizedDirection = normalizeDirection(direction);
+    return "redirect:/redirects"
+        + new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size)
+            .toParams();
   }
 
-  private PageRequest createPageable(int page, int size) {
-    return PageRequest.of(page, size, Sort.by("id").ascending());
+  private PageRequest createPageable(int page, int size, String sort, String direction) {
+    return PageRequest.of(page, size, Sort.by(new Sort.Order(parseDirection(direction), sort)));
   }
 
   private Page<RedirectResponse> getAllRedirectsFiltered(
@@ -231,55 +270,22 @@ public class ManageRedirectsViewController {
                         + "'"));
   }
 
-  public record PageContext(String baseParams, String nextUrlParams, String previousUrlParams) {
-    public static PageContext of(
-        @Nullable String search,
-        @Nullable String status,
-        @Nullable Integer code,
-        int page,
-        int pageSize) {
-      return new PageContext(
-          getParams(search, status, code, page, pageSize),
-          getParams(search, status, code, page + 1, pageSize),
-          getParams(search, status, code, page - 1, pageSize));
+  private Sort.Direction parseDirection(String direction) {
+    try {
+      return Sort.Direction.valueOf(direction.toUpperCase());
+    } catch (IllegalArgumentException | NullPointerException _) {
+      return Sort.Direction.ASC;
     }
   }
 
-  private static String getParams(
-      @Nullable String search,
-      @Nullable String status,
-      @Nullable Integer code,
-      int page,
-      int pageSize) {
-    List<UrlParam> urlParams =
-        List.of(
-            new UrlParam("search", search),
-            new UrlParam("status", status),
-            new UrlParam("code", code),
-            new UrlParam("page", page, DEFAULT_PAGE),
-            new UrlParam("size", pageSize, DEFAULT_PAGE_SIZE));
-    return getParams(urlParams);
+  private String normalizeSort(String sort) {
+    if(SORT_ALLOWED_PROPERTIES.contains(sort)) {
+      return sort;
+    }
+    return DEFAULT_SORT;
   }
 
-  private static String getParams(List<UrlParam> urlParams) {
-    UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
-    urlParams.stream()
-        .filter(it -> it.value() != null && !it.value().isBlank())
-        .filter(it -> !it.value().equals(it.defaultValue()))
-        .forEach(it -> uriComponentsBuilder.queryParam(it.name(), it.value()));
-    return uriComponentsBuilder.build().encode().toUriString();
-  }
-
-  private record UrlParam(String name, @Nullable String value, @Nullable String defaultValue) {
-    public UrlParam(String name, @Nullable Object value) {
-      this(name, Optional.ofNullable(value).map(Object::toString).orElse(null), null);
-    }
-
-    public UrlParam(String name, @Nullable Object value, @Nullable Object defaultValue) {
-      this(
-          name,
-          Optional.ofNullable(value).map(Object::toString).orElse(null),
-          Optional.ofNullable(defaultValue).map(Object::toString).orElse(null));
-    }
+  private String normalizeDirection(String direction) {
+    return parseDirection(direction).name();
   }
 }

@@ -18,4 +18,14 @@
         white-space: initial;
         text-indent: 0;
     }
+
+    .unstyled-link {
+        color: inherit;
+        text-decoration: none;
+    }
+    .unstyled-link:hover,
+    .unstyled-link:focus {
+        color: inherit;
+        text-decoration: none;
+    }
 </style>

@@ -320,6 +320,27 @@ class ManageRedirectsRepositoryTest {
       assertThat(result).hasSize(2);
       assertThat(result.getContent().getFirst().source()).isEqualTo("b-source");
     }
+
+    @Test
+    void findAllFilteredShouldUseIdAsStableTieBreaker() {
+      // given
+      int firstId =
+          manageRedirectsRepository.create(
+              "source-a", "same-target", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+      int secondId =
+          manageRedirectsRepository.create(
+              "source-b", "same-target", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+
+      // when
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(
+              null, null, null, PageRequest.of(0, 10, Sort.by("target").ascending()));
+
+      // then
+      assertThat(result).hasSize(2);
+      assertThat(result.getContent().get(0).id()).isEqualTo(firstId);
+      assertThat(result.getContent().get(1).id()).isEqualTo(secondId);
+    }
   }
 
   @Test

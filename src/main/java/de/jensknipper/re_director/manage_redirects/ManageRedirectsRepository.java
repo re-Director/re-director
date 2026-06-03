@@ -5,9 +5,7 @@ import static org.jooq.impl.DSL.not;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -88,9 +86,10 @@ public class ManageRedirectsRepository {
     if (pageable.getSort().isUnsorted()) {
       return List.of(DEFAULT_SORT_FIELD.asc());
     }
-    return pageable.getSort().stream()
-        .map(this::toSortField)
-        .collect(Collectors.toUnmodifiableList()); // NOSONAR otherwise type is assumed wrong
+    List<SortField<?>> sortFields =
+        pageable.getSort().stream().map(this::toSortField).collect(Collectors.toList());
+    sortFields.add(REDIRECTS.ID.asc());
+    return sortFields;
   }
 
   private SortField<?> toSortField(Order order) {

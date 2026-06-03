@@ -2,10 +2,6 @@
 
 ## High Prio
 
-- table ordering
-    - fixed to insertion order for now
-      - make it by hostname
-    - dynamically
 - password protection
     - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
 - metrics, eg. last called
@@ -42,3 +38,4 @@
     - move styling into css file
 - simplify css
     - utility classes for hr in table
+- hardened images with distroless images and jlink
