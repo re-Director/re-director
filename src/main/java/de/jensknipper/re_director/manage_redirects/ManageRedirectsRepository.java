@@ -5,15 +5,20 @@ import static org.jooq.impl.DSL.not;
 
 import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
 import de.jensknipper.re_director.common.db.Status;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.SortField;
 import org.jooq.impl.DSL;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,6 +26,8 @@ public class ManageRedirectsRepository {
 
   public static final RedirectHttpStatusCode DEFAULT_REDIRECT =
       RedirectHttpStatusCode.MOVED_PERMANENTLY;
+  private static final Field<?> DEFAULT_SORT_FIELD = REDIRECTS.SOURCE;
+
   private final DSLContext dsl;
 
   public ManageRedirectsRepository(DSLContext dsl) {
@@ -69,12 +76,33 @@ public class ManageRedirectsRepository {
     List<Redirect> content =
         dsl.selectFrom(REDIRECTS)
             .where(combinedCondition)
-            .orderBy(REDIRECTS.ID.asc())
+            .orderBy(getSortFields(pageable))
             .limit(pageable.getPageSize())
             .offset(pageable.getOffset())
             .fetchInto(Redirect.class);
 
     return new PageImpl<>(content, pageable, totalElements);
+  }
+
+  private List<SortField<?>> getSortFields(Pageable pageable) {
+    if (pageable.getSort().isUnsorted()) {
+      return List.of(DEFAULT_SORT_FIELD.asc());
+    }
+    return pageable.getSort().stream()
+        .map(this::toSortField)
+        .collect(Collectors.toUnmodifiableList()); // NOSONAR otherwise type is assumed wrong
+  }
+
+  private SortField<?> toSortField(Order order) {
+    Field<?> field =
+        Arrays.stream(REDIRECTS.fields())
+            .filter(it -> it.getName().equals(order.getProperty()))
+            .findFirst()
+            .orElse(DEFAULT_SORT_FIELD);
+    if (order.isAscending()) {
+      return field.asc();
+    }
+    return field.desc();
   }
 
   public int create(

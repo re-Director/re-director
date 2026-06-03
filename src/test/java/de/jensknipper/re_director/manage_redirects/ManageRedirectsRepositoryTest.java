@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -292,12 +294,31 @@ class ManageRedirectsRepositoryTest {
           "irrelevant2", "irrelevant2", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
 
       // when
+      PageRequest pageRequest = PageRequest.of(0, 1, Sort.by("id").ascending());
       Page<Redirect> result =
-          manageRedirectsRepository.findAllFiltered(null, null, null, Pageable.ofSize(1));
+          manageRedirectsRepository.findAllFiltered(null, null, null, pageRequest);
 
       // then
       assertThat(result).hasSize(1);
       assertThat(result.getContent().getFirst().source()).isEqualTo(source);
+    }
+
+    @Test
+    void findAllFilteredShouldRespectSortOrder() {
+      // given
+      manageRedirectsRepository.create(
+          "b-source", "target-b", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+      manageRedirectsRepository.create(
+          "a-source", "target-a", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+
+      // when
+      Page<Redirect> result =
+          manageRedirectsRepository.findAllFiltered(
+              null, null, null, PageRequest.of(0, 10, Sort.by("source").descending()));
+
+      // then
+      assertThat(result).hasSize(2);
+      assertThat(result.getContent().getFirst().source()).isEqualTo("b-source");
     }
   }
 
