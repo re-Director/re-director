@@ -94,7 +94,7 @@
                             Loop detected.
                         @elseif(List.of(TestRedirectResult.ExitCode.SSRF_DETECTED,
                                         TestRedirectResult.ExitCode.URI_INVALID,
-                                        TestRedirectResult.ExitCode.SSRF_DETECTED)
+                                        TestRedirectResult.ExitCode.WRONG_PROTOCOL)
                                         .contains(result.code()))
                             URL invalid.
                         @else

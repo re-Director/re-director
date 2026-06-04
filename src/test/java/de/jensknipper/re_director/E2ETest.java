@@ -291,7 +291,8 @@ public class E2ETest {
     assertThat(tableLine.locator("#source")).hasText("source1");
 
     // url contains new filter
-    assertThat(page).hasURL("/redirects?status=ACTIVE&search=1&code=301");
+    assertThat(page)
+        .hasURL("/redirects?status=ACTIVE&search=1&code=301&sort=source&direction=ASC&size=20");
   }
 
   @Test

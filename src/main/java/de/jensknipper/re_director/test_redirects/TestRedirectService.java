@@ -78,7 +78,7 @@ public class TestRedirectService {
               response.duration(),
               response.headers()));
 
-      if (!isRedirect(response.statusCode()) || location == null) {
+      if (!isRedirect(response.statusCode()) || location == null || location.isBlank()) {
         return new TestRedirectResult(result, TestRedirectResult.ExitCode.SUCCESS);
       }
 

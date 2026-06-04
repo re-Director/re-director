@@ -19,7 +19,7 @@ class TestRedirectServiceTest {
   public static final String LOCATION_HEADER = "location";
 
   private final TestRedirectHttpClient testRedirectHttpClient = mock(TestRedirectHttpClient.class);
-  private final TestRedirectsProperties testRedirectsProperties = new TestRedirectsProperties(2);
+  private final TestRedirectsProperties testRedirectsProperties = new TestRedirectsProperties(3);
 
   private final TestRedirectService testRedirectService =
       new TestRedirectService(testRedirectHttpClient, testRedirectsProperties);
@@ -48,6 +48,27 @@ class TestRedirectServiceTest {
   }
 
   @Test
+  void call_should_handle_no_location() {
+    // given
+    String url = "https://re-director.github.io";
+    when(testRedirectHttpClient.call(URI.create(url)))
+        .thenReturn(
+            new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 301, 0, false));
+
+    // when
+    TestRedirectResult result = testRedirectService.getRedirectionSteps(url);
+
+    // then
+    assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.SUCCESS);
+    assertThat(result.steps()).hasSize(1);
+    assertThat(result.steps().getFirst().from()).isEqualTo(url);
+    assertThat(result.steps().getFirst().to()).isNull();
+    assertThat(result.steps().getFirst().httpStatusCode()).isEqualTo(301);
+    assertThat(result.steps().getFirst().durationInMs()).isZero();
+    assertThat(result.steps().getFirst().attributes()).isEmpty();
+  }
+
+  @Test
   void call_should_handle_empty_location() {
     // given
     String url = "https://re-director.github.io";
@@ -60,7 +81,7 @@ class TestRedirectServiceTest {
     TestRedirectResult result = testRedirectService.getRedirectionSteps(url);
 
     // then
-    assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.LOOP_DETECTED);
+    assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.SUCCESS);
     assertThat(result.steps()).hasSize(1);
     assertThat(result.steps().getFirst().from()).isEqualTo(url);
     assertThat(result.steps().getFirst().to()).isEmpty();
@@ -196,7 +217,7 @@ class TestRedirectServiceTest {
     TestRedirectResult result = testRedirectService.getRedirectionSteps(url);
 
     // then
-    assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.MAX_REDIRECTS);
+    assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.LOOP_DETECTED);
     assertThat(result.steps()).hasSize(2);
   }
 
@@ -234,7 +255,7 @@ class TestRedirectServiceTest {
         Arguments.of("https://[::1]"),
         Arguments.of("https://127.0.0.1"),
         Arguments.of("https://2130706433"), // decimal for 127.0.0.1
-        Arguments.of("https://0x7f000001"), // hexal
+        Arguments.of("https://0x7f000001"), // hexadecimal
         Arguments.of("https://017700000001"), // octal
         // link local
         Arguments.of("https://169.254.1.1"),
@@ -354,6 +375,7 @@ class TestRedirectServiceTest {
     String url = "https://re-director.github.io";
     String secondUrl = "https://re-director.github.io/2";
     String thirdUrl = "https://re-director.github.io/3";
+    String fourthUrl = "https://re-director.github.io/4";
     when(testRedirectHttpClient.call(URI.create(url)))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
@@ -362,12 +384,16 @@ class TestRedirectServiceTest {
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(thirdUrl)), 301, 0, false));
+    when(testRedirectHttpClient.call(URI.create(thirdUrl)))
+        .thenReturn(
+            new TestRedirectHttpClient.TestRedirectHttpClientResponse(
+                Map.of(LOCATION_HEADER, List.of(fourthUrl)), 301, 0, false));
 
     // when
     TestRedirectResult result = testRedirectService.getRedirectionSteps(url);
 
     // then
     assertThat(result.code()).isEqualTo(TestRedirectResult.ExitCode.MAX_REDIRECTS);
-    assertThat(result.steps()).hasSize(2);
+    assertThat(result.steps()).hasSize(3);
   }
 }

@@ -1,9 +1,8 @@
 package de.jensknipper.re_director.manage_redirects;
 
+import java.util.Set;
 import org.jspecify.annotations.Nullable;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Set;
 
 public record PageContext(
     @Nullable String search,
@@ -23,7 +22,8 @@ public record PageContext(
   public static final String SORT_SOURCE = "source";
   public static final String SORT_TARGET = "target";
   public static final String SORT_HTTP_STATUS_CODE = "httpStatusCode";
-  public static final Set<String> SORT_ALLOWED_PROPERTIES = Set.of(SORT_SOURCE, SORT_TARGET, SORT_HTTP_STATUS_CODE);
+  public static final Set<String> SORT_ALLOWED_PROPERTIES =
+      Set.of(SORT_SOURCE, SORT_TARGET, SORT_HTTP_STATUS_CODE);
 
   public static final String DEFAULT_PAGE_SIZE = "20";
   public static final String DEFAULT_PAGE = "0";

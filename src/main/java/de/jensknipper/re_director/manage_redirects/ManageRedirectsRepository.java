@@ -89,7 +89,7 @@ public class ManageRedirectsRepository {
     List<SortField<?>> sortFields =
         pageable.getSort().stream().map(this::toSortField).collect(Collectors.toList());
     sortFields.add(REDIRECTS.ID.asc());
-    return sortFields;
+    return List.copyOf(sortFields);
   }
 
   private SortField<?> toSortField(Order order) {

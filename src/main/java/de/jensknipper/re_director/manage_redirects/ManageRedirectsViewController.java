@@ -279,7 +279,7 @@ public class ManageRedirectsViewController {
   }
 
   private String normalizeSort(String sort) {
-    if(SORT_ALLOWED_PROPERTIES.contains(sort)) {
+    if (SORT_ALLOWED_PROPERTIES.contains(sort)) {
       return sort;
     }
     return DEFAULT_SORT;
