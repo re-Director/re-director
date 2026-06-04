@@ -186,15 +186,17 @@
                             <div>
                                 Showing <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
                             </div>
-                            <div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; align-items: center;">
                                 @if(redirects.hasPrevious())
+                                    <a href="${pageContext.withPage(0).toParams()}">First</a>
                                     <a href="${pageContext.withPage(pageContext.page()-1).toParams()}">← Previous</a>
                                 @endif
 
-                                <span>Page ${redirects.getNumber() + 1} of ${redirects.getTotalPages()}</span>
+                                <span>Current page: <b>${redirects.getNumber() + 1}</b> of <b>${redirects.getTotalPages()}</b></span>
 
                                 @if(redirects.hasNext())
                                     <a href="${pageContext.withPage(pageContext.page()+1).toParams()}">Next →</a>
+                                    <a href="${pageContext.withPage(redirects.getTotalPages() - 1).toParams()}">Last</a>
                                 @endif
                             </div>
                         </div>

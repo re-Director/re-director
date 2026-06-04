@@ -16,7 +16,6 @@
 - normalize / url endings
 - pagination
   - allow different page sizes
-  - add proper navigation with first, last, previous, next, current
 - write Documentation
     - how to create redirects after installation
     - how to use testing redirects feature
