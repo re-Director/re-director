@@ -14,8 +14,6 @@
   - CSV import
 - better debug logging
 - normalize / url endings
-- pagination
-  - allow different page sizes
 - write Documentation
     - how to create redirects after installation
     - how to use testing redirects feature

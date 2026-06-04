@@ -30,7 +30,7 @@
     <body>
         @template.fragments.nav()
         <main class="container" style="padding-top: 1.5em;">
-            <div style="text-align: center;">
+            <div class="text-center">
                 <h1>
                     Your Redirects
                 </h1>
@@ -182,11 +182,28 @@
                         </div>
                     @endfor
                     @if(!redirects.isEmpty())
-                        <div class="grid">
+                        <div class="grid text-center">
                             <div>
                                 Showing <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
                             </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; align-items: center;">
+                            <div>
+                                <form action="/redirects" method="get">
+                                    <select id="page-size-input-filter" name="size" aria-label="Page Size" onchange="this.form.requestSubmit()">
+                                        @if(redirects.getSize() != 10 && redirects.getSize() != 20 && redirects.getSize() != 50)
+                                            <option value="${redirects.getSize()}" selected="selected">${redirects.getSize()} per page</option>
+                                        @endif
+                                        <option value="10" selected="${redirects.getSize() == 10}">10 per page</option>
+                                        <option value="20" selected="${redirects.getSize() == 20}">20 per page</option>
+                                        <option value="50" selected="${redirects.getSize() == 50}">50 per page</option>
+                                    </select>
+                                    <input type="hidden" name="status" value="${status}">
+                                    <input type="hidden" name="search" value="${search}">
+                                    <input type="hidden" name="code" value="${code}">
+                                    <input type="hidden" name="sort" value="${sort}">
+                                    <input type="hidden" name="direction" value="${direction}">
+                                </form>
+                            </div>
+                            <div>
                                 @if(redirects.hasPrevious())
                                     <a href="${pageContext.withPage(0).toParams()}">First</a>
                                     <a href="${pageContext.withPage(pageContext.page()-1).toParams()}">← Previous</a>

@@ -28,4 +28,8 @@
         color: inherit;
         text-decoration: none;
     }
+
+    .text-center {
+        text-align: center;
+    }
 </style>
