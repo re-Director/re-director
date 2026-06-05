@@ -51,8 +51,12 @@
                                     <option value="307" selected="${Integer.valueOf(307).equals(code)}">307: Temporary Redirect</option>
                                     <option value="308" selected="${Integer.valueOf(308).equals(code)}">308: Permanent Redirect</option>
                                 </select>
-                                <input type="hidden" name="sort" value="${sort}">
-                                <input type="hidden" name="direction" value="${direction}">
+                                @if(sort != null && !sort.isBlank())
+                                    <input type="hidden" name="sort" value="${sort}">
+                                @endif
+                                @if(direction != null && !direction.isBlank())
+                                    <input type="hidden" name="direction" value="${direction}">
+                                @endif
                                 <input type="hidden" name="size" value="${redirects.getSize()}">
                                 <button id="button-filter">
                                     <i class="fa-solid fa-magnifying-glass"></i>
