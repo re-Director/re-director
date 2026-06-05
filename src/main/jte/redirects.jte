@@ -29,12 +29,12 @@
 
     <body>
         @template.fragments.nav()
-        <main class="container" style="padding-top: 1.5em;">
+        <main class="container" style="padding-top: 1em;">
             <div class="text-center">
                 <h1>
                     Your Redirects
                 </h1>
-                <div class="grid">
+                <div class="grid" style="margin-top:2em; margin-bottom: 2em">
                     <div>
                         <form action="/redirects"  method="get">
                             <fieldset role="group">
@@ -324,8 +324,8 @@
                 </dialog>
             @endfor
 
-            @template.fragments.footer()
-            @template.fragments.js()
         </main>
+        @template.fragments.footer()
+        @template.fragments.js()
     </body>
 </html>

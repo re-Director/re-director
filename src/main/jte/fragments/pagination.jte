@@ -13,7 +13,7 @@
 
 
 @if(!redirects.isEmpty())
-    <div class="grid text-center">
+    <div class="grid text-center" style="margin-top:2em; align-items: center;">
         <div>
             Showing <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
         </div>
