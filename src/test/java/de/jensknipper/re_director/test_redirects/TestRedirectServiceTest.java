@@ -1,5 +1,6 @@
 package de.jensknipper.re_director.test_redirects;
 
+import static de.jensknipper.re_director.test_redirects.TestRedirectService.LOCATION_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,7 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class TestRedirectServiceTest {
-  public static final String LOCATION_HEADER = "location";
 
   private final TestRedirectHttpClient testRedirectHttpClient = mock(TestRedirectHttpClient.class);
   private final TestRedirectsProperties testRedirectsProperties = new TestRedirectsProperties(3);
@@ -266,7 +266,6 @@ class TestRedirectServiceTest {
         Arguments.of("https://0.0.0.0"),
         Arguments.of("https://10.0.0.1"),
         Arguments.of("https://172.16.0.1"),
-        Arguments.of("https://172.31.255.255"),
         Arguments.of("https://172.16.0.0"),
         Arguments.of("https://172.31.255.255"),
         Arguments.of("https://192.168.0.10"),
@@ -285,8 +284,6 @@ class TestRedirectServiceTest {
         // other
         Arguments.of("https://[::ffff:127.0.0.1]"),
         Arguments.of("https://[::ffff:192.168.1.1]"),
-        Arguments.of("https://0.0.0.0"),
-        Arguments.of("https://[::]"),
         Arguments.of("https://[::ffff:7f00:1]"),
         // dyn dns
         Arguments.of("https://127.0.0.1.nip.io"),
@@ -322,7 +319,6 @@ class TestRedirectServiceTest {
 
   private static Stream<Arguments> provideValidUrls() {
     return Stream.of(
-        // loopback
         Arguments.of("https://example.com"),
         Arguments.of("https://1.1.1.1"),
         Arguments.of("https://8.8.8.8"),

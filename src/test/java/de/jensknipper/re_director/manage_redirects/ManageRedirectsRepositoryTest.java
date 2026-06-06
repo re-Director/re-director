@@ -132,7 +132,7 @@ class ManageRedirectsRepositoryTest {
     }
 
     @Test
-    void redirectAlreadyExistsShouldReturnFalseWhenSameSourceAndDifferentId() {
+    void redirectAlreadyExistsShouldReturnTrueWhenSameSourceAndDifferentId() {
       // given
       String source = "source";
       manageRedirectsRepository.create(
