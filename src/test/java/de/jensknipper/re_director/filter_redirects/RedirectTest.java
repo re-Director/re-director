@@ -115,7 +115,8 @@ public class RedirectTest {
   @Test
   void testRedirectWithPathAndQuery() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(
+        REQUEST_URL, TARGET_URL, false, false, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
         new Request.Builder()
@@ -127,7 +128,8 @@ public class RedirectTest {
 
     // then
     assertThat(response.isRedirect()).isTrue();
-    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.code())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
     assertThat(response.header("Location")).isEqualTo(TARGET_URL);
 
     response.close();
@@ -136,7 +138,8 @@ public class RedirectTest {
   @Test
   void testRedirectWithPathAndQueryAndPathForwardingActive() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, true, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(
+        REQUEST_URL, TARGET_URL, true, false, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
         new Request.Builder()
@@ -148,7 +151,8 @@ public class RedirectTest {
 
     // then
     assertThat(response.isRedirect()).isTrue();
-    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.code())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
     assertThat(response.header("Location")).isEqualTo(TARGET_URL + "/additional-path");
 
     response.close();
@@ -157,7 +161,8 @@ public class RedirectTest {
   @Test
   void testRedirectWithPathAndQueryAndQueryForwardingActive() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, false, true, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(
+        REQUEST_URL, TARGET_URL, false, true, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
         new Request.Builder()
@@ -169,7 +174,8 @@ public class RedirectTest {
 
     // then
     assertThat(response.isRedirect()).isTrue();
-    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.code())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
     assertThat(response.header("Location")).isEqualTo(TARGET_URL + "?a=1&b=2");
 
     response.close();
@@ -178,7 +184,8 @@ public class RedirectTest {
   @Test
   void testRedirectWithPathAndQueryAndQueryAndPathForwardingActive() throws IOException {
     // given
-    insertRedirect(REQUEST_URL, TARGET_URL, true, true, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    insertRedirect(
+        REQUEST_URL, TARGET_URL, true, true, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
     Request request =
         new Request.Builder()
@@ -190,7 +197,8 @@ public class RedirectTest {
 
     // then
     assertThat(response.isRedirect()).isTrue();
-    assertThat(response.code()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY.getCode());
+    assertThat(response.code())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
     assertThat(response.header("Location")).isEqualTo(TARGET_URL + "/additional-path?a=1&b=2");
 
     response.close();

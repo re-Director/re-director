@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum RedirectHttpStatusCode {
-  MOVED_PERMANENTLY(301),
-  FOUND(302),
-  TEMPORARY_REDIRECT(307),
-  PERMANENT_REDIRECT(308);
+  HTTP_301_MOVED_PERMANENTLY(301),
+  HTTP_302_FOUND(302),
+  HTTP_307_TEMPORARY_REDIRECT(307),
+  HTTP_308_PERMANENT_REDIRECT(308);
 
   private final int code;
 

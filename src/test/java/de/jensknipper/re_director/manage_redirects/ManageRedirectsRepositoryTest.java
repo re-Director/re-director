@@ -44,7 +44,12 @@ class ManageRedirectsRepositoryTest {
       // given
       String source = "source";
       manageRedirectsRepository.create(
-          "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "irrelevant",
+          "irrelevant",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       boolean result = manageRedirectsRepository.redirectAlreadyExists(source);
@@ -58,9 +63,19 @@ class ManageRedirectsRepositoryTest {
       // given
       String source = "source";
       manageRedirectsRepository.create(
-          "source", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "source",
+          "irrelevant",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
       manageRedirectsRepository.create(
-          "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "irrelevant",
+          "irrelevant",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       boolean result = manageRedirectsRepository.redirectAlreadyExists(source);
@@ -80,7 +95,7 @@ class ManageRedirectsRepositoryTest {
               Status.ACTIVE,
               false,
               false,
-              RedirectHttpStatusCode.FOUND);
+              RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       boolean result = manageRedirectsRepository.redirectAlreadyExists(source, id);
@@ -95,9 +110,19 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       int id =
           manageRedirectsRepository.create(
-              "source", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+              "source",
+              "irrelevant",
+              Status.ACTIVE,
+              false,
+              false,
+              RedirectHttpStatusCode.HTTP_302_FOUND);
       manageRedirectsRepository.create(
-          "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "irrelevant",
+          "irrelevant",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       boolean result = manageRedirectsRepository.redirectAlreadyExists(source, id);
@@ -111,7 +136,12 @@ class ManageRedirectsRepositoryTest {
       // given
       String source = "source";
       manageRedirectsRepository.create(
-          "source", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "source",
+          "irrelevant",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
       int id =
           manageRedirectsRepository.create(
               "irrelevant",
@@ -119,7 +149,7 @@ class ManageRedirectsRepositoryTest {
               Status.ACTIVE,
               false,
               false,
-              RedirectHttpStatusCode.FOUND);
+              RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       boolean result = manageRedirectsRepository.redirectAlreadyExists(source, id);
@@ -141,14 +171,14 @@ class ManageRedirectsRepositoryTest {
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
       manageRedirectsRepository.create(
           "irrelevant2",
           "irrelevant2",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
@@ -167,14 +197,14 @@ class ManageRedirectsRepositoryTest {
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
       manageRedirectsRepository.create(
           "irrelevant2",
           "irrelevant2",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
@@ -190,14 +220,19 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       String target = "target";
       manageRedirectsRepository.create(
-          source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          source,
+          target,
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
       manageRedirectsRepository.create(
           "irrelevant",
           "irrelevant",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
@@ -214,14 +249,19 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       String target = "target";
       manageRedirectsRepository.create(
-          source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          source,
+          target,
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
       manageRedirectsRepository.create(
           "irrelevant",
           "irrelevant",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
@@ -238,14 +278,19 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       String target = "target";
       manageRedirectsRepository.create(
-          source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          source,
+          target,
+          Status.INACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
       manageRedirectsRepository.create(
           "irrelevant",
           "irrelevant",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
@@ -263,24 +308,24 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       String target = "target";
       manageRedirectsRepository.create(
-          source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
       manageRedirectsRepository.create(
           "irrelevant",
           "irrelevant",
           Status.ACTIVE,
           false,
           false,
-          RedirectHttpStatusCode.MOVED_PERMANENTLY);
+          RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
       // when
       Page<Redirect> result =
           manageRedirectsRepository.findAllFiltered(
-              null, null, RedirectHttpStatusCode.FOUND, Pageable.ofSize(10));
+              null, null, RedirectHttpStatusCode.HTTP_302_FOUND, Pageable.ofSize(10));
 
       // then
       assertThat(result).hasSize(1);
       assertThat(result.getContent().getFirst().httpStatusCode())
-          .isEqualTo(RedirectHttpStatusCode.FOUND);
+          .isEqualTo(RedirectHttpStatusCode.HTTP_302_FOUND);
     }
 
     @Test
@@ -289,9 +334,14 @@ class ManageRedirectsRepositoryTest {
       String source = "source";
       String target = "target";
       manageRedirectsRepository.create(
-          source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
       manageRedirectsRepository.create(
-          "irrelevant2", "irrelevant2", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "irrelevant2",
+          "irrelevant2",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       PageRequest pageRequest = PageRequest.of(0, 1, Sort.by("id").ascending());
@@ -307,9 +357,19 @@ class ManageRedirectsRepositoryTest {
     void findAllFilteredShouldRespectSortOrder() {
       // given
       manageRedirectsRepository.create(
-          "b-source", "target-b", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "b-source",
+          "target-b",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
       manageRedirectsRepository.create(
-          "a-source", "target-a", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+          "a-source",
+          "target-a",
+          Status.ACTIVE,
+          false,
+          false,
+          RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       Page<Redirect> result =
@@ -326,10 +386,20 @@ class ManageRedirectsRepositoryTest {
       // given
       int firstId =
           manageRedirectsRepository.create(
-              "source-a", "same-target", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+              "source-a",
+              "same-target",
+              Status.ACTIVE,
+              false,
+              false,
+              RedirectHttpStatusCode.HTTP_302_FOUND);
       int secondId =
           manageRedirectsRepository.create(
-              "source-b", "same-target", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+              "source-b",
+              "same-target",
+              Status.ACTIVE,
+              false,
+              false,
+              RedirectHttpStatusCode.HTTP_302_FOUND);
 
       // when
       Page<Redirect> result =
@@ -350,7 +420,12 @@ class ManageRedirectsRepositoryTest {
     String target = "target";
     int id =
         manageRedirectsRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
     int otherId =
         manageRedirectsRepository.create(
             "irrelevant2",
@@ -358,11 +433,11 @@ class ManageRedirectsRepositoryTest {
             Status.ACTIVE,
             false,
             false,
-            RedirectHttpStatusCode.FOUND);
+            RedirectHttpStatusCode.HTTP_302_FOUND);
 
     // when
     manageRedirectsRepository.update(
-        id, source, target, true, true, RedirectHttpStatusCode.PERMANENT_REDIRECT);
+        id, source, target, true, true, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
     // then
     Redirect result = manageRedirectsRepository.findById(id);
@@ -371,14 +446,15 @@ class ManageRedirectsRepositoryTest {
     assertThat(result.target()).isEqualTo(target);
     assertThat(result.pathForwarding()).isTrue();
     assertThat(result.queryForwarding()).isTrue();
-    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.PERMANENT_REDIRECT);
+    assertThat(result.httpStatusCode())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     Redirect otherResult = manageRedirectsRepository.findById(otherId);
     assertThat(otherResult).isNotNull();
     assertThat(otherResult.source()).isNotEqualTo(source);
     assertThat(otherResult.target()).isNotEqualTo(target);
     assertThat(otherResult.pathForwarding()).isFalse();
     assertThat(otherResult.queryForwarding()).isFalse();
-    assertThat(otherResult.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.FOUND);
+    assertThat(otherResult.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.HTTP_302_FOUND);
   }
 
   @Test
@@ -386,7 +462,12 @@ class ManageRedirectsRepositoryTest {
     // given
     int id =
         manageRedirectsRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
     int otherId =
         manageRedirectsRepository.create(
             "irrelevant2",
@@ -394,7 +475,7 @@ class ManageRedirectsRepositoryTest {
             Status.ACTIVE,
             false,
             false,
-            RedirectHttpStatusCode.FOUND);
+            RedirectHttpStatusCode.HTTP_302_FOUND);
 
     // when
     manageRedirectsRepository.updateStatus(id, Status.INACTIVE);
@@ -415,7 +496,12 @@ class ManageRedirectsRepositoryTest {
     String target = "target";
     int id =
         manageRedirectsRepository.create(
-            source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+            source,
+            target,
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
     int otherId =
         manageRedirectsRepository.create(
             "irrelevant",
@@ -423,7 +509,7 @@ class ManageRedirectsRepositoryTest {
             Status.ACTIVE,
             false,
             false,
-            RedirectHttpStatusCode.MOVED_PERMANENTLY);
+            RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
 
     // when
     manageRedirectsRepository.delete(id);

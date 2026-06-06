@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 public class ManageRedirectsRepository {
 
   public static final RedirectHttpStatusCode DEFAULT_REDIRECT =
-      RedirectHttpStatusCode.MOVED_PERMANENTLY;
+      RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY;
   private static final Field<?> DEFAULT_SORT_FIELD = REDIRECTS.SOURCE;
 
   private final DSLContext dsl;

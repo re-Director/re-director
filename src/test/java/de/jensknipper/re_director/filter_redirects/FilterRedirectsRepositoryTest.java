@@ -39,14 +39,14 @@ class FilterRedirectsRepositoryTest {
     String source = "source";
     String target = "target";
     manageRedirectsRepository.create(
-        source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.MOVED_PERMANENTLY);
+        source, target, Status.ACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
     manageRedirectsRepository.create(
         "irrelevant",
         "irrelevant",
         Status.ACTIVE,
         false,
         false,
-        RedirectHttpStatusCode.MOVED_PERMANENTLY);
+        RedirectHttpStatusCode.HTTP_302_FOUND);
 
     // when
     RedirectInformation result = filterRedirectsRepository.findRedirectInformationBySource(source);
@@ -54,7 +54,7 @@ class FilterRedirectsRepositoryTest {
     // then
     assertThat(result).isNotNull();
     assertThat(result.target()).isEqualTo(target);
-    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.MOVED_PERMANENTLY);
+    assertThat(result.httpStatusCode()).isEqualTo(RedirectHttpStatusCode.HTTP_302_FOUND);
   }
 
   @Test
@@ -74,7 +74,7 @@ class FilterRedirectsRepositoryTest {
     String source = "source";
     String target = "target";
     manageRedirectsRepository.create(
-        source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+        source, target, Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
 
     // when
     RedirectInformation result = filterRedirectsRepository.findRedirectInformationBySource(source);

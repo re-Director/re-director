@@ -21,7 +21,7 @@ public record PageContext(
 
   public static final String SORT_SOURCE = "source";
   public static final String SORT_TARGET = "target";
-  public static final String SORT_HTTP_STATUS_CODE = "httpStatusCode";
+  public static final String SORT_HTTP_STATUS_CODE = "http_status_code";
   public static final Set<String> SORT_ALLOWED_PROPERTIES =
       Set.of(SORT_SOURCE, SORT_TARGET, SORT_HTTP_STATUS_CODE);
 

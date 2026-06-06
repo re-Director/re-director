@@ -37,7 +37,7 @@ class RedirectCachingTest {
           "target",
           Status.ACTIVE,
           LocalDateTime.now(),
-          RedirectHttpStatusCode.FOUND,
+          RedirectHttpStatusCode.HTTP_302_FOUND,
           false,
           false);
   private static final RedirectInformation exampleRedirectInformation =
@@ -55,7 +55,8 @@ class RedirectCachingTest {
 
     when(manageRedirectsRepository.findById(exampleRedirect.id())).thenReturn(exampleRedirect);
     when(filterRedirectsRepository.findRedirectInformationBySource("dummy"))
-        .thenReturn(new RedirectInformation("dummy", RedirectHttpStatusCode.FOUND, false, false));
+        .thenReturn(
+            new RedirectInformation("dummy", RedirectHttpStatusCode.HTTP_302_FOUND, false, false));
     filterRedirectsService.findRedirectInformationBySource("dummy");
   }
 

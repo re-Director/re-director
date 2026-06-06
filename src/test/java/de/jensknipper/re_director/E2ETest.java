@@ -259,9 +259,9 @@ public class E2ETest {
         false,
         ManageRedirectsRepository.DEFAULT_REDIRECT);
     manageRedirectsRepository.create(
-        "source2", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+        "source2", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
     manageRedirectsRepository.create(
-        "source3", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+        "source3", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
 
     page.navigate("/redirects?status=INACTIVE&search=3&code=302");
 
@@ -342,7 +342,12 @@ public class E2ETest {
     // update
     int id =
         manageRedirectsRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
     page.navigate("/redirects/" + id + "/edit");
     assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
   }
@@ -351,7 +356,12 @@ public class E2ETest {
   void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
     int id =
         manageRedirectsRepository.create(
-            "irrelevant", "irrelevant", Status.ACTIVE, false, false, RedirectHttpStatusCode.FOUND);
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
 
     page.navigate("/redirects/" + id + "/edit");
 

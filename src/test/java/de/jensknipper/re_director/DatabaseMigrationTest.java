@@ -2,6 +2,8 @@ package de.jensknipper.re_director;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.jensknipper.re_director.common.db.RedirectHttpStatusCode;
+import de.jensknipper.re_director.common.db.Status;
 import de.jensknipper.re_director.manage_redirects.ManageRedirectsService;
 import de.jensknipper.re_director.manage_redirects.Redirect;
 import java.sql.Connection;
@@ -51,8 +53,8 @@ class DatabaseMigrationTest {
 
       dsl.execute(
           """
-                INSERT INTO redirects (source, target)
-                VALUES ('example-source', 'example-target')
+                INSERT INTO redirects (source, target, status, http_status_code)
+                VALUES ('example-source', 'example-target', 'ACTIVE', 'FOUND')
             """);
 
       liquibase.update(new Contexts(), new LabelExpression());
@@ -61,6 +63,11 @@ class DatabaseMigrationTest {
     Page<Redirect> records =
         manageRedirectsService.findAllFiltered(null, null, null, Pageable.ofSize(10));
 
-    assertThat(records).isNotEmpty();
+    assertThat(records).hasSize(1);
+    assertThat(records.getContent().getFirst().source()).isEqualTo("example-source");
+    assertThat(records.getContent().getFirst().target()).isEqualTo("example-target");
+    assertThat(records.getContent().getFirst().status()).isEqualTo(Status.ACTIVE);
+    assertThat(records.getContent().getFirst().httpStatusCode())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_302_FOUND);
   }
 }
