@@ -1,11 +1,13 @@
 package de.jensknipper.re_director.auth;
 
 import org.jspecify.annotations.Nullable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@ConditionalOnBooleanProperty("re-director.auth.enabled")
 public class AuthController {
   private final UserRepository userRepository;
 

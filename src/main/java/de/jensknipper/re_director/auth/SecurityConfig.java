@@ -26,6 +26,11 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    if (!authEnabled) {
+      http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+      return http.build();
+    }
+
     http.authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(

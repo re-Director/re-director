@@ -70,6 +70,8 @@ org:
     no-tips: true
 
 re-director:
+  auth:
+    enabled: false
   test-redirects:
     max-redirects: 10
     client:

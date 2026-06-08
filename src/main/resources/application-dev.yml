@@ -26,3 +26,7 @@ gg:
 logging:
   level:
     de.jensknipper.re_director: DEBUG
+
+re-director:
+  auth:
+    enabled: true
