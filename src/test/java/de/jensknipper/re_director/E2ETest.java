@@ -1,6 +1,7 @@
 package de.jensknipper.re_director;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static de.jensknipper.re_director.database.Tables.USERS;
 import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 
 import com.microsoft.playwright.*;
@@ -88,11 +89,32 @@ public class E2ETest {
     page = context.newPage();
 
     dsl.deleteFrom(REDIRECTS).execute();
+    dsl.deleteFrom(USERS).execute();
+
+    performRegistrationAndLogin();
   }
 
   @AfterEach
   void cleanup() {
     context.close();
+  }
+
+  private void performRegistrationAndLogin() {
+    page.navigate("/login");
+    assertThat(page).hasURL("/setup");
+
+    page.locator("#username").fill("admin");
+    page.locator("#password").fill("admin");
+    page.locator("#confirm-password").fill("admin");
+    page.locator("#create-account").click();
+
+    assertThat(page).hasURL("/login");
+
+    page.locator("#username").fill("admin");
+    page.locator("#password").fill("admin");
+    page.locator("#login").click();
+
+    assertThat(page).hasURL("/");
   }
 
   @Test

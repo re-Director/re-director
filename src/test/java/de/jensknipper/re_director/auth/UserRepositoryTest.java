@@ -1,5 +1,10 @@
 package de.jensknipper.re_director.auth;
 
+import static de.jensknipper.re_director.database.tables.Users.USERS;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+import java.util.UUID;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,19 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import static de.jensknipper.re_director.database.tables.Users.USERS;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class UserRepositoryTest {
 
-  @Autowired
-  private DSLContext dsl;
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private DSLContext dsl;
+  @Autowired private UserRepository userRepository;
 
   @DynamicPropertySource
   static void overrideProps(DynamicPropertyRegistry registry) {

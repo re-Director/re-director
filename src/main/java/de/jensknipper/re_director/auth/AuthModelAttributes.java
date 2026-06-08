@@ -1,5 +1,6 @@
 package de.jensknipper.re_director.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class AuthModelAttributes {
 
   @ModelAttribute
-  public void addCsrfToken(Model model, CsrfToken csrfToken) {
+  public void addCsrfToken(Model model, HttpServletRequest request) {
+    CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
     model.addAttribute("csrfToken", csrfToken);
   }
 

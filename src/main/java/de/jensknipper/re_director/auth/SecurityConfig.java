@@ -1,5 +1,6 @@
 package de.jensknipper.re_director.auth;
 
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,26 +26,28 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthProperties authProperties) {
     if (!authEnabled) {
       http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
       return http.build();
     }
 
+    String[] allowedEndpoints =
+        Stream.concat(
+                Stream.of(
+                    "/",
+                    "/login",
+                    "/logout",
+                    "/setup/**",
+                    "/webjars/**",
+                    "/img/**",
+                    "/css/**",
+                    "/js/**"),
+                authProperties.additionalPermitAllPaths().stream())
+            .toArray(String[]::new);
+
     http.authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers(
-                        "/",
-                        "/login",
-                        "/logout",
-                        "/setup/**",
-                        "/webjars/**",
-                        "/img/**",
-                        "/css/**",
-                        "/js/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+            auth -> auth.requestMatchers(allowedEndpoints).permitAll().anyRequest().authenticated())
         .formLogin(form -> form.loginPage("/login").permitAll())
         .logout(Customizer.withDefaults());
 

@@ -21,12 +21,12 @@
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password" required />
 
-                <label for="confirmPassword">Confirm Password</label>
-                <input id="confirmPassword" name="confirmPassword" type="password" required />
+                <label for="confirm-password">Confirm Password</label>
+                <input id="confirm-password" name="confirmPassword" type="password" required />
 
                 <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
 
-                <button>Create account</button>
+                <button id="create-account">Create account</button>
             </form>
         </main>
         @template.fragments.footer()

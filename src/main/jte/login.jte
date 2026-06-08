@@ -21,7 +21,7 @@
 
                 <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
 
-                <button>Login</button>
+                <button id="login">Login</button>
             </form>
         </main>
         @template.fragments.footer()
