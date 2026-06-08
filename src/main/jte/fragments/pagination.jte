@@ -15,7 +15,7 @@
 @if(!redirects.isEmpty())
     <div class="grid text-center" style="margin-top:2em; align-items: center;">
         <div>
-            Showing <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
+            Showing elements <b>${(redirects.getSize() * redirects.getNumber() + 1) + "-" + (redirects.getSize() * redirects.getNumber() + redirects.getNumberOfElements())}</b> of <b>${redirects.getTotalElements()}</b>
         </div>
         <div>
             <form action="/redirects" method="get">
@@ -50,7 +50,7 @@
                 <a href="${pageContext.withPage(pageContext.page()-1).toParams()}"><i class="fa-solid fa-angle-left" title="previous"></i></a>
             @endif
 
-            <span><b>${redirects.getNumber() + 1}</b> of <b>${redirects.getTotalPages()}</b></span>
+            <span>Page <b>${redirects.getNumber() + 1}</b> of <b>${redirects.getTotalPages()}</b></span>
 
             @if(redirects.hasNext())
                 <a href="${pageContext.withPage(pageContext.page()+1).toParams()}"><i class="fa-solid fa-angle-right" title="next"></i></a>
