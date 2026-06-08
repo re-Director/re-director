@@ -1,10 +1,14 @@
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param CsrfToken csrfToken
+
 <!DOCTYPE html>
 <html lang="en">
 
 @template.fragments.header()
 
     <body>
-        @template.fragments.nav()
+        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled)
         <main class="container" style="padding-top: 1.5em;">
             <div style="text-align: center;">
                 <h1>
@@ -36,6 +40,9 @@
                 <div class="grid">
                     <div>
                         <form method="POST" style="display: inline-block;" action="${"/settings/cache/redirects/clear"}">
+                            @if(csrfToken != null)
+                                <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                            @endif
                             <button type="submit">
                                 <i class="fa-solid fa-broom"></i> Clear Redirect Cache
                             </button>

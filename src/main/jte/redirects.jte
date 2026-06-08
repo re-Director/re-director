@@ -1,11 +1,15 @@
 @import de.jensknipper.re_director.common.db.Status
 @import de.jensknipper.re_director.manage_redirects.dto.CreateRedirectRequest
 @import de.jensknipper.re_director.manage_redirects.PageContext
+@import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
+
 @import gg.jte.support.ForSupport
 
 @import org.springframework.data.domain.Page
-@import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
 @import org.springframework.validation.BindingResult
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param CsrfToken csrfToken
 
 @param String status
 @param String search
@@ -158,6 +162,9 @@
                                 @if(Status.ACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
                                           action="${"/redirects/" + redirect.id() + "/status/INACTIVE" + pageContext.toParams()}">
+                                        @if(csrfToken != null)
+                                            <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                                        @endif
                                         <button id="deactivate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-pause pico-color-yellow-300" style="margin-right: 0.5em;" title="Deactivate"></i>
                                         </button>
@@ -165,6 +172,9 @@
                                 @elseif(Status.INACTIVE.equals(redirect.status()))
                                     <form method="POST" style="display: inline-block;"
                                           action="${"/redirects/" + redirect.id() + "/status/ACTIVE" + pageContext.toParams()}">
+                                        @if(csrfToken != null)
+                                            <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                                        @endif
                                         <button id="activate-button" type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
                                             <i class="fa-solid fa-play pico-color-jade-200" style="margin-right: 0.5em;" title="Activate"></i>
                                         </button>
@@ -225,6 +235,9 @@
                                        checked="${createRedirectRequest.isQueryForwarding()}" />
                                 Query Forwarding
                             </label>
+                            @if(csrfToken != null)
+                                <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                            @endif
                         </fieldset>
 
                         @if(isCreatePage)
@@ -283,6 +296,9 @@
                                       checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isQueryForwarding() : redirect.queryForwarding()}" />
                                Query Forwarding
                            </label>
+                           @if(csrfToken != null)
+                               <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                           @endif
                         </fieldset>
 
                         @if(editPageId != null && editPageId == redirect.id())
@@ -312,6 +328,9 @@
                             <h3>Delete Redirect</h3>
                         </header>
                         <form action="${"/redirects/" + redirect.id() + "/delete" + pageContext.toParams()}" method="post">
+                            @if(csrfToken != null)
+                                <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                            @endif
                             <p>
                                 Deleting the redirect is permanent. Are you sure?
                             </p>
