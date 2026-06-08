@@ -1,6 +1,6 @@
 services:
   re-director:
-    image: jensknipper/re-director:0.0.9
+    image: jensknipper/re-director:0.0.10
     restart: unless-stopped
     ports:
       - "80:80"
