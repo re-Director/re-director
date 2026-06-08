@@ -10,6 +10,8 @@
 @import org.springframework.security.web.csrf.CsrfToken
 
 @param CsrfToken csrfToken
+@param boolean authenticated
+@param boolean authEnabled
 
 @param String status
 @param String search
@@ -32,7 +34,7 @@
     @template.fragments.header()
 
     <body>
-        @template.fragments.nav()
+        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled)
         <main class="container" style="padding-top: 1em;">
             <div class="text-center">
                 <h1>

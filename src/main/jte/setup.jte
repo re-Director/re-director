@@ -1,13 +1,15 @@
 @import org.springframework.security.web.csrf.CsrfToken
 
 @param CsrfToken csrfToken
+@param boolean authenticated
+@param boolean authEnabled
 
 <!DOCTYPE html>
 <html lang="en">
     @template.fragments.header()
 
     <body>
-        @template.fragments.nav()
+        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled)
         <main class="container" style="padding-top: 1.5em;">
             <h2>Initial Setup</h2>
             <p>Create the first administrator account to secure this installation.</p>

@@ -1,7 +1,12 @@
 @import de.jensknipper.re_director.test_redirects.TestRedirectResult
 @import gg.jte.support.ForSupport
-@import org.springframework.validation.BindingResult
 @import java.util.List
+@import org.springframework.validation.BindingResult
+@import org.springframework.security.web.csrf.CsrfToken
+
+@param CsrfToken csrfToken
+@param boolean authenticated
+@param boolean authEnabled
 
 @param String protocol
 @param String url
@@ -14,7 +19,7 @@
     @template.fragments.header()
 
     <body>
-        @template.fragments.nav()
+        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled)
         <main class="container" style="padding-top: 1.5em;">
             <div style="text-align: center;">
                 <h1>

@@ -1,6 +1,8 @@
 @import org.springframework.security.web.csrf.CsrfToken
 
 @param CsrfToken csrfToken
+@param boolean authenticated
+@param boolean authEnabled
 
 <!DOCTYPE html>
 <html lang="en">
