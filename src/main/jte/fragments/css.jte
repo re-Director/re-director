@@ -19,6 +19,13 @@
         text-indent: 0;
     }
 
+    img.logo {
+        width: 6vw;
+        max-width: 48px;
+        height: auto;
+        vertical-align: baseline;
+    }
+
     .unstyled-link {
         color: inherit;
         text-decoration: none;
