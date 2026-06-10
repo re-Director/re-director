@@ -12,9 +12,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class DomainRedirectFilter extends OncePerRequestFilter {
 
   private final FilterRedirectsService filterRedirectsService;
+  private final BaseUrl baseUrl;
 
-  public DomainRedirectFilter(FilterRedirectsService filterRedirectsService) {
+  public DomainRedirectFilter(FilterRedirectsService filterRedirectsService, BaseUrl baseUrl) {
     this.filterRedirectsService = filterRedirectsService;
+    this.baseUrl = baseUrl;
   }
 
   @Override
@@ -29,6 +31,10 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
       if (redirectInformation != null) {
         response.setStatus(redirectInformation.httpStatusCode().getCode());
         response.setHeader("Location", getTarget(redirectInformation, request));
+        return;
+      } else if (baseUrl.isNotHost(normalizedHost)) {
+        response.setStatus(302);
+        response.setHeader("Location", baseUrl.getFullUrl() + "/no-redirect-found");
         return;
       }
     }
@@ -50,6 +56,7 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
   }
 
   private String normalizeHost(String host) {
+    host = host.toLowerCase();
     int portStartIndex = host.indexOf(":");
     if (portStartIndex >= 0) {
       return host.substring(0, portStartIndex);

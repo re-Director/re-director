@@ -2,8 +2,6 @@
 
 ## High Prio
 
-- password protection
-    - default user - for selfhosters - configured in parameters or else use default - feature may be deactivated
 - metrics, eg. last called
     - as timeseries?
       - QuestDb, ChronoDB, InfluxDB embedded
@@ -18,17 +16,20 @@
     - how to create redirects after installation
     - how to use testing redirects feature
     - how to host behind reverse proxies: caddy, nginx
+    - how to configure authentication
+    - how to configure base url
 
 ## Medium Prio
 
+- password protection
+    - rate limit login - bucket4j
+    - password change
 - automated checks with nullaway
 - broken links checker
     - periodically check target for 4xx or 5xx status code
 
 ## Low Prio
 
-- if redirect inactive or no match, redirect temporarily to own domain / default page, currently it looks like that this is then hosted under the target domain
-  - needs current domain name - base url
 - table
     - odd coloring
     - show header next to values in mobile view

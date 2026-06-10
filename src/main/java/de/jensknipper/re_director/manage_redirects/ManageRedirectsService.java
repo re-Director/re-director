@@ -52,7 +52,12 @@ public class ManageRedirectsService {
       RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
     manageRedirectsRepository.update(
-        id, source, target, pathForwarding, queryForwarding, statusCode);
+        id,
+        source.toLowerCase(),
+        target.toLowerCase(),
+        pathForwarding,
+        queryForwarding,
+        statusCode);
   }
 
   public void updateStatus(int id, Status status) {
@@ -74,7 +79,12 @@ public class ManageRedirectsService {
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     manageRedirectsRepository.create(
-        source, target, Status.ACTIVE, pathForwarding, queryForwarding, statusCode);
+        source.toLowerCase(),
+        target.toLowerCase(),
+        Status.ACTIVE,
+        pathForwarding,
+        queryForwarding,
+        statusCode);
   }
 
   private void evictFromCacheWithId(int id) {

@@ -30,3 +30,4 @@ logging:
 re-director:
   auth:
     enabled: true
+  base-url: http://localhost:8080

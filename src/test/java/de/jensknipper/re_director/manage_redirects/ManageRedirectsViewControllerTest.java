@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import de.jensknipper.re_director.common.validation.ValidationService;
+import de.jensknipper.re_director.filter_redirects.BaseUrl;
 import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
 import de.jensknipper.re_director.manage_redirects.dto.DtoMapper;
 import gg.jte.springframework.boot.autoconfigure.JteAutoConfiguration;
@@ -43,6 +44,7 @@ class ManageRedirectsViewControllerTest {
   @Autowired private MockMvc mockMvc;
   @MockitoBean ManageRedirectsService manageRedirectsService;
   @MockitoBean FilterRedirectsService filterRedirectsService;
+  @MockitoBean BaseUrl baseUrl;
   @MockitoBean CacheManager cacheManager;
 
   @BeforeEach

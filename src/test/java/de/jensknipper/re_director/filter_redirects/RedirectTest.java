@@ -20,6 +20,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,6 +46,7 @@ public class RedirectTest {
   static void overrideProps(DynamicPropertyRegistry registry) {
     String uniqueDb = "jdbc:sqlite:file::memdb-" + UUID.randomUUID() + ":?mode=memory&cache=shared";
     registry.add("spring.datasource.url", () -> uniqueDb);
+    registry.add("re-director.base-url", () -> "http://localhost");
   }
 
   @BeforeEach
@@ -53,20 +55,30 @@ public class RedirectTest {
     manageRedirectsService.clearCache();
   }
 
-  @Test
-  void testRedirectNotPresent() throws IOException {
-    // given
-    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
-    Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
+  @Nested
+  class BaseUrlNotActive {
 
-    // when
-    Response response = client.newCall(request).execute();
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+      registry.add("re-director.base-url", () -> "");
+    }
 
-    // then
-    assertThat(response.code()).isEqualTo(200);
-    assertThat(response.header("Location")).isNull();
+    @Test
+    void testRedirectNotPresent() throws IOException {
+      // given
+      OkHttpClient client =
+          createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+      Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
 
-    response.close();
+      // when
+      Response response = client.newCall(request).execute();
+
+      // then
+      assertThat(response.code()).isEqualTo(200);
+      assertThat(response.header("Location")).isNull();
+
+      response.close();
+    }
   }
 
   private static Stream<Arguments> provideRedirectHttpStatusCodes() {
@@ -200,6 +212,19 @@ public class RedirectTest {
     assertThat(response.code())
         .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
     assertThat(response.header("Location")).isEqualTo(TARGET_URL + "/additional-path?a=1&b=2");
+
+    response.close();
+  }
+
+  @Test
+  void testForwardToNoRedirectFoundWhenBaseUrlSet() throws IOException {
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request = new Request.Builder().url("http://" + REQUEST_URL + ":" + port).build();
+
+    Response response = client.newCall(request).execute();
+
+    assertThat(response.code()).isEqualTo(302);
+    assertThat(response.header("Location")).isEqualTo("http://localhost/no-redirect-found");
 
     response.close();
   }
