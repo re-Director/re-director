@@ -43,7 +43,7 @@
                     @if(authenticated)
                         <form method="post" action="/logout">
                             <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
-                            <button type="submit">Logout</button>
+                            <button class="secondary">Logout</button>
                         </form>
                     @else
                         <a href="/login">

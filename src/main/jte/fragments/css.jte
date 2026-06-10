@@ -39,4 +39,10 @@
     .text-center {
         text-align: center;
     }
+
+    @media (max-width: 768px) {
+        nav {
+            flex-direction: column;
+        }
+    }
 </style>
