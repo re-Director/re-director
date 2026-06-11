@@ -104,7 +104,7 @@ class RedirectCachingTest {
   }
 
   @Test
-  void updateStatus_toActive_shouldNotEvictValueFromCache() {
+  void updateStatus_toActive_shouldEvictValueFromCache() {
     // given
     manageRedirectsService.updateStatus(exampleRedirect.id(), Status.ACTIVE);
 
@@ -112,10 +112,8 @@ class RedirectCachingTest {
     Optional<RedirectInformation> result = getRedirectFromCache();
 
     // then
-    assertThat(result).isPresent();
-    assertThat(result.map(RedirectInformation::target)).hasValue(exampleRedirect.target());
-    assertThat(result.map(RedirectInformation::httpStatusCode))
-        .hasValue(exampleRedirect.httpStatusCode());
+    assertThat(result).isEmpty();
+
   }
 
   @Test

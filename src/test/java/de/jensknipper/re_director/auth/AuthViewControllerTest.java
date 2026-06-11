@@ -1,5 +1,6 @@
 package de.jensknipper.re_director.auth;
 
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,7 +33,8 @@ class AuthViewControllerTest {
     mockMvc
         .perform(get("/login"))
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/setup"));
+        .andExpect(redirectedUrl("/setup"))
+      .andExpect(view().name(not("login")));
   }
 
   @Test
@@ -90,6 +92,18 @@ class AuthViewControllerTest {
         .perform(get("/setup"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/login"));
+  }
+
+
+  @Test
+  void login_withErrorParam_setsErrorAttribute() throws Exception {
+    when(userRepository.count()).thenReturn(1L);
+
+    mockMvc
+      .perform(get("/login").param("error", "true"))
+      .andExpect(status().isOk())
+      .andExpect(view().name("login"))
+      .andExpect(model().attributeExists("error"));
   }
 
   @Test
