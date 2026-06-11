@@ -11,6 +11,7 @@ spring:
       connection-init-sql: >
         PRAGMA journal_mode=WAL;
         PRAGMA synchronous=NORMAL;
+        PRAGMA busy_timeout=5000;
 
   servlet:
     multipart:

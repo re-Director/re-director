@@ -2,6 +2,7 @@
 
 ## High Prio
 
+- automatic https
 - metrics, eg. last called
     - as timeseries?
       - QuestDb, ChronoDB, InfluxDB embedded

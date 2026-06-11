@@ -20,6 +20,10 @@ Do the following steps to make sure you are ready to go:
 - Make sure it runs on `http://localhost:8080`
 - Have fun!
 
+For manual testing
+- install `sqlite3` to access the database
+- add the following line to `/etc/hosts`: `127.0.0.1  test.internal` to simulate a DNS entry for testing redirects
+
 ## Formatting
 
 To ensure a uniform formatting spotless is used.
