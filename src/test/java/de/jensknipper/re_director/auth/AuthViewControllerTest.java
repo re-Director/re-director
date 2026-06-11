@@ -1,5 +1,7 @@
 package de.jensknipper.re_director.auth;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -64,16 +66,20 @@ class AuthViewControllerTest {
   void postSetup_success_createsUser_andRedirects() throws Exception {
     when(userRepository.count()).thenReturn(0L);
 
+    String password = "pass";
     mockMvc
         .perform(
             post("/setup")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("username", "user")
-                .param("password", "pass")
-                .param("confirmPassword", "pass"))
+                .param("password", password)
+                .param("confirmPassword", password))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/login"));
+
+    // assert no clear text password saved
+    verify(userRepository).createUser(any(), argThat(it -> !it.equals(password)), anyBoolean());
   }
 
   @Test

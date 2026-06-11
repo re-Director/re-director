@@ -4,39 +4,42 @@ import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @ConditionalOnBooleanProperty("re-director.auth.enabled")
 public class AuthViewController {
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+  private final UserService userService;
 
-  public AuthViewController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
+  public AuthViewController(UserService userService) {
+    this.userService = userService;
   }
 
+  // show errors on failed login
   @GetMapping("/login")
-  public String login(@Nullable Authentication authentication) {
-    if (userRepository.count() == 0) {
+  public String login(
+      @Nullable Authentication authentication,
+      Model model,
+      @Nullable @RequestParam(required = false) String error) {
+    if (!userService.hasUsers()) {
       return "redirect:/setup";
     }
     if (authentication != null && authentication.isAuthenticated()) {
       return "redirect:/";
     }
+    model.addAttribute("error", error != null);
     return "login";
   }
 
   @GetMapping("/setup")
   public String setupForm(Model model) {
-    if (userRepository.count() > 0) {
+    if (userService.hasUsers()) {
       return "redirect:/login";
     }
     model.addAttribute("form", new SetupFormDto());
@@ -45,7 +48,7 @@ public class AuthViewController {
 
   @PostMapping("/setup")
   public String handleSetup(@Valid @ModelAttribute("form") SetupFormDto form, BindingResult br) {
-    if (userRepository.count() > 0) {
+    if (userService.hasUsers()) {
       return "redirect:/login";
     }
 
@@ -55,8 +58,7 @@ public class AuthViewController {
     if (br.hasErrors()) {
       return "setup";
     }
-    String hash = passwordEncoder.encode(form.getPassword());
-    userRepository.createUser(form.getUsername(), hash, true);
+    userService.createUser(form.getUsername(), form.getPassword());
     return "redirect:/login";
   }
 }

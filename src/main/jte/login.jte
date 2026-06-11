@@ -4,6 +4,8 @@
 @param boolean authenticated
 @param boolean authEnabled
 
+@param boolean error
+
 <!DOCTYPE html>
 <html lang="en">
     @template.fragments.header()
@@ -20,6 +22,12 @@
                 <input id="password" name="password" type="password" required />
 
                 <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+
+                @if(error)
+                    <small class="pico-color-red-300">
+                        Invalid username or password.
+                    </small>
+                @endif
 
                 <button id="login">Login</button>
             </form>
