@@ -1,5 +1,6 @@
 package de.jensknipper.re_director.auth;
 
+import de.jensknipper.re_director.filter_redirects.DomainRedirectFilter;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +28,8 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthProperties authProperties) {
+  public SecurityFilterChain securityFilterChain(
+      HttpSecurity http, AuthProperties authProperties, DomainRedirectFilter redirectFilter) {
     if (!authEnabled) {
       http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
       return http.build();
@@ -46,6 +49,8 @@ public class SecurityConfig {
                     "/js/**"),
                 authProperties.additionalPermitAllPaths().stream())
             .toArray(String[]::new);
+
+    http.addFilterBefore(redirectFilter, UsernamePasswordAuthenticationFilter.class);
 
     http.authorizeHttpRequests(
             auth -> auth.requestMatchers(allowedEndpoints).permitAll().anyRequest().authenticated())
