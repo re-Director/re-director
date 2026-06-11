@@ -18,7 +18,6 @@ public class AuthViewController {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
   public AuthViewController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;

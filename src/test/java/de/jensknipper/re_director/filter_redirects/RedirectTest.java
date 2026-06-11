@@ -233,7 +233,7 @@ public class RedirectTest {
       String source,
       String target,
       boolean pathForwarding,
-      boolean pqueryForwarding,
+      boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     dsl.insertInto(REDIRECTS)
         .columns(
@@ -242,7 +242,7 @@ public class RedirectTest {
             REDIRECTS.PATH_FORWARDING,
             REDIRECTS.QUERY_FORWARDING,
             REDIRECTS.HTTP_STATUS_CODE)
-        .values(source, target, pathForwarding, pqueryForwarding, statusCode)
+        .values(source, target, pathForwarding, queryForwarding, statusCode)
         .execute();
   }
 

@@ -17,7 +17,7 @@
             No redirect found!
         </h1>
         <h6>
-            For the URl you specified, there is currently no active redirect configured.
+            For the URL you specified, there is currently no active redirect configured.
         </h6>
     </div>
 </main>
