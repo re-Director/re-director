@@ -61,9 +61,7 @@ public class ManageRedirectsService {
   }
 
   public void updateStatus(int id, Status status) {
-    if (Status.INACTIVE.equals(status)) {
-      evictFromCacheWithId(id);
-    }
+    evictFromCacheWithId(id);
     manageRedirectsRepository.updateStatus(id, status);
   }
 
