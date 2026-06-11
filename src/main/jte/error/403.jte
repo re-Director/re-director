@@ -25,4 +25,4 @@
         @template.fragments.js()
     </body>
 
-</html>>
+</html>

@@ -1,6 +1,5 @@
 package de.jensknipper.re_director.auth;
 
-import static de.jensknipper.re_director.database.tables.Redirects.REDIRECTS;
 import static de.jensknipper.re_director.database.tables.Users.USERS;
 
 import java.util.Objects;
@@ -32,6 +31,6 @@ public class UserRepository {
                 .values(username, passwordHash, enabled)
                 .returningResult(USERS.ID)
                 .fetchOne())
-        .getValue(REDIRECTS.ID);
+        .getValue(USERS.ID);
   }
 }

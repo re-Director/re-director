@@ -21,7 +21,7 @@
                     Oops!
                 </h1>
                 <h6>
-                    An error occured.
+                    An error occurred.
                 </h6>
                 <p>
                     <small>
