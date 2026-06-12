@@ -13,19 +13,19 @@ import org.springframework.stereotype.Component;
 public class BaseUrl {
   private static final Logger LOG = LoggerFactory.getLogger(BaseUrl.class);
 
-  @Nullable private final String baseUrl;
+  @Nullable private final String url;
   @Nullable private final String fullUrl;
 
-  public BaseUrl(@Nullable @Value("${re-director.base-url:}") String baseUrl) {
+  public BaseUrl(@Nullable @Value("${re-director.base-url:}") String url) {
     Optional<URI> uri =
-        Optional.ofNullable(baseUrl)
+        Optional.ofNullable(url)
             .map(String::strip)
             .map(String::toLowerCase)
             .filter(it -> !it.isEmpty())
             .map(this::getHost);
-    this.baseUrl = uri.map(URI::getHost).orElse(null);
+    this.url = uri.map(URI::getHost).orElse(null);
     this.fullUrl = uri.map(URI::toString).orElse(null);
-    LOG.debug("Specified base url is: '{}'", baseUrl);
+    LOG.debug("Specified base url is: '{}'", url);
   }
 
   @Nullable
@@ -42,12 +42,12 @@ public class BaseUrl {
   }
 
   public boolean isNotHost(String normalizedHost) {
-    return baseUrl != null && !baseUrl.equals(normalizedHost);
+    return url != null && !url.equals(normalizedHost);
   }
 
   @Nullable
-  public String getBaseUrl() {
-    return baseUrl;
+  public String getUrl() {
+    return url;
   }
 
   @Nullable

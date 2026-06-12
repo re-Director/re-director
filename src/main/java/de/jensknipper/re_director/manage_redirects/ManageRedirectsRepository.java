@@ -25,6 +25,7 @@ public class ManageRedirectsRepository {
   public static final RedirectHttpStatusCode DEFAULT_REDIRECT =
       RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY;
   private static final Field<?> DEFAULT_SORT_FIELD = REDIRECTS.SOURCE;
+  private static final char LIKE_ESCAPE_CHAR = '\\';
 
   private final DSLContext dsl;
 
@@ -54,13 +55,14 @@ public class ManageRedirectsRepository {
       @Nullable RedirectHttpStatusCode httpStatusCodeFilter,
       Pageable pageable) {
 
+    Optional<String> likePattern = createLikePattern(search);
     Condition searchFilterCondition =
-        DSL.condition(search == null || search.isBlank())
+        DSL.condition(likePattern.isEmpty())
             .or(
                 REDIRECTS
                     .SOURCE
-                    .likeIgnoreCase("%" + search + "%")
-                    .or(REDIRECTS.TARGET.likeIgnoreCase("%" + search + "%")));
+                    .likeIgnoreCase(likePattern.orElse(""), LIKE_ESCAPE_CHAR)
+                    .or(REDIRECTS.TARGET.likeIgnoreCase(likePattern.orElse(""), LIKE_ESCAPE_CHAR)));
     Condition statusFilterCondition = DSL.condition(status == null).or(REDIRECTS.STATUS.eq(status));
     Condition httpStatusCodeFilterCondition =
         DSL.condition(httpStatusCodeFilter == null)
@@ -80,6 +82,15 @@ public class ManageRedirectsRepository {
             .fetchInto(Redirect.class);
 
     return new PageImpl<>(content, pageable, totalElements);
+  }
+
+  private Optional<String> createLikePattern(@Nullable String input) {
+    return Optional.ofNullable(input)
+        .filter(it -> !it.isBlank())
+        .map(it -> it.replace("\\", "\\\\"))
+        .map(it -> it.replace("%", "\\%"))
+        .map(it -> it.replace("_", "\\_"))
+        .map(it -> "%" + it + "%");
   }
 
   private List<SortField<?>> getSortFields(Pageable pageable) {

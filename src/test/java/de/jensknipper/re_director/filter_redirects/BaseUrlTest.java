@@ -14,7 +14,7 @@ class BaseUrlTest {
     BaseUrl a = new BaseUrl(null);
 
     // then
-    assertThat(a.getBaseUrl()).isNull();
+    assertThat(a.getUrl()).isNull();
   }
 
   @ParameterizedTest
@@ -24,7 +24,7 @@ class BaseUrlTest {
     BaseUrl a = new BaseUrl(baseUrl);
 
     // then
-    assertThat(a.getBaseUrl()).isNull();
+    assertThat(a.getUrl()).isNull();
   }
 
   @ParameterizedTest
@@ -34,6 +34,6 @@ class BaseUrlTest {
     BaseUrl a = new BaseUrl(baseUrl);
 
     // then
-    assertThat(a.getBaseUrl()).isEqualTo("example.com");
+    assertThat(a.getUrl()).isEqualTo("example.com");
   }
 }

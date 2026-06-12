@@ -51,23 +51,20 @@ public class ManageRedirectsService {
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
+    String normalizedSource = source.toLowerCase();
     manageRedirectsRepository.update(
-        id,
-        source.toLowerCase(),
-        target.toLowerCase(),
-        pathForwarding,
-        queryForwarding,
-        statusCode);
+        id, normalizedSource, target.toLowerCase(), pathForwarding, queryForwarding, statusCode);
+    evictFromCache(normalizedSource);
   }
 
   public void updateStatus(int id, Status status) {
-    evictFromCacheWithId(id);
     manageRedirectsRepository.updateStatus(id, status);
+    evictFromCacheWithId(id);
   }
 
   public void delete(int id) {
-    evictFromCacheWithId(id);
     manageRedirectsRepository.delete(id);
+    evictFromCacheWithId(id);
   }
 
   public void create(
@@ -76,22 +73,28 @@ public class ManageRedirectsService {
       boolean pathForwarding,
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
+    String normalizedSource = source.toLowerCase();
     manageRedirectsRepository.create(
-        source.toLowerCase(),
+        normalizedSource,
         target.toLowerCase(),
         Status.ACTIVE,
         pathForwarding,
         queryForwarding,
         statusCode);
+    evictFromCache(normalizedSource);
   }
 
   private void evictFromCacheWithId(int id) {
     Redirect redirect = findById(id);
     if (redirect != null) {
-      Cache cache = cacheManager.getCache("redirects");
-      if (cache != null) {
-        cache.evict(redirect.source());
-      }
+      evictFromCache(redirect.source());
+    }
+  }
+
+  private void evictFromCache(String source) {
+    Cache cache = cacheManager.getCache("redirects");
+    if (cache != null) {
+      cache.evict(source);
     }
   }
 

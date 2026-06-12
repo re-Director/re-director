@@ -39,8 +39,13 @@ public class AnalyticsService {
       return;
     }
 
-    analyticsRepository.insertHits(batch);
-    log.debug("Flushed {} hit events", batch.size());
+    try {
+      analyticsRepository.insertHits(batch);
+      log.debug("Flushed {} hit events", batch.size());
+    } catch (Exception e) {
+      queue.addAll(batch);
+      log.warn("Failed to flush {} hit events, will retry", batch.size(), e);
+    }
   }
 
   @Scheduled(fixedDelay = 15 * 60 * 1000) // 15 minutes

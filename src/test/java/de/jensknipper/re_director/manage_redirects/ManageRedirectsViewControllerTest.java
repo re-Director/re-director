@@ -101,8 +101,7 @@ class ManageRedirectsViewControllerTest {
       return Stream.of(
           Arguments.of("source", "http://valid", "true", "301"),
           Arguments.of("source", "https://valid", "false", "302"),
-          Arguments.of("source", "http://valid:8080", "false", "307"),
-          Arguments.of("source", "ftp://valid", "false", "308"));
+          Arguments.of("source", "http://valid:8080", "false", "307"));
     }
 
     @ParameterizedTest
@@ -150,7 +149,8 @@ class ManageRedirectsViewControllerTest {
           Arguments.of(""),
           Arguments.of("invalid"),
           Arguments.of("htt://invalid"),
-          Arguments.of("htp://invalid:8080"));
+          Arguments.of("htp://invalid:8080"),
+          Arguments.of("ftp://invalid"));
     }
 
     @ParameterizedTest

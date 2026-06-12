@@ -34,7 +34,7 @@ class AuthViewControllerTest {
         .perform(get("/login"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/setup"))
-      .andExpect(view().name(not("login")));
+        .andExpect(view().name(not("login")));
   }
 
   @Test
@@ -94,16 +94,15 @@ class AuthViewControllerTest {
         .andExpect(redirectedUrl("/login"));
   }
 
-
   @Test
   void login_withErrorParam_setsErrorAttribute() throws Exception {
     when(userRepository.count()).thenReturn(1L);
 
     mockMvc
-      .perform(get("/login").param("error", "true"))
-      .andExpect(status().isOk())
-      .andExpect(view().name("login"))
-      .andExpect(model().attributeExists("error"));
+        .perform(get("/login").param("error", "true"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("login"))
+        .andExpect(model().attributeExists("error"));
   }
 
   @Test
