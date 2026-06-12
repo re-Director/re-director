@@ -11,11 +11,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AnalyticsService {
+@ConditionalOnBooleanProperty("re-director.analytics.enabled")
+public class AnalyticsService implements AnalyticsRecorder {
 
   private static final Logger log = LoggerFactory.getLogger(AnalyticsService.class);
 
@@ -31,6 +33,7 @@ public class AnalyticsService {
     this.dataRetentionDays = dataRetentionDays;
   }
 
+  @Override
   public void recordHit(int redirectId) {
     queue.offer(new HitEvent(redirectId, Instant.now()));
   }

@@ -1,6 +1,6 @@
 package de.jensknipper.re_director.filter_redirects;
 
-import de.jensknipper.re_director.analytics.AnalyticsService;
+import de.jensknipper.re_director.analytics.AnalyticsRecorder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,12 +13,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class DomainRedirectFilter extends OncePerRequestFilter {
 
   private final FilterRedirectsService filterRedirectsService;
-  private final AnalyticsService analyticsService;
+  private final AnalyticsRecorder analyticsService;
   private final BaseUrl baseUrl;
 
   public DomainRedirectFilter(
       FilterRedirectsService filterRedirectsService,
-      AnalyticsService analyticsService,
+      AnalyticsRecorder analyticsService,
       BaseUrl baseUrl) {
     this.filterRedirectsService = filterRedirectsService;
     this.analyticsService = analyticsService;
