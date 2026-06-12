@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,24 @@ import org.springframework.stereotype.Service;
 public class AnalyticsService {
 
   private static final Logger log = LoggerFactory.getLogger(AnalyticsService.class);
-  private static final int DAILY_RETENTION_DAYS = 90;
 
   private final AnalyticsRepository analyticsRepository;
+  private final int dataRetentionDays;
+
   private final ConcurrentLinkedQueue<HitEvent> queue = new ConcurrentLinkedQueue<>();
 
-  public AnalyticsService(AnalyticsRepository analyticsRepository) {
+  public AnalyticsService(
+      AnalyticsRepository analyticsRepository,
+      @Value("${re-director.analytics.data-retention-days}") int dataRetentionDays) {
     this.analyticsRepository = analyticsRepository;
+    this.dataRetentionDays = dataRetentionDays;
   }
 
   public void recordHit(int redirectId) {
     queue.offer(new HitEvent(redirectId, Instant.now()));
   }
 
-  @Scheduled(fixedDelay = 3000) // 3 seconds
+  @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hits-rate}")
   public void flushHits() {
     log.debug("Queue size before flush: {}", queue.size());
 
@@ -48,7 +53,7 @@ public class AnalyticsService {
     }
   }
 
-  @Scheduled(fixedDelay = 15 * 60 * 1000) // 15 minutes
+  @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hourly-aggregation-rate}")
   public void aggregateHourly() {
     LocalDateTime cutoff = LocalDateTime.now(ZoneOffset.UTC).minusHours(1);
     analyticsRepository.aggregateHourly(cutoff);
@@ -56,7 +61,7 @@ public class AnalyticsService {
     log.debug("Ran hourly aggregation at {}", Instant.now());
   }
 
-  @Scheduled(fixedDelay = 60 * 60 * 1000) // 60 minutes
+  @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-daily-aggregation-rate}")
   public void aggregateDaily() {
     LocalDateTime cutoff = LocalDate.now(ZoneOffset.UTC).atStartOfDay();
     analyticsRepository.aggregateDaily(cutoff);
@@ -64,9 +69,9 @@ public class AnalyticsService {
     log.debug("Ran daily aggregation at {}", Instant.now());
   }
 
-  @Scheduled(cron = "0 0 3 * * *") // 3 AM
+  @Scheduled(cron = "${re-director.analytics.schedule.cleanup-old-data-cron}")
   public void cleanupOldData() {
-    LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusDays(DAILY_RETENTION_DAYS);
+    LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusDays(dataRetentionDays);
     analyticsRepository.deleteOldDailyHits(cutoff);
     log.debug("Ran retention cleanup at {}", Instant.now());
   }

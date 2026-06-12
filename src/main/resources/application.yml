@@ -71,6 +71,13 @@ org:
     no-tips: true
 
 re-director:
+  analytics:
+    data-retention-days: 90
+    schedule:
+      flush-hits-rate: 3s
+      flush-hourly-aggregation-rate: 15m
+      flush-daily-aggregation-rate: 1h
+      cleanup-old-data-cron: "0 0 3 * * *" # 3 AM
   auth:
     enabled: false
   test-redirects:
