@@ -42,6 +42,7 @@ class RedirectCachingTest {
           false);
   private static final RedirectInformation exampleRedirectInformation =
       new RedirectInformation(
+          exampleRedirect.id(),
           exampleRedirect.target(),
           exampleRedirect.httpStatusCode(),
           exampleRedirect.pathForwarding(),
@@ -56,7 +57,8 @@ class RedirectCachingTest {
     when(manageRedirectsRepository.findById(exampleRedirect.id())).thenReturn(exampleRedirect);
     when(filterRedirectsRepository.findRedirectInformationBySource("dummy"))
         .thenReturn(
-            new RedirectInformation("dummy", RedirectHttpStatusCode.HTTP_302_FOUND, false, false));
+            new RedirectInformation(
+                1, "dummy", RedirectHttpStatusCode.HTTP_302_FOUND, false, false));
     filterRedirectsService.findRedirectInformationBySource("dummy");
   }
 
@@ -113,7 +115,6 @@ class RedirectCachingTest {
 
     // then
     assertThat(result).isEmpty();
-
   }
 
   @Test

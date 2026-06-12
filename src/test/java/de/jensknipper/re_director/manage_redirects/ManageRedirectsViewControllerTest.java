@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import de.jensknipper.re_director.analytics.AnalyticsService;
 import de.jensknipper.re_director.common.validation.ValidationService;
 import de.jensknipper.re_director.filter_redirects.BaseUrl;
 import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
@@ -46,6 +47,7 @@ class ManageRedirectsViewControllerTest {
   @MockitoBean FilterRedirectsService filterRedirectsService;
   @MockitoBean BaseUrl baseUrl;
   @MockitoBean CacheManager cacheManager;
+  @MockitoBean AnalyticsService analyticsService;
 
   @BeforeEach
   void beforeEach() {

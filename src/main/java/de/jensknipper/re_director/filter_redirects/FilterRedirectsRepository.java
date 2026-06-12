@@ -19,6 +19,7 @@ public class FilterRedirectsRepository {
   @Nullable
   public RedirectInformation findRedirectInformationBySource(String source) {
     return dsl.select(
+            REDIRECTS.ID,
             REDIRECTS.TARGET,
             REDIRECTS.HTTP_STATUS_CODE,
             REDIRECTS.PATH_FORWARDING,

@@ -29,3 +29,12 @@ databaseChangeLog:
   - include:
       file: changes/v0008_create_users_table.sql
       relativeToChangelogFile: true
+  - include:
+      file: changes/v0009_create_redirect_hit_table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/v0010_create_redirect_hit_hourly_table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/v0011_create_redirect_hit_daily_table.sql
+      relativeToChangelogFile: true
