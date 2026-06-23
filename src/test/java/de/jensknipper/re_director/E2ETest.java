@@ -124,6 +124,20 @@ public class E2ETest {
   }
 
   @Test
+  void unknownPageIs404() {
+    page.navigate("/some-unknown-url");
+    assertThat(page.locator("main").locator("h1")).hasText("🕵️‍♂️ 404 - Not Found");
+  }
+
+  @Test
+  void invalidParamIs400() {
+    page.navigate("/redirects?size=NotANumber");
+    assertThat(page.locator("main").locator("h1")).hasText("Oops!");
+    assertThat(page.locator("#error-details").locator("#status")).hasText("400");
+    assertThat(page.locator("#error-details").locator("#error")).hasText("Bad Request");
+  }
+
+  @Test
   void redirectsPageLoads() {
     page.navigate("/redirects");
     assertThat(page.locator("main").locator("h1")).hasText("Your Redirects");

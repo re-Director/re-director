@@ -30,15 +30,11 @@
                     </small>
                 </p>
             </div>
-            <div style="text-align: left;">
+            <div id="error-details" style="text-align: left;">
                 <small>
-                    Status: <code>${status}</code>
+                    Status: <code id="status">${status}</code>
                     <br/>
-                    Error: <code>${error}</code>
-                    <br/>
-                    Exception: <code>${exception}</code>
-                    <br/>
-                    Message: <code>${message}</code>
+                    Error: <code id="error">${error}</code>
                     @if(authenticated)
                         <br/>
                         Message: <code>${message}</code>
