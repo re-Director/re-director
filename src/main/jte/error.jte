@@ -39,6 +39,13 @@
                     Exception: <code>${exception}</code>
                     <br/>
                     Message: <code>${message}</code>
+                    @if(authenticated)
+                        <br/>
+                        Message: <code>${message}</code>
+                    @else
+                        <br/>
+                        Log in to see further error details.
+                    @endif
                 </small>
             </div>
         </main>
