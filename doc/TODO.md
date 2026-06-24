@@ -38,3 +38,4 @@
 - simplify css
     - utility classes for hr in table
 - hardened images with distroless images and jlink
+- correlation ids on error page

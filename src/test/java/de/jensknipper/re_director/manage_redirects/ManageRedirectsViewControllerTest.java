@@ -15,6 +15,7 @@ import de.jensknipper.re_director.filter_redirects.BaseUrl;
 import de.jensknipper.re_director.filter_redirects.FilterRedirectsService;
 import de.jensknipper.re_director.manage_redirects.dto.DtoMapper;
 import gg.jte.springframework.boot.autoconfigure.JteAutoConfiguration;
+import gg.jte.springframework.boot.autoconfigure.ServletJteAutoConfiguration;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,8 @@ import org.springframework.test.web.servlet.MockMvc;
   ValidationService.class,
   DtoMapper.class,
   ManageRedirectsService.class,
-  JteAutoConfiguration.class
+  JteAutoConfiguration.class,
+  ServletJteAutoConfiguration.class
 })
 class ManageRedirectsViewControllerTest {
 

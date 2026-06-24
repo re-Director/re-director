@@ -1,5 +1,13 @@
 # Contributing
 
+## Philosophy / Style
+
+- null handling
+  - prefer to not return null, e.g. through `List.of()` or `Optional.empty()`
+  - otherwise use [JSpecify](https://jspecify.dev/)
+    - add a `package-info.java` to every package and annotate it with `org.jspecify.annotations.NullMarked`
+    - indicate null return values using `org.jspecify.annotations.Nullable` annotation
+
 ## Setup
 
 You need the following software installed to get started:
