@@ -5,10 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import de.jensknipper.re_director.test_redirects.config.TestRedirectConfiguration;
 import de.jensknipper.re_director.test_redirects.config.TestRedirectsClientProperties;
+import java.net.InetAddress;
 import java.net.URI;
-import java.net.http.HttpClient;
+import java.util.List;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,8 +19,10 @@ class TestRedirectHttpClientIT {
 
   public static final String URL = "/";
 
-  private final HttpClient httpClient =
-      new TestRedirectConfiguration().noFollowRedirectHttpClient();
+  private static final List<InetAddress> LOOPBACK = List.of(InetAddress.getLoopbackAddress());
+
+  private final OkHttpClient httpClient =
+      new OkHttpClient.Builder().followRedirects(false).followSslRedirects(false).build();
   private final TestRedirectsClientProperties clientProperties =
       new TestRedirectsClientProperties(500, 5, 1);
   private final TestRedirectHttpClient testRedirectHttpClient =
@@ -34,7 +37,7 @@ class TestRedirectHttpClientIT {
     // when
     String baseUrl = runtimeInfo.getHttpBaseUrl();
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI.create(baseUrl + URL));
+        testRedirectHttpClient.call(URI.create(baseUrl + URL), LOOPBACK);
 
     // then
     assertThat(response.error()).isFalse();
@@ -54,7 +57,7 @@ class TestRedirectHttpClientIT {
     // when
     String baseUrl = runtimeInfo.getHttpBaseUrl();
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI.create(baseUrl + URL));
+        testRedirectHttpClient.call(URI.create(baseUrl + URL), LOOPBACK);
 
     // then
     assertThat(response.error()).isTrue();

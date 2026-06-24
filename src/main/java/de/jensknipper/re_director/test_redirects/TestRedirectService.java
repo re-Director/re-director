@@ -49,13 +49,14 @@ public class TestRedirectService {
         LOG.debug("URL has invalid scheme: {}", uri);
         return new TestRedirectResult(result, TestRedirectResult.ExitCode.WRONG_PROTOCOL);
       }
-      if (isSSRF(uri)) {
+      List<InetAddress> validatedAddresses = resolveAndValidate(uri);
+      if (validatedAddresses == null) {
         LOG.debug("URL is not allowed: {}", uri);
         return new TestRedirectResult(result, TestRedirectResult.ExitCode.SSRF_DETECTED);
       }
 
       TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-          testRedirectHttpClient.call(uri);
+          testRedirectHttpClient.call(uri, validatedAddresses);
 
       if (response.error()) {
         LOG.debug("HTTP client caught an error for URL: {}", uri);
@@ -113,11 +114,10 @@ public class TestRedirectService {
     return ALLOWED_URI_SCHEMES.contains(scheme);
   }
 
-  private boolean isSSRF(URI url) {
+  @Nullable
+  private List<InetAddress> resolveAndValidate(URI url) {
     try {
-      String host = url.getHost();
-      InetAddress[] addresses = InetAddress.getAllByName(host);
-
+      InetAddress[] addresses = InetAddress.getAllByName(url.getHost());
       for (InetAddress addr : addresses) {
         if (addr.isAnyLocalAddress()
             || addr.isLoopbackAddress()
@@ -127,14 +127,14 @@ public class TestRedirectService {
             || isIpv6Ula(addr)
             || isCarrierGradeNat(addr)
             || isCloudMetadata(addr)) {
-          return true;
+          return null;
         }
       }
+      return List.of(addresses);
     } catch (UnknownHostException e) {
       LOG.debug("Exception during SSRF check for URL: {}, error: {}", url, e.getMessage());
-      return true;
+      return null;
     }
-    return false;
   }
 
   private static boolean isIpv6Ula(InetAddress addr) {

@@ -1,6 +1,6 @@
 package de.jensknipper.re_director.test_redirects.config;
 
-import java.net.http.HttpClient;
+import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class TestRedirectConfiguration {
 
   @Bean
-  public HttpClient noFollowRedirectHttpClient() {
-    return HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build();
+  public OkHttpClient noFollowRedirectHttpClient() {
+    return new OkHttpClient.Builder().followRedirects(false).followSslRedirects(false).build();
   }
 }

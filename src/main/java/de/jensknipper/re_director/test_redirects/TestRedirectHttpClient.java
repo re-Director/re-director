@@ -2,16 +2,16 @@ package de.jensknipper.re_director.test_redirects;
 
 import de.jensknipper.re_director.test_redirects.config.TestRedirectsClientProperties;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.Nullable;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,49 +20,37 @@ import org.springframework.stereotype.Service;
 public class TestRedirectHttpClient {
   private static final Logger LOG = LoggerFactory.getLogger(TestRedirectHttpClient.class);
 
-  private final HttpClient noFollowRedirectHttpClient;
+  private final OkHttpClient noFollowRedirectHttpClient;
   private final TestRedirectsClientProperties clientProperties;
 
   public TestRedirectHttpClient(
-      HttpClient noFollowRedirectHttpClient, TestRedirectsClientProperties clientProperties) {
+      OkHttpClient noFollowRedirectHttpClient, TestRedirectsClientProperties clientProperties) {
     this.noFollowRedirectHttpClient = noFollowRedirectHttpClient;
     this.clientProperties = clientProperties;
   }
 
-  public TestRedirectHttpClientResponse call(URI uri) {
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(uri)
-            .timeout(Duration.ofMillis(clientProperties.timeoutInMs()))
-            .HEAD()
+  public TestRedirectHttpClientResponse call(URI uri, List<InetAddress> resolvedAddresses) {
+    Request request = new Request.Builder().url(HttpUrl.get(uri)).head().build();
+    OkHttpClient client =
+        noFollowRedirectHttpClient
+            .newBuilder()
+            .callTimeout(Duration.ofMillis(clientProperties.timeoutInMs()))
+            .dns(_ -> resolvedAddresses)
             .build();
 
-    try {
-      long start = System.currentTimeMillis();
-      HttpResponse<Void> response =
-          noFollowRedirectHttpClient.send(request, HttpResponse.BodyHandlers.discarding());
+    long start = System.currentTimeMillis();
+    try (Response response = client.newCall(request).execute()) {
       long duration = System.currentTimeMillis() - start;
-      if (response == null) {
-        LOG.debug("No response from HEAD request to '{}'", uri);
-        return TestRedirectHttpClientResponse.FAULTY;
-      }
-      Map<String, List<String>> safeHeaders = safeHeaders(response.headers());
-      return new TestRedirectHttpClientResponse(
-          safeHeaders, response.statusCode(), duration, false);
+      Map<String, List<String>> safeHeaders = safeHeaders(response.headers().toMultimap());
+      return new TestRedirectHttpClientResponse(safeHeaders, response.code(), duration, false);
     } catch (IOException e) {
       LOG.debug("Could not perform HEAD request to '{}', error: '{}'", uri, e.getMessage());
-    } catch (InterruptedException e) {
-      LOG.debug("Thread got interrupted during request to '{}', error: '{}'", uri, e.getMessage());
-      Thread.currentThread().interrupt();
     }
     return TestRedirectHttpClientResponse.FAULTY;
   }
 
-  private Map<String, List<String>> safeHeaders(@Nullable HttpHeaders httpHeaders) {
-    if (httpHeaders == null) {
-      return Map.of();
-    }
-    return httpHeaders.map().entrySet().stream()
+  private Map<String, List<String>> safeHeaders(Map<String, List<String>> headers) {
+    return headers.entrySet().stream()
         .limit(clientProperties.maxHeaderKeys())
         .collect(
             Collectors.toMap(

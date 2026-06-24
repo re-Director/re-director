@@ -2,6 +2,8 @@ package de.jensknipper.re_director.test_redirects;
 
 import static de.jensknipper.re_director.test_redirects.TestRedirectService.LOCATION_HEADER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +30,7 @@ class TestRedirectServiceTest {
   void call_should_handle_non_redirects() {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of("key", List.of("value")), 201, 10, false));
@@ -51,7 +53,7 @@ class TestRedirectServiceTest {
   void call_should_handle_no_location() {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 301, 0, false));
 
@@ -72,7 +74,7 @@ class TestRedirectServiceTest {
   void call_should_handle_empty_location() {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of("")), 301, 0, false));
@@ -94,7 +96,7 @@ class TestRedirectServiceTest {
   void call_should_handle_empty_location_list() {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of()), 301, 0, false));
@@ -118,11 +120,11 @@ class TestRedirectServiceTest {
     // given
     String url = "https://re-director.github.io";
     String secondUrl = "https://example.com";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), statusCode, 0, false));
-    when(testRedirectHttpClient.call(URI.create(secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 200, 0, false));
 
@@ -146,11 +148,11 @@ class TestRedirectServiceTest {
     // given
     String url = "https://re-director.github.io";
     String secondUrl = "/path";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(url + secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(url + secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 200, 0, false));
 
@@ -166,7 +168,7 @@ class TestRedirectServiceTest {
     // given
     String url = "https://re-director.github.io";
     String secondUrl = "http://exa mple.com";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
@@ -183,11 +185,11 @@ class TestRedirectServiceTest {
     // given
     String url = "https://re-director.github.io";
     String secondUrl = "//path";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(url + secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(url + secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 200, 0, false));
 
@@ -204,11 +206,11 @@ class TestRedirectServiceTest {
     String url = "https://re-director.github.io";
     String secondUrl = "https://re-director.github.io/2";
     String thirdUrl = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(thirdUrl)), 301, 0, false));
@@ -233,7 +235,7 @@ class TestRedirectServiceTest {
   void call_should_handle_protocol_validation(String scheme, TestRedirectResult.ExitCode exitCode) {
     // given
     String url = scheme + "://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 200, 0, false));
 
@@ -305,7 +307,7 @@ class TestRedirectServiceTest {
   void call_should_handle_ssrf(String secondUrl) {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
@@ -334,11 +336,11 @@ class TestRedirectServiceTest {
   void call_should_handle_valid_urls(String secondUrl) {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 200, 0, false));
 
@@ -353,7 +355,7 @@ class TestRedirectServiceTest {
   void call_should_handle_http_client_error() {
     // given
     String url = "https://re-director.github.io";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(Map.of(), 301, 0, true));
 
@@ -372,15 +374,15 @@ class TestRedirectServiceTest {
     String secondUrl = "https://re-director.github.io/2";
     String thirdUrl = "https://re-director.github.io/3";
     String fourthUrl = "https://re-director.github.io/4";
-    when(testRedirectHttpClient.call(URI.create(url)))
+    when(testRedirectHttpClient.call(eq(URI.create(url)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(secondUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(secondUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(secondUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(thirdUrl)), 301, 0, false));
-    when(testRedirectHttpClient.call(URI.create(thirdUrl)))
+    when(testRedirectHttpClient.call(eq(URI.create(thirdUrl)), any()))
         .thenReturn(
             new TestRedirectHttpClient.TestRedirectHttpClientResponse(
                 Map.of(LOCATION_HEADER, List.of(fourthUrl)), 301, 0, false));
