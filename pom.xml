@@ -20,7 +20,7 @@
     <java.version>25</java.version>
     <jte.version>3.2.4</jte.version>
     <jooq.version>3.21.5</jooq.version>
-    <sqlite.version>3.53.2.0</sqlite.version>
+    <sqlite.version>3.53.2.1</sqlite.version>
 
     <architecture>amd64</architecture>
   </properties>
