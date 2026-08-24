@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.1</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -19,8 +19,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>25</java.version>
     <jte.version>3.2.4</jte.version>
-    <jooq.version>3.21.6</jooq.version>
-    <sqlite.version>3.53.2.0</sqlite.version>
+    <jooq.version>3.21.7</jooq.version>
+    <sqlite.version>3.53.2.1</sqlite.version>
 
     <architecture>amd64</architecture>
   </properties>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp-jvm</artifactId>
-      <version>5.4.0</version>
+      <version>5.5.0</version>
     </dependency>
 
     <dependency>
@@ -81,12 +81,12 @@
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>webjars-locator-lite</artifactId>
-      <version>1.1.3</version>
+      <version>1.1.4</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>font-awesome</artifactId>
-      <version>7.2.0</version>
+      <version>7.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.webjars.npm</groupId>
@@ -111,14 +111,14 @@
     <dependency>
       <groupId>org.jspecify</groupId>
       <artifactId>jspecify</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>1.60.0</version>
+      <version>1.61.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -161,7 +161,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>3.5.2</version>
         <configuration>
           <from>
             <image>eclipse-temurin:25-jre-alpine</image>
@@ -220,7 +220,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.10.0</version>
         <configuration>
           <java>
             <googleJavaFormat/>
