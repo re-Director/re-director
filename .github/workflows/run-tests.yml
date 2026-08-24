@@ -1,17 +1,18 @@
 name: Tests
 
+permissions:
+  contents: read
+
 on:
   push:
-    branches: [ "master"]
+    branches:
+      - 'master'
+      - 'dependabot/**'
     paths-ignore:
       - 'doc/**'
       - 'docker/**'
       - '.run/**'
       - '*.md'
-
-env:
-  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-  DOCKER_HUB_KEY: ${{ secrets.DOCKER_HUB_KEY }}
 
 jobs:
   build:
