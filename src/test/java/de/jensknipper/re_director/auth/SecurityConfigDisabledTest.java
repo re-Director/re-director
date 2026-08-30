@@ -19,4 +19,9 @@ class SecurityConfigDisabledTest {
   void whenAuthDisabled_noRedirectToLogin() throws Exception {
     mockMvc.perform(get("/irrelevant")).andExpect(status().isNotFound());
   }
+
+  @Test
+  void trailingSlashIsHandledLikeWithoutSlash() throws Exception {
+    mockMvc.perform(get("/redirects/")).andExpect(status().isOk());
+  }
 }
