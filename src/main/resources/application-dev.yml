@@ -25,6 +25,7 @@ gg:
 
 logging:
   level:
+    root: INFO
     de.jensknipper.re_director: DEBUG
 
 re-director:

@@ -72,6 +72,7 @@ org:
 
 logging:
   level:
+    root: WARN
     org.jooq.Constants: OFF
 
 re-director:
