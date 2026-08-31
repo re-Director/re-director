@@ -171,6 +171,29 @@ public class RedirectTest {
   }
 
   @Test
+  void testRedirectShouldPreserveTrailingSlash() throws IOException {
+    // given
+    insertRedirect(
+        REQUEST_URL, TARGET_URL, true, false, RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY);
+    OkHttpClient client = createHttpClientWithCustomDns(REQUEST_URL).followRedirects(false).build();
+    Request request =
+        new Request.Builder()
+            .url("http://" + REQUEST_URL + ":" + port + "/additional-path/")
+            .build();
+
+    // when
+    Response response = client.newCall(request).execute();
+
+    // then
+    assertThat(response.isRedirect()).isTrue();
+    assertThat(response.code())
+        .isEqualTo(RedirectHttpStatusCode.HTTP_301_MOVED_PERMANENTLY.getCode());
+    assertThat(response.header("Location")).isEqualTo(TARGET_URL + "/additional-path/");
+
+    response.close();
+  }
+
+  @Test
   void testRedirectWithPathAndQueryAndQueryForwardingActive() throws IOException {
     // given
     insertRedirect(

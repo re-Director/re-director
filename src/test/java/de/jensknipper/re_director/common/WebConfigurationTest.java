@@ -1,4 +1,4 @@
-package de.jensknipper.re_director.auth;
+package de.jensknipper.re_director.common;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -9,14 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(properties = "re-director.auth.enabled=false")
+@SpringBootTest
 @AutoConfigureMockMvc
-class SecurityConfigDisabledTest {
+public class WebConfigurationTest {
 
   @Autowired MockMvc mockMvc;
 
   @Test
-  void whenAuthDisabled_noRedirectToLogin() throws Exception {
-    mockMvc.perform(get("/irrelevant")).andExpect(status().isNotFound());
+  void trailingSlashIsHandledLikeWithoutSlash() throws Exception {
+    mockMvc.perform(get("/setup/")).andExpect(status().isOk());
   }
 }
