@@ -70,6 +70,10 @@ org:
   jooq:
     no-tips: true
 
+logging:
+  level:
+    org.jooq.Constants: OFF
+
 re-director:
   analytics:
     enabled: false

@@ -25,7 +25,7 @@ public class BaseUrl {
             .map(this::getHost);
     this.url = uri.map(URI::getHost).orElse(null);
     this.fullUrl = uri.map(URI::toString).orElse(null);
-    LOG.debug("Specified base url is: '{}'", url);
+    LOG.info("Specified base url is: '{}'", url);
   }
 
   @Nullable
@@ -36,7 +36,8 @@ public class BaseUrl {
       }
       return new URI(url);
     } catch (URISyntaxException _) {
-      LOG.warn("Could not parse specified base url to URI: '{}'", url);
+      LOG.warn(
+          "Could not parse specified base url to URI: '{}'. Base URL will not be usable.", url);
       return null;
     }
   }
