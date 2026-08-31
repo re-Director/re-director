@@ -12,7 +12,6 @@
   - disallow path in host - add path based redirects to source-target redirect
   - CSV import
 - better debug logging
-- normalize / url endings
 - write Documentation
     - how to create redirects after installation
     - how to use testing redirects feature

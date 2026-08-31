@@ -1,6 +1,7 @@
 package de.jensknipper.re_director.auth;
 
 import de.jensknipper.re_director.filter_redirects.DomainRedirectFilter;
+import jakarta.servlet.Filter;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,14 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(
-      HttpSecurity http, AuthProperties authProperties, DomainRedirectFilter redirectFilter) {
+      HttpSecurity http,
+      AuthProperties authProperties,
+      DomainRedirectFilter redirectFilter,
+      Filter trailingSlashFilter) {
+
+    http.addFilterBefore(redirectFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(trailingSlashFilter, DomainRedirectFilter.class);
+
     if (!authEnabled) {
       http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
       return http.build();
@@ -49,8 +57,6 @@ public class SecurityConfig {
                     "/js/**"),
                 authProperties.additionalPermitAllPaths().stream())
             .toArray(String[]::new);
-
-    http.addFilterBefore(redirectFilter, UsernamePasswordAuthenticationFilter.class);
 
     http.authorizeHttpRequests(
             auth -> auth.requestMatchers(allowedEndpoints).permitAll().anyRequest().authenticated())
