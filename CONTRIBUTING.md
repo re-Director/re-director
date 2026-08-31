@@ -1,8 +1,64 @@
 # Contributing
 
-## Philosophy / Style
+Contributions are always welcome. To get a feel for the code style and to get the setup done, please read the following document.
 
-- null handling
+## Philosophy
+
+With the codebase I am aiming for long term maintainability and low cognitive overhead. 
+I want to be able to spend short amounts of time on it and still be productive. Even after not working on the code for days or weeks.
+
+To achieve that I use boring, conventional tech choices and prefer those without any "magic".
+I only deviate from the path whenever there is a very good reason. This leads to the use of the following technologies:
+- Spring with plain `@Service`/`@Repository`/`@Controller` stereotypes
+- jOOQ for type-safe SQL (no JPA/Hibernate magic)
+- Liquibase for migrations
+- SQLite as a datastore (no extra database container)
+- JTE for server-rendered templates (no SPA/JS framework)
+- PicoCSS for styling - minimal, no build-heavy frontend tooling
+- Maven as a build tool (simplicity over configurability)
+- Jib to build docker images
+
+I have a hard preference for the obvious solution over the clever one. 
+Always with simplicity in mind and do not overengineer. 
+No defensive abstractions for things that don't vary yet.  
+I wrote and maintained software long enough to feel the cost of magic and indirection later.
+
+I aim to run and maintain this like a real product, not a toy project. 
+Automated database migrations, versioned Docker releases (multi-arch), Docker Hub publishing and automated CI/CD.
+
+## Style
+
+- prefer constructor injection in live code - field injection is totally fine for tests though
+- no lombok
+- idiomatic modern java where relevant
+  - records for data carriers
+- Small, single-purpose classes; narrow records/classes with one job rather than sprawling utility classes
+- use sensible defaults, and make sure everything is secure by default
+    - open where needed
+    - e.g. open only needed and safe actuator ports on the default configuration properties; allow all on dev profile
+
+### Architecture 
+
+- use-case-oriented packages, not layer-oriented
+  - instead of controllers/, services/, repositories/ packages
+  - organized by feature/use case: 
+    - filter_redirects
+    - manage_redirects
+    - analytics
+    - auth. 
+- each package internally follows MVC-with-a-service-layer (*ViewController → *Service → *Repository)
+
+### Testing
+
+- run the tests using `./mvnw verify`
+- tests run in parallel by class (`junit-platform.properties`)
+  - must not share mutable state across classes
+- single tests are structured in a given/when/then style
+- tests are not dogmatic, they should help with validation and regression
+  - coverage is not a target
+- favor real integration over heavy mocking
+
+### Null Handling
   - prefer to not return null, e.g. through `List.of()` or `Optional.empty()`
   - otherwise use [JSpecify](https://jspecify.dev/)
     - add a `package-info.java` to every package and annotate it with `org.jspecify.annotations.NullMarked`
