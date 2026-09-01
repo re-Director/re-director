@@ -11,7 +11,7 @@
 
   <groupId>de.jensknipper</groupId>
   <artifactId>re-director</artifactId>
-  <version>0.0.10</version>
+  <version>0.0.11</version>
   <name>re:Director</name>
   <description>redirect stuff</description>
 
@@ -29,6 +29,12 @@
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.bucket4j</groupId>
+      <artifactId>bucket4j_jdk17-core</artifactId>
+      <version>8.19.0</version>
     </dependency>
 
     <dependency>
