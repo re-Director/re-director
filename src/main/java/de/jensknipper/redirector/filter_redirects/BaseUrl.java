@@ -25,7 +25,9 @@ public class BaseUrl {
             .map(this::getHost);
     this.url = uri.map(URI::getHost).orElse(null);
     this.fullUrl = uri.map(URI::toString).orElse(null);
-    LOG.info("Specified base url is: '{}'", url);
+    if (url != null) {
+      LOG.info("Specified base url is: '{}'", url);
+    }
   }
 
   @Nullable
