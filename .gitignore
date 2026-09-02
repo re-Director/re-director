@@ -36,8 +36,16 @@ build/
 ### Mac OS ###
 .DS_Store
 
-# sqlite database file
+### SQLite Database Files ###
 sqlite.db
 sqlite.db-shm
 sqlite.db-wal
+
+### Agent Specifications ###
+# If you need one, please generate your own from the documentation.
+# If you are not happy with the generated outcome, please consider adjusting the documentation.
+[Aa][Gg][Ee][Nn][Tt][Ss].[Mm][Dd]
+[Cc][Ll][Aa][Uu][Dd][Ee].[Mm][Dd]
+
+### Misc ###
 docker/re-director-data/
