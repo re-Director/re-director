@@ -1,4 +1,4 @@
-@import de.jensknipper.re_director.test_redirects.TestRedirectResult
+@import de.jensknipper.redirector.test_redirects.TestRedirectResult
 @import gg.jte.support.ForSupport
 @import java.util.List
 @import org.springframework.validation.BindingResult

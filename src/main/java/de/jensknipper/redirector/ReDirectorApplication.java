@@ -1,0 +1,20 @@
+package de.jensknipper.redirector;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+@ConfigurationPropertiesScan
+@EnableCaching
+@EnableScheduling
+@EnableTransactionManagement
+@SpringBootApplication
+public class ReDirectorApplication {
+
+  static void main(String[] args) {
+    SpringApplication.run(ReDirectorApplication.class, args);
+  }
+}

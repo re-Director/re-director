@@ -1,7 +1,7 @@
-@import de.jensknipper.re_director.common.db.Status
-@import de.jensknipper.re_director.manage_redirects.dto.CreateRedirectRequest
-@import de.jensknipper.re_director.manage_redirects.PageContext
-@import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
+@import de.jensknipper.redirector.common.db.Status
+@import de.jensknipper.redirector.manage_redirects.dto.CreateRedirectRequest
+@import de.jensknipper.redirector.manage_redirects.PageContext
+@import de.jensknipper.redirector.manage_redirects.dto.RedirectResponse
 
 @import gg.jte.support.ForSupport
 

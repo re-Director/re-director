@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ReDirectorApplication" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="de.jensknipper.re_director.ReDirectorApplication" />
+    <option name="MAIN_CLASS_NAME" value="de.jensknipper.redirector.ReDirectorApplication" />
     <module name="re-director" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="de.jensknipper.re_director.filter.*" />
+        <option name="PATTERN" value="de.jensknipper.redirector.filter.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

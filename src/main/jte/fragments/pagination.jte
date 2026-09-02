@@ -1,6 +1,6 @@
-@import de.jensknipper.re_director.manage_redirects.PageContext
+@import de.jensknipper.redirector.manage_redirects.PageContext
 @import org.springframework.data.domain.Page
-@import de.jensknipper.re_director.manage_redirects.dto.RedirectResponse
+@import de.jensknipper.redirector.manage_redirects.dto.RedirectResponse
 
 @param String status
 @param String search

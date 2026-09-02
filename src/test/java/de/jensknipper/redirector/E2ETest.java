@@ -1,0 +1,433 @@
+package de.jensknipper.redirector;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static de.jensknipper.redirector.database.Tables.USERS;
+import static de.jensknipper.redirector.database.tables.Redirects.REDIRECTS;
+
+import com.microsoft.playwright.*;
+import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
+import de.jensknipper.redirector.common.db.Status;
+import de.jensknipper.redirector.manage_redirects.ManageRedirectsRepository;
+import jakarta.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import org.jooq.DSLContext;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.extension.TestWatcher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class E2ETest {
+
+  public static final Path RECORD_VIDEO_DIR = Paths.get("target/playwright");
+
+  @DynamicPropertySource
+  static void overrideProps(DynamicPropertyRegistry registry) {
+    String uniqueDb = "jdbc:sqlite:file::memdb-" + UUID.randomUUID() + ":?mode=memory&cache=shared";
+    registry.add("spring.datasource.url", () -> uniqueDb);
+  }
+
+  @RegisterExtension
+  private final TestWatcher testWatcher =
+      new TestWatcher() {
+        @Override
+        public void testSuccessful(@Nonnull ExtensionContext context) {
+          try {
+            Files.deleteIfExists(page.video().path());
+            Files.deleteIfExists(page.video().path().getParent());
+          } catch (IOException _) {
+            // do nothing
+          }
+        }
+      };
+
+  @LocalServerPort private int port;
+
+  @Autowired private DSLContext dsl;
+  @Autowired private ManageRedirectsRepository manageRedirectsRepository;
+
+  private static Playwright playwright;
+  private static Browser browser;
+
+  BrowserContext context;
+  Page page;
+
+  @BeforeAll
+  static void launchBrowser() {
+    playwright = Playwright.create();
+    browser = playwright.chromium().launch();
+  }
+
+  @AfterAll
+  static void closeBrowser() {
+    playwright.close();
+  }
+
+  @BeforeEach
+  void createContextAndPage(TestInfo testInfo) {
+    String baseURL = "http://localhost:" + port;
+    Path recordVideoDir =
+        RECORD_VIDEO_DIR
+            .resolve(testInfo.getTestClass().map(Class::getSimpleName).orElse("UNKNOWN"))
+            .resolve(testInfo.getDisplayName().replaceAll("\\(\\)", ""));
+
+    var options =
+        new Browser.NewContextOptions()
+            .setBaseURL(baseURL)
+            .setRecordVideoDir(recordVideoDir)
+            .setRecordVideoSize(800, 600);
+    context = browser.newContext(options);
+    page = context.newPage();
+
+    dsl.deleteFrom(REDIRECTS).execute();
+    dsl.deleteFrom(USERS).execute();
+
+    performRegistrationAndLogin();
+  }
+
+  @AfterEach
+  void cleanup() {
+    context.close();
+  }
+
+  private void performRegistrationAndLogin() {
+    page.navigate("/login");
+    assertThat(page).hasURL("/setup");
+
+    page.locator("#username").fill("admin");
+    page.locator("#password").fill("admin");
+    page.locator("#confirm-password").fill("admin");
+    page.locator("#create-account").click();
+
+    assertThat(page).hasURL("/login");
+
+    page.locator("#username").fill("admin");
+    page.locator("#password").fill("admin");
+    page.locator("#login").click();
+
+    assertThat(page).hasURL("/");
+  }
+
+  @Test
+  void mainPageLoads() {
+    page.navigate("/");
+    assertThat(page.locator("h6")).hasText("Manage Redirects Like a Pro");
+  }
+
+  @Test
+  void unknownPageIs404() {
+    page.navigate("/some-unknown-url");
+    assertThat(page.locator("main").locator("h1")).hasText("🕵️‍♂️ 404 - Not Found");
+  }
+
+  @Test
+  void invalidParamIs400() {
+    page.navigate("/redirects?size=NotANumber");
+    assertThat(page.locator("main").locator("h1")).hasText("Oops!");
+    assertThat(page.locator("#error-details").locator("#status")).hasText("400");
+    assertThat(page.locator("#error-details").locator("#error")).hasText("Bad Request");
+  }
+
+  @Test
+  void redirectsPageLoads() {
+    page.navigate("/redirects");
+    assertThat(page.locator("main").locator("h1")).hasText("Your Redirects");
+  }
+
+  @Test
+  void createRedirectWorks() {
+    page.navigate("/redirects");
+
+    // create-modal is closed and table is empty
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
+    assertThat(page.locator("#table-element-0")).hasCount(0);
+
+    // clicking create opens the create-modal
+    page.locator("#create-button").click();
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/create");
+
+    // modal can be filled out
+    page.locator("#source-input-create-modal").fill("source");
+    page.locator("#target-input-create-modal").fill("http://target");
+    page.locator("#status-code-input-create-modal").selectOption("302");
+
+    Locator createButton = page.locator("#confirm-button-create-modal");
+    assertThat(createButton).hasText("Confirm");
+
+    // clicking create closes the modal
+    createButton.click();
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
+    assertThat(page).hasURL("/redirects");
+
+    // a new element should be in the table
+    Locator tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#source")).hasText("source");
+    assertThat(tableLine.locator("#target")).hasText("http://target");
+    assertThat(tableLine.locator("#httpStatusCode")).hasText("302");
+  }
+
+  @Test
+  void editWorks() {
+    manageRedirectsRepository.create(
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
+
+    page.navigate("/redirects");
+
+    // there is an element as specified and modal is closed
+    Locator tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#source")).hasText("source");
+    assertThat(tableLine.locator("#target")).hasText("target");
+    assertThat(tableLine.locator("#httpStatusCode")).hasText("301");
+    assertThat(page.locator("#modal-update-redirect-1")).not().hasAttribute("open", "");
+
+    // clicking on edit opens the edit-modal
+    tableLine.locator("#edit-button").click();
+    Locator modal = page.locator("#modal-update-redirect-1");
+    assertThat(modal).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/1/edit");
+
+    // modal can be filled
+    page.locator("#source-input-edit-modal").fill("source");
+    page.locator("#target-input-edit-modal").fill("http://target");
+    page.locator("#status-code-input-edit-modal").selectOption("302");
+
+    Locator editButton = page.locator("#confirm-button-edit-modal");
+    assertThat(editButton).hasText("Confirm");
+
+    // clicking create closes the modal
+    editButton.click();
+    assertThat(page.locator("#modal-update-redirect-1")).not().isVisible();
+    assertThat(page).hasURL("/redirects");
+
+    // a new element should be in the table
+    tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#source")).hasText("source");
+    assertThat(tableLine.locator("#target")).hasText("http://target");
+    assertThat(tableLine.locator("#httpStatusCode")).hasText("302");
+  }
+
+  @Test
+  void deactivateAndActivateWorks() {
+    manageRedirectsRepository.create(
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
+
+    page.navigate("/redirects");
+
+    // there is an element which is activated
+    Locator tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Active");
+
+    // clicking pause deactivates it
+    tableLine.locator("#deactivate-button").click();
+    tableLine = page.locator("#table-element-0");
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Inactive");
+
+    // clicking resume activates it
+    tableLine.locator("#activate-button").click();
+    tableLine = page.locator("#table-element-0");
+    assertThat(tableLine.locator("#status").locator("i")).hasAttribute("title", "Active");
+  }
+
+  @Test
+  void deleteWorks() {
+    manageRedirectsRepository.create(
+        "source",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
+
+    page.navigate("/redirects");
+
+    // there is an element
+    Locator tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+
+    // clicking on delete opens the delete-modal
+    tableLine.locator("#delete-button").click();
+    Locator modal = page.locator("#modal-delete-redirect-1");
+    assertThat(modal).hasAttribute("open", "");
+    assertThat(page).hasURL("/redirects/1/delete");
+
+    // clicking create closes the modal
+    Locator createButton = page.locator("#confirm-button-delete-modal");
+    assertThat(createButton).hasText("Confirm");
+    createButton.click();
+    assertThat(page.locator("#modal-delete-redirect-1")).not().isVisible();
+    assertThat(page).hasURL("/redirects");
+
+    // there is none
+    assertThat(page.locator("#table-element-0")).hasCount(0);
+  }
+
+  @Test
+  void filterWorks() {
+    manageRedirectsRepository.create(
+        "source1",
+        "target",
+        Status.ACTIVE,
+        false,
+        false,
+        ManageRedirectsRepository.DEFAULT_REDIRECT);
+    manageRedirectsRepository.create(
+        "source2", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
+    manageRedirectsRepository.create(
+        "source3", "target", Status.INACTIVE, false, false, RedirectHttpStatusCode.HTTP_302_FOUND);
+
+    page.navigate("/redirects?status=INACTIVE&search=3&code=302");
+
+    // filter contains values
+    assertThat(page.locator("#status-input-filter")).hasValue("INACTIVE");
+    assertThat(page.locator("#search-input-filter")).hasValue("3");
+    assertThat(page.locator("#status-code-input-filter")).hasValue("302");
+
+    // there is one element
+    Locator tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#source")).hasText("source3");
+
+    // change filter
+    page.locator("#status-input-filter").selectOption("ACTIVE");
+    page.locator("#search-input-filter").fill("1");
+    page.locator("#status-code-input-filter").selectOption("301");
+    page.locator("#button-filter").click();
+
+    // filter contains values
+    assertThat(page.locator("#status-input-filter")).hasValue("ACTIVE");
+    assertThat(page.locator("#search-input-filter")).hasValue("1");
+
+    // lists matching elements
+    tableLine = page.locator("#table-element-0");
+    assertThat(tableLine).hasCount(1);
+    assertThat(tableLine.locator("#source")).hasText("source1");
+
+    // url contains new filter
+    assertThat(page)
+        .hasURL("/redirects?status=ACTIVE&search=1&code=301&sort=source&direction=ASC&size=20");
+  }
+
+  @Test
+  void createEditActivateDeactivateShouldPreserveFilter() {
+    page.navigate("/redirects?search=source&status=ACTIVE&code=302");
+
+    // create a redirect
+    page.locator("#create-button").click();
+    page.locator("#source-input-create-modal").fill("source");
+    page.locator("#target-input-create-modal").fill("http://target");
+    page.locator("#status-code-input-create-modal").selectOption("302");
+    page.locator("#confirm-button-create-modal").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    // edit
+    page.locator("#table-element-0").locator("#edit-button").click();
+    page.locator("#source-input-edit-modal").fill("source");
+    page.locator("#target-input-edit-modal").fill("http://target");
+    page.locator("#status-code-input-edit-modal").selectOption("302");
+    page.locator("#confirm-button-edit-modal").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    // deactivate
+    page.locator("#table-element-0").locator("#deactivate-button").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+
+    page.navigate("/redirects?search=source&status=INACTIVE&code=302");
+
+    // activate
+    page.locator("#table-element-0").locator("#activate-button").click();
+    assertThat(page).hasURL("/redirects?search=source&status=INACTIVE&code=302");
+
+    page.navigate("/redirects?search=source&status=ACTIVE&code=302");
+
+    // delete
+    page.locator("#table-element-0").locator("#delete-button").click();
+    page.locator("#confirm-button-delete-modal").click();
+    assertThat(page).hasURL("/redirects?search=source&status=ACTIVE&code=302");
+  }
+
+  @Test
+  void openingCreateOrEditUrlShouldOpenModal() {
+    // create
+    page.navigate("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+
+    // update
+    int id =
+        manageRedirectsRepository.create(
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
+    page.navigate("/redirects/" + id + "/edit");
+    assertThat(page.locator("#modal-update-redirect-1")).hasAttribute("open", "");
+  }
+
+  @Test
+  void openingEditModalShouldShowCorrectHttpCodeInDropdown() {
+    int id =
+        manageRedirectsRepository.create(
+            "irrelevant",
+            "irrelevant",
+            Status.ACTIVE,
+            false,
+            false,
+            RedirectHttpStatusCode.HTTP_302_FOUND);
+
+    page.navigate("/redirects/" + id + "/edit");
+
+    assertThat(page.locator("#status-code-input-edit-modal")).hasValue("302");
+  }
+
+  @Test
+  void backAndForwardBrowserButtonShouldUpdateUrlAndHandleModal() {
+    page.navigate("/redirects");
+    page.locator("#create-button").click();
+    page.locator("#close-button-create-modal").click();
+
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
+    page.goBack();
+    assertThat(page).hasURL("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    page.goBack();
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
+    page.goForward();
+    assertThat(page).hasURL("/redirects/create");
+    assertThat(page.locator("#modal-create-redirect")).hasAttribute("open", "");
+    page.goForward();
+    assertThat(page).hasURL("/redirects");
+    assertThat(page.locator("#modal-create-redirect")).not().isVisible();
+  }
+
+  // 301 default works after creating e.g. a 308
+  // validation errors are only shown in the one affected modal
+  // open/close
+  // pagination
+}

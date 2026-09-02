@@ -186,7 +186,7 @@
             </tags>
           </to>
           <container>
-            <mainClass>de.jensknipper.re_director.ReDirectorApplication</mainClass>
+            <mainClass>de.jensknipper.redirector.ReDirectorApplication</mainClass>
             <user>1000</user>
             <environment>
               <SPRING_PROFILES_ACTIVE>live</SPRING_PROFILES_ACTIVE>
@@ -290,19 +290,19 @@
               <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
               <forcedTypes>
                 <forcedType>
-                  <userType>de.jensknipper.re_director.common.db.Status</userType>
+                  <userType>de.jensknipper.redirector.common.db.Status</userType>
                   <enumConverter>true</enumConverter>
                   <includeExpression>.*\.STATUS</includeExpression>
                 </forcedType>
                 <forcedType>
-                  <userType>de.jensknipper.re_director.common.db.RedirectHttpStatusCode</userType>
+                  <userType>de.jensknipper.redirector.common.db.RedirectHttpStatusCode</userType>
                   <enumConverter>true</enumConverter>
                   <includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
                 </forcedType>
               </forcedTypes>
             </database>
             <target>
-              <packageName>de.jensknipper.re_director.database</packageName>
+              <packageName>de.jensknipper.redirector.database</packageName>
               <directory>target/generated-sources/jooq</directory>
             </target>
           </generator>
