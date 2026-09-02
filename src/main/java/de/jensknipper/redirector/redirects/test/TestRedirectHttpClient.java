@@ -30,7 +30,11 @@ public class TestRedirectHttpClient {
   }
 
   public TestRedirectHttpClientResponse call(URI uri, List<InetAddress> resolvedAddresses) {
-    Request request = new Request.Builder().url(HttpUrl.get(uri)).head().build();
+    HttpUrl url = HttpUrl.get(uri);
+    if (url == null) {
+      return TestRedirectHttpClientResponse.FAULTY;
+    }
+    Request request = new Request.Builder().url(url).head().build();
     OkHttpClient client =
         noFollowRedirectHttpClient
             .newBuilder()

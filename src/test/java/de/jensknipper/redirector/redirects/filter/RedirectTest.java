@@ -271,7 +271,7 @@ public class RedirectTest {
 
   private OkHttpClient.Builder createHttpClientWithCustomDns(String... requestUrls) {
     Map<String, String> customDnsMap =
-        Arrays.stream(requestUrls).collect(Collectors.toMap(s -> s, s -> "localhost"));
+        Arrays.stream(requestUrls).collect(Collectors.toMap(s -> s, _ -> "localhost"));
 
     Dns customDns =
         hostname -> {

@@ -8,7 +8,6 @@ import com.microsoft.playwright.*;
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
 import de.jensknipper.redirector.redirects.manage.ManageRedirectsRepository;
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +39,7 @@ public class E2ETest {
   private final TestWatcher testWatcher =
       new TestWatcher() {
         @Override
-        public void testSuccessful(@Nonnull ExtensionContext context) {
+        public void testSuccessful(ExtensionContext context) {
           try {
             Files.deleteIfExists(page.video().path());
             Files.deleteIfExists(page.video().path().getParent());
@@ -55,17 +54,11 @@ public class E2ETest {
   @Autowired private DSLContext dsl;
   @Autowired private ManageRedirectsRepository manageRedirectsRepository;
 
-  private static Playwright playwright;
-  private static Browser browser;
+  private static final Playwright playwright = Playwright.create();
+  private static final Browser browser = playwright.chromium().launch();
 
   BrowserContext context;
   Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    playwright = Playwright.create();
-    browser = playwright.chromium().launch();
-  }
 
   @AfterAll
   static void closeBrowser() {
