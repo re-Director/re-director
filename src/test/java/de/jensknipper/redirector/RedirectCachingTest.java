@@ -5,12 +5,12 @@ import static org.mockito.Mockito.when;
 
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
-import de.jensknipper.redirector.filter_redirects.FilterRedirectsRepository;
-import de.jensknipper.redirector.filter_redirects.FilterRedirectsService;
-import de.jensknipper.redirector.filter_redirects.RedirectInformation;
-import de.jensknipper.redirector.manage_redirects.ManageRedirectsRepository;
-import de.jensknipper.redirector.manage_redirects.ManageRedirectsService;
-import de.jensknipper.redirector.manage_redirects.Redirect;
+import de.jensknipper.redirector.redirects.filter.FilterRedirectsRepository;
+import de.jensknipper.redirector.redirects.filter.FilterRedirectsService;
+import de.jensknipper.redirector.redirects.filter.RedirectInformation;
+import de.jensknipper.redirector.redirects.manage.ManageRedirectsRepository;
+import de.jensknipper.redirector.redirects.manage.ManageRedirectsService;
+import de.jensknipper.redirector.redirects.manage.Redirect;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

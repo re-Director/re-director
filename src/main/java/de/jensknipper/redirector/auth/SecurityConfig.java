@@ -1,6 +1,6 @@
 package de.jensknipper.redirector.auth;
 
-import de.jensknipper.redirector.filter_redirects.DomainRedirectFilter;
+import de.jensknipper.redirector.redirects.filter.DomainRedirectFilter;
 import jakarta.servlet.Filter;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;

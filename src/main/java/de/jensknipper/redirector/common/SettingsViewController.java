@@ -1,6 +1,6 @@
 package de.jensknipper.redirector.common;
 
-import de.jensknipper.redirector.manage_redirects.ManageRedirectsService;
+import de.jensknipper.redirector.redirects.manage.ManageRedirectsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

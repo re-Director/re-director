@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
-import de.jensknipper.redirector.manage_redirects.ManageRedirectsService;
-import de.jensknipper.redirector.manage_redirects.Redirect;
+import de.jensknipper.redirector.redirects.manage.ManageRedirectsService;
+import de.jensknipper.redirector.redirects.manage.Redirect;
 import java.sql.Connection;
 import java.util.UUID;
 import javax.sql.DataSource;

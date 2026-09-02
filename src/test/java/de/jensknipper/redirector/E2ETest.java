@@ -7,7 +7,7 @@ import static de.jensknipper.redirector.database.tables.Redirects.REDIRECTS;
 import com.microsoft.playwright.*;
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
-import de.jensknipper.redirector.manage_redirects.ManageRedirectsRepository;
+import de.jensknipper.redirector.redirects.manage.ManageRedirectsRepository;
 import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
