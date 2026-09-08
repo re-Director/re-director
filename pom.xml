@@ -19,7 +19,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>25</java.version>
     <jte.version>3.2.4</jte.version>
-    <jooq.version>3.21.7</jooq.version>
+    <jooq.version>3.21.8</jooq.version>
     <sqlite.version>3.53.4.0</sqlite.version>
 
     <architecture>amd64</architecture>
