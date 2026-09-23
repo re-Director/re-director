@@ -68,7 +68,7 @@ Automated database migrations, versioned Docker releases (multi-arch), Docker Hu
 
 You need the following software installed to get started:
 - Git
-- Java JDK 25
+- Java JDK 27
   - easiest to install with SDKMAN
 - Docker
 - Docker Compose

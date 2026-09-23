@@ -17,7 +17,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>25</java.version>
+    <java.version>27</java.version>
     <jte.version>3.2.4</jte.version>
     <jooq.version>3.21.8</jooq.version>
     <sqlite.version>3.53.4.0</sqlite.version>
@@ -170,7 +170,7 @@
         <version>3.5.2</version>
         <configuration>
           <from>
-            <image>eclipse-temurin:25-jre-alpine</image>
+            <image>azul-zulu:27-jre-headless-alpine</image>
             <platforms>
               <platform>
                 <architecture>${architecture}</architecture>
@@ -239,6 +239,7 @@
       <plugin>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
+        <version>5.0.4</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
