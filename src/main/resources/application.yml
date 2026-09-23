@@ -28,6 +28,10 @@ spring:
     caffeine:
       spec: maximumSize=500,expireAfterWrite=10m
 
+  threads:
+    virtual:
+      enabled: true
+
   devtools:
     add-properties: false
     restart:
