@@ -1,7 +1,6 @@
 package de.jensknipper.redirector.common.db;
 
-import java.util.Arrays;
-import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 
 public enum RedirectHttpStatusCode {
   HTTP_301_MOVED_PERMANENTLY(301),
@@ -19,7 +18,13 @@ public enum RedirectHttpStatusCode {
     return code;
   }
 
-  public static Optional<RedirectHttpStatusCode> findByCode(int code) {
-    return Arrays.stream(values()).filter(it -> it.code == code).findAny();
+  @Nullable
+  public static RedirectHttpStatusCode fromCode(String code) {
+    for (RedirectHttpStatusCode status : values()) {
+      if (String.valueOf(status.code).equals(code.trim())) {
+        return status;
+      }
+    }
+    return null;
   }
 }

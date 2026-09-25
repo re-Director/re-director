@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -63,7 +64,7 @@ public class DomainRedirectFilter extends OncePerRequestFilter {
   }
 
   private String normalizeHost(String host) {
-    host = host.toLowerCase();
+    host = host.toLowerCase(Locale.ROOT);
     int portStartIndex = host.indexOf(":");
     if (portStartIndex >= 0) {
       return host.substring(0, portStartIndex);

@@ -37,7 +37,7 @@
                             Test
                         </button>
                     </fieldset>
-                    @template.fragments.fieldErrors(bindingResult = bindingResult)
+                    @template.fragments.field-errors(bindingResult = bindingResult)
                 </form>
 
                 @for(var entryLoop : ForSupport.of(result.steps()))

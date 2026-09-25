@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 class TestRedirectHttpClientTest {
 
-  public static final URI URI = java.net.URI.create("https://re-director.github.io/");
+  public static final URI TARGET_URI = java.net.URI.create("https://re-director.github.io/");
 
   private static final List<InetAddress> RESOLVED_ADDRESSES =
       List.of(InetAddress.getLoopbackAddress());
@@ -31,7 +31,7 @@ class TestRedirectHttpClientTest {
     TestRedirectHttpClient testRedirectHttpClient = clientRespondingWith(headers);
 
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI, RESOLVED_ADDRESSES);
+        testRedirectHttpClient.call(TARGET_URI, RESOLVED_ADDRESSES);
 
     assertThat(response.error()).isFalse();
     assertThat(response.headers().get("key")).contains("value");
@@ -45,7 +45,7 @@ class TestRedirectHttpClientTest {
     TestRedirectHttpClient testRedirectHttpClient = clientRespondingWith(headers);
 
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI, RESOLVED_ADDRESSES);
+        testRedirectHttpClient.call(TARGET_URI, RESOLVED_ADDRESSES);
 
     assertThat(response.error()).isFalse();
     assertThat(response.headers().get("key")).containsExactly("value");
@@ -67,7 +67,7 @@ class TestRedirectHttpClientTest {
     TestRedirectHttpClient testRedirectHttpClient = clientRespondingWith(headers);
 
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI, RESOLVED_ADDRESSES);
+        testRedirectHttpClient.call(TARGET_URI, RESOLVED_ADDRESSES);
 
     assertThat(response.error()).isFalse();
     assertThat(response.headers().get("key")).containsExactly("value");
@@ -81,7 +81,7 @@ class TestRedirectHttpClientTest {
     TestRedirectHttpClient testRedirectHttpClient = clientRespondingWith(headers);
 
     TestRedirectHttpClient.TestRedirectHttpClientResponse response =
-        testRedirectHttpClient.call(URI, RESOLVED_ADDRESSES);
+        testRedirectHttpClient.call(TARGET_URI, RESOLVED_ADDRESSES);
 
     assertThat(response.error()).isFalse();
     assertThat(response.headers().get("key")).contains("value");

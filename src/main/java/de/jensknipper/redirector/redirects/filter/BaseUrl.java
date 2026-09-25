@@ -2,6 +2,7 @@ package de.jensknipper.redirector.redirects.filter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class BaseUrl {
     Optional<URI> uri =
         Optional.ofNullable(url)
             .map(String::strip)
-            .map(String::toLowerCase)
+            .map(it -> it.toLowerCase(Locale.ROOT))
             .filter(it -> !it.isEmpty())
             .map(this::getHost);
     this.url = uri.map(URI::getHost).orElse(null);

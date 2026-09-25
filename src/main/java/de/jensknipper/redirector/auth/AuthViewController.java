@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @ConditionalOnBooleanProperty("re-director.auth.enabled")
 public class AuthViewController {
+  private static final String REDIRECT_LOGIN = "redirect:/login";
+
   private final UserService userService;
 
   public AuthViewController(UserService userService) {
@@ -40,25 +42,25 @@ public class AuthViewController {
   @GetMapping("/setup")
   public String setupForm(Model model) {
     if (userService.hasUsers()) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
-    model.addAttribute("form", new SetupFormDto());
+    model.addAttribute("form", SetupFormDto.empty());
     return "setup";
   }
 
   @PostMapping("/setup")
   public String handleSetup(@Valid @ModelAttribute("form") SetupFormDto form, BindingResult br) {
     if (userService.hasUsers()) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
-    if (!form.getPassword().equals(form.getConfirmPassword())) {
+    if (!form.password().equals(form.confirmPassword())) {
       br.rejectValue("confirmPassword", "password.mismatch", "Passwords do not match");
     }
     if (br.hasErrors()) {
       return "setup";
     }
-    userService.createUser(form.getUsername(), form.getPassword());
-    return "redirect:/login";
+    userService.createUser(form.username(), form.password());
+    return REDIRECT_LOGIN;
   }
 }

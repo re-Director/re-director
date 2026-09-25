@@ -10,6 +10,7 @@ import de.jensknipper.redirector.redirects.manage.dto.DtoMapper;
 import de.jensknipper.redirector.redirects.manage.dto.RedirectResponse;
 import jakarta.validation.Valid;
 import java.util.Arrays;
+import java.util.Locale;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,17 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ManageRedirectsViewController {
+
+  private static final String PAGE_REDIRECTS = "redirects";
+
+  private static final String ATTRIBUTE_REDIRECTS_CODE = "code";
+  private static final String ATTRIBUTE_REDIRECTS_DIRECTION = "direction";
+  private static final String ATTRIBUTE_REDIRECTS_CREATE_REDIRECT_REQUEST = "createRedirectRequest";
+  private static final String ATTRIBUTE_REDIRECTS_PAGE_CONTEXT = "pageContext";
+  private static final String ATTRIBUTE_REDIRECTS_REDIRECTS = "redirects";
+  private static final String ATTRIBUTE_REDIRECTS_SEARCH = "search";
+  private static final String ATTRIBUTE_REDIRECTS_SORT = "sort";
+  private static final String ATTRIBUTE_REDIRECTS_STATUS = "status";
 
   private final ManageRedirectsService manageRedirectsService;
   private final ValidationService validationService;
@@ -49,20 +61,20 @@ public class ManageRedirectsViewController {
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     model.addAttribute(
-        "redirects",
+        ATTRIBUTE_REDIRECTS_REDIRECTS,
         getAllRedirectsFiltered(
             search, status, code, createPageable(page, size, normalizedSort, normalizedDirection)));
-    model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
+    model.addAttribute(ATTRIBUTE_REDIRECTS_CREATE_REDIRECT_REQUEST, CreateRedirectRequest.empty());
 
-    model.addAttribute("search", search);
-    model.addAttribute("status", status);
-    model.addAttribute("code", code);
-    model.addAttribute("sort", normalizedSort);
-    model.addAttribute("direction", normalizedDirection);
+    model.addAttribute(ATTRIBUTE_REDIRECTS_SEARCH, search);
+    model.addAttribute(ATTRIBUTE_REDIRECTS_STATUS, status);
+    model.addAttribute(ATTRIBUTE_REDIRECTS_CODE, code);
+    model.addAttribute(ATTRIBUTE_REDIRECTS_SORT, normalizedSort);
+    model.addAttribute(ATTRIBUTE_REDIRECTS_DIRECTION, normalizedDirection);
     model.addAttribute(
-        "pageContext",
+        ATTRIBUTE_REDIRECTS_PAGE_CONTEXT,
         new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size));
-    return "redirects";
+    return PAGE_REDIRECTS;
   }
 
   @GetMapping("/redirects/create")
@@ -91,34 +103,35 @@ public class ManageRedirectsViewController {
       @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    validationService.uniqueSource(bindingResult, createRedirectRequest.getSource());
+    validationService.uniqueSource(bindingResult, createRedirectRequest.source());
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =
         new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size);
     if (bindingResult.hasErrors()) {
       PageRequest pageable = createPageable(page, size, normalizedSort, normalizedDirection);
-      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code, pageable));
-      model.addAttribute("createRedirectRequest", createRedirectRequest);
+      model.addAttribute(
+          ATTRIBUTE_REDIRECTS_REDIRECTS, getAllRedirectsFiltered(search, status, code, pageable));
+      model.addAttribute(ATTRIBUTE_REDIRECTS_CREATE_REDIRECT_REQUEST, createRedirectRequest);
 
-      model.addAttribute("search", search);
-      model.addAttribute("status", status);
-      model.addAttribute("code", code);
-      model.addAttribute("sort", normalizedSort);
-      model.addAttribute("direction", normalizedDirection);
-      model.addAttribute("pageContext", pageContext);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_SEARCH, search);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_STATUS, status);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_CODE, code);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_SORT, normalizedSort);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_DIRECTION, normalizedDirection);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_PAGE_CONTEXT, pageContext);
 
       model.addAttribute("isCreatePage", true);
       model.addAttribute("bindingResult", bindingResult);
-      return "redirects";
+      return PAGE_REDIRECTS;
     }
     manageRedirectsService.create(
-        createRedirectRequest.getSource(),
-        createRedirectRequest.getTarget(),
-        createRedirectRequest.isPathForwarding(),
-        createRedirectRequest.isQueryForwarding(),
-        getHttpStatusCode(createRedirectRequest));
-    return "redirect:/redirects" + pageContext.toParams();
+        createRedirectRequest.source(),
+        createRedirectRequest.target(),
+        createRedirectRequest.pathForwarding(),
+        createRedirectRequest.queryForwarding(),
+        createRedirectRequest.httpStatusCode());
+    return getRedirectToRedirectsPage(pageContext);
   }
 
   @GetMapping("/redirects/{id}/edit")
@@ -149,36 +162,38 @@ public class ManageRedirectsViewController {
       @Valid CreateRedirectRequest editRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    validationService.uniqueSource(bindingResult, editRedirectRequest.getSource(), id);
+    validationService.uniqueSource(bindingResult, editRedirectRequest.source(), id);
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =
         new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size);
     if (bindingResult.hasErrors()) {
       PageRequest pageable = createPageable(page, size, normalizedSort, normalizedDirection);
-      model.addAttribute("redirects", getAllRedirectsFiltered(search, status, code, pageable));
-      model.addAttribute("createRedirectRequest", new CreateRedirectRequest());
+      model.addAttribute(
+          ATTRIBUTE_REDIRECTS_REDIRECTS, getAllRedirectsFiltered(search, status, code, pageable));
+      model.addAttribute(
+          ATTRIBUTE_REDIRECTS_CREATE_REDIRECT_REQUEST, CreateRedirectRequest.empty());
 
-      model.addAttribute("search", search);
-      model.addAttribute("status", status);
-      model.addAttribute("code", code);
-      model.addAttribute("sort", normalizedSort);
-      model.addAttribute("direction", normalizedDirection);
-      model.addAttribute("pageContext", pageContext);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_SEARCH, search);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_STATUS, status);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_CODE, code);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_SORT, normalizedSort);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_DIRECTION, normalizedDirection);
+      model.addAttribute(ATTRIBUTE_REDIRECTS_PAGE_CONTEXT, pageContext);
 
       model.addAttribute("bindingResult", bindingResult);
       model.addAttribute("editPageId", id);
       model.addAttribute("editRedirectRequest", editRedirectRequest);
-      return "redirects";
+      return PAGE_REDIRECTS;
     }
     manageRedirectsService.update(
         id,
-        editRedirectRequest.getSource(),
-        editRedirectRequest.getTarget(),
-        editRedirectRequest.isPathForwarding(),
-        editRedirectRequest.isQueryForwarding(),
-        getHttpStatusCode(editRedirectRequest));
-    return "redirect:/redirects" + pageContext.toParams();
+        editRedirectRequest.source(),
+        editRedirectRequest.target(),
+        editRedirectRequest.pathForwarding(),
+        editRedirectRequest.queryForwarding(),
+        editRedirectRequest.httpStatusCode());
+    return getRedirectToRedirectsPage(pageContext);
   }
 
   @PostMapping("/redirects/{id}/status/{newStatus}")
@@ -195,9 +210,8 @@ public class ManageRedirectsViewController {
     manageRedirectsService.updateStatus(id, newStatus);
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
-    return "redirect:/redirects"
-        + new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size)
-            .toParams();
+    return getRedirectToRedirectsPage(
+        new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size));
   }
 
   @GetMapping("/redirects/{id}/delete")
@@ -228,9 +242,12 @@ public class ManageRedirectsViewController {
     manageRedirectsService.delete(id);
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
-    return "redirect:/redirects"
-        + new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size)
-            .toParams();
+    return getRedirectToRedirectsPage(
+        new PageContext(search, status, code, normalizedSort, normalizedDirection, page, size));
+  }
+
+  private static String getRedirectToRedirectsPage(PageContext pageContext) {
+    return "redirect:/redirects" + pageContext.toParams();
   }
 
   private PageRequest createPageable(int page, int size, String sort, String direction) {
@@ -257,22 +274,9 @@ public class ManageRedirectsViewController {
         .map(dtoMapper::toRedirectResponse);
   }
 
-  private RedirectHttpStatusCode getHttpStatusCode(CreateRedirectRequest createRedirectRequest) {
-    return RedirectHttpStatusCode.findByCode(createRedirectRequest.getHttpStatusCode())
-        // if this happens something with validation has gone wrong
-        .orElseThrow(
-            () ->
-                new RuntimeException(
-                    "Could not match redirect status code '"
-                        + createRedirectRequest.getHttpStatusCode()
-                        + "' to any of the allowed values: '"
-                        + Arrays.toString(RedirectHttpStatusCode.values())
-                        + "'"));
-  }
-
   private Sort.Direction parseDirection(String direction) {
     try {
-      return Sort.Direction.valueOf(direction.toUpperCase());
+      return Sort.Direction.valueOf(direction.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException | NullPointerException _) {
       return Sort.Direction.ASC;
     }

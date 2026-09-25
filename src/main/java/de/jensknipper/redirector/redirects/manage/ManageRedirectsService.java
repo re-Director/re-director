@@ -2,6 +2,7 @@ package de.jensknipper.redirector.redirects.manage;
 
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
+import java.util.Locale;
 import org.jspecify.annotations.Nullable;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -51,9 +52,14 @@ public class ManageRedirectsService {
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
     evictFromCacheWithId(id);
-    String normalizedSource = source.toLowerCase();
+    String normalizedSource = source.toLowerCase(Locale.ROOT);
     manageRedirectsRepository.update(
-        id, normalizedSource, target.toLowerCase(), pathForwarding, queryForwarding, statusCode);
+        id,
+        normalizedSource,
+        target.toLowerCase(Locale.ROOT),
+        pathForwarding,
+        queryForwarding,
+        statusCode);
     evictFromCache(normalizedSource);
   }
 
@@ -73,10 +79,10 @@ public class ManageRedirectsService {
       boolean pathForwarding,
       boolean queryForwarding,
       RedirectHttpStatusCode statusCode) {
-    String normalizedSource = source.toLowerCase();
+    String normalizedSource = source.toLowerCase(Locale.ROOT);
     manageRedirectsRepository.create(
         normalizedSource,
-        target.toLowerCase(),
+        target.toLowerCase(Locale.ROOT),
         Status.ACTIVE,
         pathForwarding,
         queryForwarding,

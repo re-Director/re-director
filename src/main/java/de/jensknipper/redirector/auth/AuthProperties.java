@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "re-director.auth")
 public record AuthProperties(@Nullable List<String> additionalPermitAllPaths) {
 
+  @Override
   public List<String> additionalPermitAllPaths() {
     if (additionalPermitAllPaths != null) {
       return additionalPermitAllPaths;

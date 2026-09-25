@@ -36,7 +36,7 @@ class RedirectCachingTest {
           "source",
           "target",
           Status.ACTIVE,
-          LocalDateTime.now(),
+          LocalDateTime.of(1111, 1, 1, 11, 11),
           RedirectHttpStatusCode.HTTP_302_FOUND,
           false,
           false);

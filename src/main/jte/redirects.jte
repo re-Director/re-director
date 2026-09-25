@@ -80,11 +80,10 @@
                         <div>
                             <a href="${pageContext.withSort(PageContext.SORT_SOURCE).toParams()}" class="unstyled-link">
                                 <b>Source</b>
-                                @if(sort.equals(PageContext.SORT_SOURCE))
-                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                @if(PageContext.SORT_SOURCE.equals(sort))
+                                    @if(PageContext.DIRECTION_ASC.equals(direction))
                                         <i class="fa-solid fa-sort-up"></i>
-                                    @endif
-                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                    @elseif(PageContext.DIRECTION_DESC.equals(direction))
                                         <i class="fa-solid fa-sort-down"></i>
                                     @endif
                                 @endif
@@ -93,11 +92,10 @@
                         <div>
                             <a href="${pageContext.withSort(PageContext.SORT_TARGET).toParams()}" class="unstyled-link">
                                 <b>Target</b>
-                                @if(sort.equals(PageContext.SORT_TARGET))
-                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                @if(PageContext.SORT_TARGET.equals(sort))
+                                    @if(PageContext.DIRECTION_ASC.equals(direction))
                                         <i class="fa-solid fa-sort-up"></i>
-                                    @endif
-                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                    @elseif(PageContext.DIRECTION_DESC.equals(direction))
                                         <i class="fa-solid fa-sort-down"></i>
                                     @endif
                                 @endif
@@ -106,11 +104,10 @@
                         <div>
                             <a href="${pageContext.withSort(PageContext.SORT_HTTP_STATUS_CODE).toParams()}" class="unstyled-link">
                                 <b>HTTP Status Code</b>
-                                @if(sort.equals(PageContext.SORT_HTTP_STATUS_CODE))
-                                    @if(direction.equals(PageContext.DIRECTION_ASC))
+                                @if(PageContext.SORT_HTTP_STATUS_CODE.equals(sort))
+                                    @if(PageContext.DIRECTION_ASC.equals(direction))
                                         <i class="fa-solid fa-sort-up"></i>
-                                    @endif
-                                    @if(direction.equals(PageContext.DIRECTION_DESC))
+                                    @elseif(PageContext.DIRECTION_DESC.equals(direction))
                                         <i class="fa-solid fa-sort-down"></i>
                                     @endif
                                 @endif
@@ -211,9 +208,9 @@
                     </header>
                     <form action="${"/redirects/create" + pageContext.toParams()}" method="post">
                         <label for="source-input-create-modal">Source:</label>
-                        <input id="source-input-create-modal" type="text" name="source" placeholder="Source" value="${createRedirectRequest.getSource()}">
+                        <input id="source-input-create-modal" type="text" name="source" placeholder="Source" value="${createRedirectRequest.source()}">
                         <label for="target-input-create-modal">Target</label>
-                        <input id="target-input-create-modal" type="text" name="target" placeholder="Target" value="${createRedirectRequest.getTarget()}" required minlength="1">
+                        <input id="target-input-create-modal" type="text" name="target" placeholder="Target" value="${createRedirectRequest.target()}" required minlength="1">
                         <label for="status-code-input-create-modal">Status Code:</label>
                         <select id="status-code-input-create-modal" name="httpStatusCode" aria-label="Select a Redirect HTTP Status Code" required>
                             <option disabled value="404">Select a Redirect HTTP Status Code</option>
@@ -227,14 +224,16 @@
                                 <input type="checkbox"
                                        id="path-forwarding-input-create-modal"
                                        name="pathForwarding"
-                                       checked="${createRedirectRequest.isPathForwarding()}" />
+                                       checked="${createRedirectRequest.pathForwarding()}" />
+                                <input type="hidden" name="_pathForwarding" value="on">
                                 Path Forwarding
                             </label>
                             <label>
                                 <input type="checkbox"
                                        id="query-forwarding-input-create-modal"
                                        name="queryForwarding"
-                                       checked="${createRedirectRequest.isQueryForwarding()}" />
+                                       checked="${createRedirectRequest.queryForwarding()}" />
+                                <input type="hidden" name="_queryForwarding" value="on">
                                 Query Forwarding
                             </label>
                             @if(csrfToken != null)
@@ -243,7 +242,7 @@
                         </fieldset>
 
                         @if(isCreatePage)
-                            @template.fragments.fieldErrors(bindingResult = bindingResult)
+                            @template.fragments.field-errors(bindingResult = bindingResult)
                         @endif
 
                         <footer>
@@ -270,32 +269,34 @@
                     <form action="${"/redirects/" + redirect.id() + "/edit" + pageContext.toParams()}" method="post">
                         <label for="source-input-edit-modal">Source:</label>
                         <input id="source-input-edit-modal" type="text" name="source" placeholder="Source"
-                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getSource() : redirect.source()}"
+                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.source() : redirect.source()}"
                                required minlength="1">
                         <label for="target-input-edit-modal">Target</label>
                         <input id="target-input-edit-modal" type="text" name="target" placeholder="Target"
-                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getTarget() : redirect.target()}"
+                               value="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.target() : redirect.target()}"
                                required minlength="1">
                         <label for="status-code-input-edit-modal">Status Code:</label>
                         <select id="status-code-input-edit-modal" name="httpStatusCode" aria-label="Select a Redirect HTTP Status Code" required>
-                            <option value="301" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 301 : redirect.httpStatusCode() == 301}">301: Moved Permanently</option>
-                            <option value="302" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 302 : redirect.httpStatusCode() == 302}">302: Found</option>
-                            <option value="307" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 307 : redirect.httpStatusCode() == 307}">307: Temporary Redirect</option>
-                            <option value="308" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.getHttpStatusCode() == 308 : redirect.httpStatusCode() == 308}">308: Permanent Redirect</option>
+                            <option value="301" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.httpStatusCode().getCode() == 301 : redirect.httpStatusCode() == 301}">301: Moved Permanently</option>
+                            <option value="302" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.httpStatusCode().getCode() == 302 : redirect.httpStatusCode() == 302}">302: Found</option>
+                            <option value="307" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.httpStatusCode().getCode() == 307 : redirect.httpStatusCode() == 307}">307: Temporary Redirect</option>
+                            <option value="308" selected="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.httpStatusCode().getCode() == 308 : redirect.httpStatusCode() == 308}">308: Permanent Redirect</option>
                         </select>
                        <fieldset>
                             <label>
                                 <input type="checkbox"
                                        id="path-forwarding-input-edit-modal"
                                        name="pathForwarding"
-                                       checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isPathForwarding() : redirect.pathForwarding()}" />
+                                       checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.pathForwarding() : redirect.pathForwarding()}" />
+                                <input type="hidden" name="_pathForwarding" value="on">
                                 Path Forwarding
                             </label>
                            <label>
                                <input type="checkbox"
                                       id="query-forwarding-input-edit-modal"
                                       name="queryForwarding"
-                                      checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.isQueryForwarding() : redirect.queryForwarding()}" />
+                                      checked="${editPageId != null && editPageId == redirect.id() && editRedirectRequest != null ? editRedirectRequest.queryForwarding() : redirect.queryForwarding()}" />
+                               <input type="hidden" name="_queryForwarding" value="on">
                                Query Forwarding
                            </label>
                            @if(csrfToken != null)
@@ -304,7 +305,7 @@
                         </fieldset>
 
                         @if(editPageId != null && editPageId == redirect.id())
-                            @template.fragments.fieldErrors(bindingResult = bindingResult)
+                            @template.fragments.field-errors(bindingResult = bindingResult)
                         @endif
 
                         <footer>

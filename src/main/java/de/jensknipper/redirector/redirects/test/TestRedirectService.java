@@ -66,7 +66,7 @@ public class TestRedirectService {
       String location =
           Stream.of(
                   response.headers().get(LOCATION_HEADER),
-                  response.headers().get(LOCATION_HEADER.toLowerCase()))
+                  response.headers().get(LOCATION_HEADER.toLowerCase(Locale.ROOT)))
               .filter(Objects::nonNull)
               .flatMap(Collection::stream)
               .findFirst()
