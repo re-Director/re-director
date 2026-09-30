@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import de.jensknipper.redirector.analytics.AnalyticsService;
-import de.jensknipper.redirector.common.validation.ValidationService;
 import de.jensknipper.redirector.redirects.filter.BaseUrl;
 import de.jensknipper.redirector.redirects.filter.FilterRedirectsService;
 import de.jensknipper.redirector.redirects.manage.dto.DtoMapper;
@@ -36,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ManageRedirectsViewController.class)
 @Import({
-  ValidationService.class,
+  RedirectValidationService.class,
   DtoMapper.class,
   ManageRedirectsService.class,
   JteAutoConfiguration.class,

@@ -4,7 +4,6 @@ import static de.jensknipper.redirector.redirects.manage.PageContext.*;
 
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
-import de.jensknipper.redirector.common.validation.ValidationService;
 import de.jensknipper.redirector.redirects.manage.dto.CreateRedirectRequest;
 import de.jensknipper.redirector.redirects.manage.dto.DtoMapper;
 import de.jensknipper.redirector.redirects.manage.dto.RedirectResponse;
@@ -36,15 +35,15 @@ public class ManageRedirectsViewController {
   private static final String ATTRIBUTE_REDIRECTS_STATUS = "status";
 
   private final ManageRedirectsService manageRedirectsService;
-  private final ValidationService validationService;
+  private final RedirectValidationService redirectValidationService;
   private final DtoMapper dtoMapper;
 
   public ManageRedirectsViewController(
       ManageRedirectsService manageRedirectsService,
-      ValidationService validationService,
+      RedirectValidationService redirectValidationService,
       DtoMapper dtoMapper) {
     this.manageRedirectsService = manageRedirectsService;
-    this.validationService = validationService;
+    this.redirectValidationService = redirectValidationService;
     this.dtoMapper = dtoMapper;
   }
 
@@ -103,7 +102,7 @@ public class ManageRedirectsViewController {
       @Valid CreateRedirectRequest createRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    validationService.uniqueSource(bindingResult, createRedirectRequest.source());
+    redirectValidationService.uniqueSource(bindingResult, createRedirectRequest.source());
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =
@@ -162,7 +161,7 @@ public class ManageRedirectsViewController {
       @Valid CreateRedirectRequest editRedirectRequest,
       BindingResult bindingResult,
       Model model) {
-    validationService.uniqueSource(bindingResult, editRedirectRequest.source(), id);
+    redirectValidationService.uniqueSource(bindingResult, editRedirectRequest.source(), id);
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =
