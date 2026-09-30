@@ -14,7 +14,9 @@ public class FilterRedirectsService {
   }
 
   @Nullable
-  @Cacheable(cacheNames = {"redirects"})
+  @Cacheable(
+      cacheNames = {"redirects"},
+      unless = "#result == null")
   public RedirectInformation findRedirectInformationBySource(String source) {
     return filterRedirectsRepository.findRedirectInformationBySource(source);
   }
