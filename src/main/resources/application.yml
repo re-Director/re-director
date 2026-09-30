@@ -90,6 +90,8 @@ re-director:
       cleanup-old-data-cron: "0 0 3 * * *" # 3 AM
   auth:
     enabled: false
+    password:
+      min-length: 8
   test-redirects:
     max-redirects: 10
     client:

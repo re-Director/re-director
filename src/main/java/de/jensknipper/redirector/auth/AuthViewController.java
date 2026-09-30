@@ -18,9 +18,12 @@ public class AuthViewController {
   private static final String REDIRECT_LOGIN = "redirect:/login";
 
   private final UserService userService;
+  private final PasswordValidationService passwordValidationService;
 
-  public AuthViewController(UserService userService) {
+  public AuthViewController(
+      UserService userService, PasswordValidationService passwordValidationService) {
     this.userService = userService;
+    this.passwordValidationService = passwordValidationService;
   }
 
   // show errors on failed login
@@ -49,14 +52,14 @@ public class AuthViewController {
   }
 
   @PostMapping("/setup")
-  public String handleSetup(@Valid @ModelAttribute("form") SetupFormDto form, BindingResult br) {
+  public String handleSetup(
+      @Valid @ModelAttribute("setupForm") SetupFormDto form, BindingResult br) {
     if (userService.hasUsers()) {
       return REDIRECT_LOGIN;
     }
 
-    if (!form.password().equals(form.confirmPassword())) {
-      br.rejectValue("confirmPassword", "password.mismatch", "Passwords do not match");
-    }
+    passwordValidationService.validatePasswordMismatch(br, form.password(), form.confirmPassword());
+    passwordValidationService.validatePassword(br, form.password());
     if (br.hasErrors()) {
       return "setup";
     }

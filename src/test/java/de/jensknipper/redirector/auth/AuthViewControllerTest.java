@@ -10,7 +10,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -61,14 +65,37 @@ class AuthViewControllerTest {
                 .param("password", "a")
                 .param("confirmPassword", "b"))
         .andExpect(status().isOk())
-        .andExpect(view().name("setup"));
+        .andExpect(view().name("setup"))
+        .andExpect(model().attributeHasFieldErrors("setupForm", "confirmPassword"));
+  }
+
+  private static Stream<Arguments> provideInvalidPasswordFields() {
+    return Stream.of(Arguments.of((String) null), Arguments.of(""), Arguments.of("1234567"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideInvalidPasswordFields")
+  void postSetup_invalidPassword_returnsSetupView(String password) throws Exception {
+    when(userRepository.count()).thenReturn(0L);
+
+    mockMvc
+        .perform(
+            post("/setup")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", "user")
+                .param("password", password)
+                .param("confirmPassword", password))
+        .andExpect(status().isOk())
+        .andExpect(view().name("setup"))
+        .andExpect(model().attributeHasFieldErrors("setupForm", "password"));
   }
 
   @Test
   void postSetup_success_createsUser_andRedirects() throws Exception {
     when(userRepository.count()).thenReturn(0L);
 
-    String password = "pass";
+    String password = "password";
     mockMvc
         .perform(
             post("/setup")

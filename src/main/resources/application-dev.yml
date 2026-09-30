@@ -31,6 +31,8 @@ logging:
 re-director:
   auth:
     enabled: true
+    password:
+      min-length: 5
   analytics:
     enabled: true
   base-url: http://localhost:8080
