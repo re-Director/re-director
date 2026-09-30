@@ -8,6 +8,7 @@ spring:
     password: sa
     driverClassName: org.sqlite.JDBC
     hikari:
+      maximumPoolSize: 5
       connection-init-sql: >
         PRAGMA journal_mode=WAL;
         PRAGMA synchronous=NORMAL;
