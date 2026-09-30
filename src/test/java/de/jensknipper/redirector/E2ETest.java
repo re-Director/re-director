@@ -97,14 +97,14 @@ public class E2ETest {
     assertThat(page).hasURL("/setup");
 
     page.locator("#username").fill("admin");
-    page.locator("#password").fill("admin");
-    page.locator("#confirm-password").fill("admin");
+    page.locator("#password").fill("admin123");
+    page.locator("#confirm-password").fill("admin123");
     page.locator("#create-account").click();
 
     assertThat(page).hasURL("/login");
 
     page.locator("#username").fill("admin");
-    page.locator("#password").fill("admin");
+    page.locator("#password").fill("admin123");
     page.locator("#login").click();
 
     assertThat(page).hasURL("/");
