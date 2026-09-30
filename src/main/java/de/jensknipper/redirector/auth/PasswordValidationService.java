@@ -14,7 +14,7 @@ public class PasswordValidationService {
   }
 
   public void validatePasswordMismatch(
-    BindingResult bindingResult, @Nullable String password, @Nullable String confirmPassword) {
+      BindingResult bindingResult, @Nullable String password, @Nullable String confirmPassword) {
     if (password == null || !password.equals(confirmPassword)) {
       bindingResult.rejectValue("confirmPassword", "password.mismatch", "Passwords do not match");
     }

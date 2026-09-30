@@ -19,33 +19,39 @@ public class RedirectValidationService {
     this.baseUrl = baseUrl;
   }
 
-  public void uniqueSource(BindingResult bindingResult, String source, Integer excludeId) {
+  public void uniqueSource(
+      BindingResult bindingResult, @Nullable String source, Integer excludeId) {
+    if (source == null) {
+      return;
+    }
     boolean exists = manageRedirectsService.redirectAlreadyExists(source, excludeId);
     if (exists) {
       bindingResult.rejectValue("source", "unique.source", "already exists");
     }
   }
 
-  public void uniqueSource(BindingResult bindingResult, String source) {
+  public void uniqueSource(BindingResult bindingResult, @Nullable String source) {
+    if (source == null) {
+      return;
+    }
     boolean exists = manageRedirectsService.redirectAlreadyExists(source);
     if (exists) {
       bindingResult.rejectValue("source", "unique.source", "already exists");
     }
   }
 
-  public void targetNotBaseUrl(BindingResult bindingResult, String target) {
-    Optional<String> targetHost = Optional.of(target).map(this::parseUri).map(URI::getHost);
-    if (targetHost.isEmpty()) {
+  public void targetNotBaseUrl(BindingResult bindingResult, @Nullable String target) {
+    URI targetUri = Optional.ofNullable(target).map(this::parseUri).orElse(null);
+    URI baseUri = Optional.ofNullable(baseUrl.getUrl()).map(this::parseUri).orElse(null);
+
+    if (targetUri == null || baseUri == null) {
       return;
     }
-    boolean targetIsBaseUrl =
-        Optional.ofNullable(baseUrl.getUrl())
-            .map(this::parseUri)
-            .map(URI::getHost)
-            .filter(it -> it.equalsIgnoreCase(targetHost.get()))
-            .isPresent();
-    if (targetIsBaseUrl) {
-      bindingResult.rejectValue("target", "base-url.target", "should not be the same as base URL");
+
+    if (targetUri.getHost() != null
+        && targetUri.getHost().equalsIgnoreCase(baseUri.getHost())
+        && targetUri.getPort() == baseUri.getPort()) {
+      bindingResult.rejectValue("target", "base-url.target", "should not point to the base URL");
     }
   }
 

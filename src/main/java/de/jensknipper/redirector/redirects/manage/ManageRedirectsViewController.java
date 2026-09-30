@@ -103,6 +103,7 @@ public class ManageRedirectsViewController {
       BindingResult bindingResult,
       Model model) {
     redirectValidationService.uniqueSource(bindingResult, createRedirectRequest.source());
+    redirectValidationService.targetNotBaseUrl(bindingResult, createRedirectRequest.target());
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =
@@ -162,6 +163,7 @@ public class ManageRedirectsViewController {
       BindingResult bindingResult,
       Model model) {
     redirectValidationService.uniqueSource(bindingResult, editRedirectRequest.source(), id);
+    redirectValidationService.targetNotBaseUrl(bindingResult, editRedirectRequest.target());
     String normalizedSort = normalizeSort(sort);
     String normalizedDirection = normalizeDirection(direction);
     PageContext pageContext =

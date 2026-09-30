@@ -44,16 +44,17 @@ import org.springframework.test.web.servlet.MockMvc;
 class ManageRedirectsViewControllerTest {
 
   @Autowired private MockMvc mockMvc;
-  @MockitoBean ManageRedirectsService manageRedirectsService;
-  @MockitoBean FilterRedirectsService filterRedirectsService;
-  @MockitoBean BaseUrl baseUrl;
-  @MockitoBean CacheManager cacheManager;
-  @MockitoBean AnalyticsService analyticsService;
+  @MockitoBean private ManageRedirectsService manageRedirectsService;
+  @MockitoBean private FilterRedirectsService filterRedirectsService;
+  @MockitoBean private BaseUrl baseUrl;
+  @MockitoBean private CacheManager cacheManager;
+  @MockitoBean private AnalyticsService analyticsService;
 
   @BeforeEach
   void beforeEach() {
     when(manageRedirectsService.findAllFiltered(any(), any(), any(), any()))
         .thenReturn(new PageImpl<>(List.of(), Pageable.unpaged(), 0));
+    when(baseUrl.getUrl()).thenReturn("http://base-url.internal");
   }
 
   @Nested
@@ -153,7 +154,8 @@ class ManageRedirectsViewControllerTest {
           Arguments.of("invalid"),
           Arguments.of("htt://invalid"),
           Arguments.of("htp://invalid:8080"),
-          Arguments.of("ftp://invalid"));
+          Arguments.of("ftp://invalid"),
+          Arguments.of("http://base-url.internal"));
     }
 
     @ParameterizedTest
