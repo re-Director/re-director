@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class JteErrorViewResolver implements ErrorViewResolver {
 
-  private static final Set<String> AVAILABLE_STATUS_VIEWS = Set.of("403", "404");
+  private static final Set<String> AVAILABLE_STATUS_VIEWS = Set.of("403", "404", "429");
 
   @Override
   public @Nullable ModelAndView resolveErrorView(
