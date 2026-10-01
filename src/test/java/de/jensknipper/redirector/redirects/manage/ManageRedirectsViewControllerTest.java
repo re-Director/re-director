@@ -54,7 +54,7 @@ class ManageRedirectsViewControllerTest {
   void beforeEach() {
     when(manageRedirectsService.findAllFiltered(any(), any(), any(), any()))
         .thenReturn(new PageImpl<>(List.of(), Pageable.unpaged(), 0));
-    when(baseUrl.getUrl()).thenReturn("http://base-url.internal");
+    when(baseUrl.getFullUrl()).thenReturn("http://base-url.internal:123");
   }
 
   @Nested
@@ -125,7 +125,11 @@ class ManageRedirectsViewControllerTest {
     }
 
     private static Stream<Arguments> provideInvalidSourceFields() {
-      return Stream.of(Arguments.of((String) null), Arguments.of(""), Arguments.of("duplicate"));
+      return Stream.of(
+          Arguments.of((String) null),
+          Arguments.of(""),
+          Arguments.of("duplicate"),
+          Arguments.of("base-url.internal"));
     }
 
     @ParameterizedTest
@@ -155,7 +159,8 @@ class ManageRedirectsViewControllerTest {
           Arguments.of("htt://invalid"),
           Arguments.of("htp://invalid:8080"),
           Arguments.of("ftp://invalid"),
-          Arguments.of("http://base-url.internal"));
+          Arguments.of("http://base-url.internal:123"),
+          Arguments.of("https://base-url.internal:123"));
     }
 
     @ParameterizedTest

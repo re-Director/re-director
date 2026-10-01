@@ -40,9 +40,21 @@ public class RedirectValidationService {
     }
   }
 
+  public void sourceNotBaseUrl(BindingResult bindingResult, @Nullable String source) {
+    URI baseUri = Optional.ofNullable(baseUrl.getFullUrl()).map(this::parseUri).orElse(null);
+
+    if (source == null || baseUri == null) {
+      return;
+    }
+
+    if (source.equalsIgnoreCase(baseUri.getHost())) {
+      bindingResult.rejectValue("source", "base-url.source", "should not point to the base URL");
+    }
+  }
+
   public void targetNotBaseUrl(BindingResult bindingResult, @Nullable String target) {
     URI targetUri = Optional.ofNullable(target).map(this::parseUri).orElse(null);
-    URI baseUri = Optional.ofNullable(baseUrl.getUrl()).map(this::parseUri).orElse(null);
+    URI baseUri = Optional.ofNullable(baseUrl.getFullUrl()).map(this::parseUri).orElse(null);
 
     if (targetUri == null || baseUri == null) {
       return;
