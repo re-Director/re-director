@@ -13,6 +13,8 @@ services:
   re-director:
     image: jensknipper/re-director:0.0.11
     restart: unless-stopped
+    environment:
+      SERVER_FORWARD_HEADERS_STRATEGY: native
     expose:
       - 80
     volumes:
