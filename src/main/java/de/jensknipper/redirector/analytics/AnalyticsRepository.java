@@ -5,6 +5,7 @@ import static de.jensknipper.redirector.database.tables.RedirectHitDaily.REDIREC
 import static de.jensknipper.redirector.database.tables.RedirectHitHourly.REDIRECT_HIT_HOURLY;
 
 import de.jensknipper.redirector.database.tables.records.RedirectHitRecord;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -28,17 +29,17 @@ public class AnalyticsRepository {
         hits.stream()
             .map(
                 hit -> {
-                  RedirectHitRecord record = dsl.newRecord(REDIRECT_HIT);
-                  record.setRedirectId(hit.redirectId());
-                  record.setHitTime(LocalDateTime.ofInstant(hit.time(), ZoneOffset.UTC));
-                  return record;
+                  RedirectHitRecord hitRecord = dsl.newRecord(REDIRECT_HIT);
+                  hitRecord.setRedirectId(hit.redirectId());
+                  hitRecord.setHitTime(hit.time());
+                  return hitRecord;
                 })
             .toList();
     dsl.batchInsert(records).execute();
   }
 
   /** Aggregates raw hits older than {@code cutoff} into {@code redirect_hit_hourly}. */
-  public void aggregateHourly(LocalDateTime cutoff) {
+  public void aggregateHourly(Instant cutoff) {
     Field<LocalDateTime> hour =
         DSL.field("strftime('%Y-%m-%d %H:00:00', {0})", LocalDateTime.class, REDIRECT_HIT.HIT_TIME);
 
@@ -64,12 +65,13 @@ public class AnalyticsRepository {
    * Removes raw hits older than {@code cutoff} that have been folded into {@code
    * redirect_hit_hourly}.
    */
-  public void deleteAggregatedHits(LocalDateTime cutoff) {
+  public void deleteAggregatedHits(Instant cutoff) {
     dsl.deleteFrom(REDIRECT_HIT).where(REDIRECT_HIT.HIT_TIME.lt(cutoff)).execute();
   }
 
   /** Aggregates hourly hits older than {@code cutoff} into {@code redirect_hit_daily}. */
-  public void aggregateDaily(LocalDateTime cutoff) {
+  public void aggregateDaily(Instant cutoff) {
+    LocalDateTime localCutoff = LocalDateTime.ofInstant(cutoff, ZoneOffset.UTC);
     Field<LocalDate> day = DSL.field("DATE({0})", LocalDate.class, REDIRECT_HIT_HOURLY.HOUR);
 
     dsl.insertInto(
@@ -83,7 +85,7 @@ public class AnalyticsRepository {
                     day,
                     DSL.sum(REDIRECT_HIT_HOURLY.HITS).cast(Integer.class))
                 .from(REDIRECT_HIT_HOURLY)
-                .where(REDIRECT_HIT_HOURLY.HOUR.lt(cutoff))
+                .where(REDIRECT_HIT_HOURLY.HOUR.lt(localCutoff))
                 .groupBy(REDIRECT_HIT_HOURLY.REDIRECT_ID, day))
         .onConflict(REDIRECT_HIT_DAILY.REDIRECT_ID, REDIRECT_HIT_DAILY.DAY)
         .doUpdate()
@@ -97,12 +99,18 @@ public class AnalyticsRepository {
    * Removes hourly hits older than {@code cutoff} that have been folded into {@code
    * redirect_hit_daily}.
    */
-  public void deleteAggregatedHourlyHits(LocalDateTime cutoff) {
-    dsl.deleteFrom(REDIRECT_HIT_HOURLY).where(REDIRECT_HIT_HOURLY.HOUR.lt(cutoff)).execute();
+  public void deleteAggregatedHourlyHits(Instant cutoff) {
+    dsl.deleteFrom(REDIRECT_HIT_HOURLY)
+        .where(REDIRECT_HIT_HOURLY.HOUR.lt(LocalDateTime.ofInstant(cutoff, ZoneOffset.UTC)))
+        .execute();
   }
 
   /** Removes daily hits older than {@code cutoff}. */
-  public void deleteOldDailyHits(LocalDate cutoff) {
-    dsl.deleteFrom(REDIRECT_HIT_DAILY).where(REDIRECT_HIT_DAILY.DAY.lt(cutoff)).execute();
+  public void deleteOldDailyHits(Instant cutoff) {
+    dsl.deleteFrom(REDIRECT_HIT_DAILY)
+        .where(
+            REDIRECT_HIT_DAILY.DAY.lt(
+                LocalDateTime.ofInstant(cutoff, ZoneOffset.UTC).toLocalDate()))
+        .execute();
   }
 }

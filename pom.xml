@@ -221,6 +221,7 @@
             <user>1000</user>
             <environment>
               <SPRING_PROFILES_ACTIVE>live</SPRING_PROFILES_ACTIVE>
+              <TZ>UTC</TZ>
             </environment>
           </container>
           <extraDirectories>
@@ -330,6 +331,11 @@
                   <userType>de.jensknipper.redirector.common.db.RedirectHttpStatusCode</userType>
                   <enumConverter>true</enumConverter>
                   <includeExpression>.*\.HTTP_STATUS_CODE</includeExpression>
+                </forcedType>
+                <forcedType>
+                  <userType>java.time.Instant</userType>
+                  <converter>de.jensknipper.redirector.common.db.UtcInstantConverter</converter>
+                  <includeExpression>.*\.HIT_TIME</includeExpression>
                 </forcedType>
               </forcedTypes>
             </database>

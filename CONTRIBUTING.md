@@ -36,6 +36,9 @@ Automated database migrations, versioned Docker releases (multi-arch), Docker Hu
 - use sensible defaults, and make sure everything is secure by default
     - open where needed
     - e.g. open only needed and safe actuator ports on the default configuration properties; allow all on dev profile
+- tests should be simple
+  - complicated tests are usually a sign that the code to test is complicated itself
+  - when dealing with dates and time, always used fixed times to avoid flaky tests
 
 ### Architecture 
 

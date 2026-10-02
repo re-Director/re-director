@@ -2,9 +2,7 @@ package de.jensknipper.redirector.analytics;
 
 import jakarta.annotation.PreDestroy;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -58,7 +56,7 @@ public class AnalyticsService implements AnalyticsRecorder {
 
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hourly-aggregation-rate}")
   public void aggregateHourly() {
-    LocalDateTime cutoff = LocalDateTime.now(ZoneOffset.UTC).minusHours(1);
+    Instant cutoff = Instant.now().minus(1, ChronoUnit.HOURS);
     analyticsRepository.aggregateHourly(cutoff);
     analyticsRepository.deleteAggregatedHits(cutoff);
     log.debug("Ran hourly aggregation at {}", Instant.now());
@@ -66,7 +64,7 @@ public class AnalyticsService implements AnalyticsRecorder {
 
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-daily-aggregation-rate}")
   public void aggregateDaily() {
-    LocalDateTime cutoff = LocalDate.now(ZoneOffset.UTC).atStartOfDay();
+    Instant cutoff = Instant.now().truncatedTo(ChronoUnit.DAYS);
     analyticsRepository.aggregateDaily(cutoff);
     analyticsRepository.deleteAggregatedHourlyHits(cutoff);
     log.debug("Ran daily aggregation at {}", Instant.now());
@@ -74,7 +72,8 @@ public class AnalyticsService implements AnalyticsRecorder {
 
   @Scheduled(cron = "${re-director.analytics.schedule.cleanup-old-data-cron}")
   public void cleanupOldData() {
-    LocalDate cutoff = LocalDate.now(ZoneOffset.UTC).minusDays(dataRetentionDays);
+    Instant cutoff =
+        Instant.now().truncatedTo(ChronoUnit.DAYS).minus(dataRetentionDays, ChronoUnit.DAYS);
     analyticsRepository.deleteOldDailyHits(cutoff);
     log.debug("Ran retention cleanup at {}", Instant.now());
   }
