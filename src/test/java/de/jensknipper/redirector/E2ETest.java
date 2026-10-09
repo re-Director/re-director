@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.*;
@@ -40,12 +41,16 @@ public class E2ETest {
       new TestWatcher() {
         @Override
         public void testSuccessful(ExtensionContext context) {
-          try {
-            Files.deleteIfExists(page.video().path());
-            Files.deleteIfExists(page.video().path().getParent());
-          } catch (IOException _) {
-            // do nothing
-          }
+          Optional.ofNullable(page.video())
+              .ifPresent(
+                  it -> {
+                    try {
+                      Files.deleteIfExists(it.path());
+                      Files.deleteIfExists(it.path().getParent());
+                    } catch (IOException _) {
+                      // do nothing
+                    }
+                  });
         }
       };
 
@@ -57,8 +62,8 @@ public class E2ETest {
   private static final Playwright playwright = Playwright.create();
   private static final Browser browser = playwright.chromium().launch();
 
-  BrowserContext context;
-  Page page;
+  private BrowserContext context;
+  private Page page;
 
   @AfterAll
   static void closeBrowser() {

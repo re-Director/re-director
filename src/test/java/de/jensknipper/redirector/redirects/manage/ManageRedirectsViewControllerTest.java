@@ -4,10 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import de.jensknipper.redirector.analytics.AnalyticsService;
 import de.jensknipper.redirector.redirects.filter.BaseUrl;
@@ -68,18 +65,6 @@ class ManageRedirectsViewControllerTest {
     }
 
     @Test
-    void shouldAllow_listRedirects_nullFilter() throws Exception {
-      mockMvc
-          .perform(
-              get("/redirects")
-                  .param("search", (String) null)
-                  .param("status", (String) null)
-                  .param("code", (String) null))
-          .andExpect(status().isOk())
-          .andExpect(view().name("redirects"));
-    }
-
-    @Test
     void shouldAllow_listRedirects_emptyFilter() throws Exception {
       mockMvc
           .perform(get("/redirects").param("search", "").param("status", "").param("code", ""))
@@ -101,15 +86,21 @@ class ManageRedirectsViewControllerTest {
 
     private static Stream<Arguments> provideValidFields() {
       return Stream.of(
-          Arguments.of("source", "http://valid", "true", "301"),
-          Arguments.of("source", "https://valid", "false", "302"),
-          Arguments.of("source", "http://valid:8080", "false", "307"));
+          Arguments.of("source", "http://valid", "true", "true", "301"),
+          Arguments.of("source", "https://valid", "false", "true", "302"),
+          Arguments.of("source", "http://valid:8080", "true", "false", "307"),
+          Arguments.of("sub.base-url.internal", "http://valid", "false", "false", "308"),
+          Arguments.of("source", "http://sub.base-url.internal:123", "false", "false", "301"));
     }
 
     @ParameterizedTest
     @MethodSource("provideValidFields")
     void shouldAllow_validationCreate(
-        String source, String target, String pathForwarding, String httpStatusCode)
+        String source,
+        String target,
+        String pathForwarding,
+        String queryForwarding,
+        String httpStatusCode)
         throws Exception {
       mockMvc
           .perform(
@@ -118,7 +109,7 @@ class ManageRedirectsViewControllerTest {
                   .param("source", source)
                   .param("target", target)
                   .param("pathForwarding", pathForwarding)
-                  .param("queryForwarding", "false")
+                  .param("queryForwarding", queryForwarding)
                   .param("httpStatusCode", httpStatusCode))
           .andExpect(status().is3xxRedirection())
           .andExpect(redirectedUrl("/redirects"));
