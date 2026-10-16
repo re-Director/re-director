@@ -39,6 +39,7 @@ jobs:
     - name: Build AMD64 Docker
       run: |
         ./mvnw --batch-mode jib:build \
+        -DskipDevtools \
         -Darchitecture=amd64 \
         -Djib.to.auth.username=$DOCKER_HUB_USER \
         -Djib.to.auth.password=$DOCKER_HUB_KEY
@@ -46,6 +47,7 @@ jobs:
     - name: Build ARM64 Docker
       run: |
         ./mvnw --batch-mode jib:build \
+        -DskipDevtools \
         -Darchitecture=arm64 \
         -Djib.to.auth.username=$DOCKER_HUB_USER \
         -Djib.to.auth.password=$DOCKER_HUB_KEY

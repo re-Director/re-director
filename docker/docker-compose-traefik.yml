@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.4
+    image: traefik:v3.6
     restart: unless-stopped
     command:
       - "--providers.docker"
@@ -25,7 +25,7 @@ services:
       - "traefik.http.routers.re-director.priority=1"
 
   whoami:
-    image: containous/whoami
+    image: traefik/whoami
     labels:
       - "traefik.http.routers.whoami.entrypoints=web"
       - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
