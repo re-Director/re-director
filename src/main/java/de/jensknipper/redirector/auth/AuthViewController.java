@@ -1,5 +1,6 @@
 package de.jensknipper.redirector.auth;
 
+import de.jensknipper.redirector.auth.password.PasswordValidationService;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;

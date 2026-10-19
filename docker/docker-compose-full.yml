@@ -1,0 +1,27 @@
+services:
+  re-director:
+    image: jensknipper/re-director:0.0.11
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - re-director-data:/data
+    environment:
+      RE_DIRECTOR_BASE_URL: http://re-director.internal # OPTIONAL: set base url
+      RE_DIRECTOR_AUTH_ENABLED: true                    # OPTIONAL: enable / disable auth; default false
+      RE_DIRECTOR_ANALYTICS_ENABLED: true               # OPTIONAL: enable / disable analytics; default false
+      LOGGING_LEVEL_ROOT: INFO                          # OPTIONAL: set application and framework logging; default WARN
+      LOGGING_LEVEL_DE_JENSKNIPPER_REDIRECTOR: INFO     # OPTIONAL: set application logging; default WARN
+      SPRING_CACHE_TYPE: none                           # OPTIONAL: deactivate caching
+    healthcheck:                                        # OPTIONAL: perform health checks
+      test:
+        - "CMD"
+        - "wget -q -O /dev/null --tries=1"
+        - "http://localhost:80/actuator/health"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  re-director-data:

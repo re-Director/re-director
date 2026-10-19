@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.auth;
+package de.jensknipper.redirector.auth.password;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
