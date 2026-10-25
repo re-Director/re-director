@@ -1,3 +1,4 @@
+[![Awesome](doc/awesome.png)](https://awesome-selfhosted.net/#re-director)
 [![Tests](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/run-tests.yml)
 [![Release](https://github.com/re-Director/re-director/actions/workflows/publish.yml/badge.svg)](https://github.com/re-Director/re-director/actions/workflows/publish.yml)
 
@@ -22,6 +23,18 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 - **Dark Mode**: perfect for working in dark environments, respects you system default settings
 - **Responsive Design**: easily manage your redirects, even with your phone on the go
 - and more upcoming!
+
+## Roamap
+
+- [ ] Public Facing Instances
+  - [ ] Authentication
+  - [ ] Auto SSL
+  - [X] Base URL (since [v0.0.11](https://github.com/re-Director/re-director/releases/tag/0.0.11))
+- [ ] Advanced Redirects
+  - [X] Path Forwarding (since [v0.0.8](https://github.com/re-Director/re-director/releases/tag/0.0.8))
+  - [X] Query Forwarding (since [v0.0.9](https://github.com/re-Director/re-director/releases/tag/0.0.9))
+  - [ ] Path-based Redirect Routing
+- [ ] Analytics
 
 ## Getting Started
 
