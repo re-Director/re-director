@@ -24,7 +24,6 @@
 - password protection
     - rate limit login - bucket4j
     - password change
-- automated checks with nullaway
 - broken links checker
     - periodically check target for 4xx or 5xx status code
 
