@@ -5,6 +5,7 @@ import static de.jensknipper.redirector.database.Tables.USERS;
 import static de.jensknipper.redirector.database.tables.Redirects.REDIRECTS;
 
 import com.microsoft.playwright.*;
+import de.jensknipper.redirector.auth.ratelimit.LoginRateLimitCaches;
 import de.jensknipper.redirector.common.db.RedirectHttpStatusCode;
 import de.jensknipper.redirector.common.db.Status;
 import de.jensknipper.redirector.redirects.manage.ManageRedirectsRepository;
@@ -58,6 +59,7 @@ public class E2ETest {
 
   @Autowired private DSLContext dsl;
   @Autowired private ManageRedirectsRepository manageRedirectsRepository;
+  @Autowired private LoginRateLimitCaches loginRateLimitCaches;
 
   private static final Playwright playwright = Playwright.create();
   private static final Browser browser = playwright.chromium().launch();
@@ -88,6 +90,7 @@ public class E2ETest {
 
     dsl.deleteFrom(REDIRECTS).execute();
     dsl.deleteFrom(USERS).execute();
+    loginRateLimitCaches.clearAll();
 
     performRegistrationAndLogin();
   }

@@ -1,5 +1,6 @@
 package de.jensknipper.redirector.auth;
 
+import de.jensknipper.redirector.auth.ratelimit.LoginRateLimitFilter;
 import de.jensknipper.redirector.redirects.filter.DomainRedirectFilter;
 import jakarta.servlet.Filter;
 import java.util.stream.Stream;
@@ -33,9 +34,11 @@ public class SecurityConfig {
       HttpSecurity http,
       AuthProperties authProperties,
       DomainRedirectFilter redirectFilter,
+      LoginRateLimitFilter loginRateLimitFilter,
       Filter trailingSlashFilter) {
 
     http.addFilterBefore(redirectFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(loginRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(trailingSlashFilter, DomainRedirectFilter.class);
 
     if (!authEnabled) {

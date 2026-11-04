@@ -22,7 +22,7 @@
 ## Medium Prio
 
 - password protection
-    - rate limit login - bucket4j
+    - password min length - write a password validator - add tests
     - password change
 - broken links checker
     - periodically check target for 4xx or 5xx status code
@@ -37,3 +37,4 @@
     - utility classes for hr in table
 - hardened images with distroless images and jlink
 - correlation ids on error page
+- switch from pico.css to blades.dev

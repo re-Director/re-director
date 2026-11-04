@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import de.jensknipper.redirector.analytics.AnalyticsService;
+import de.jensknipper.redirector.auth.ratelimit.LoginRateLimitCaches;
 import de.jensknipper.redirector.redirects.filter.BaseUrl;
 import de.jensknipper.redirector.redirects.filter.FilterRedirectsService;
 import de.jensknipper.redirector.redirects.manage.dto.DtoMapper;
@@ -46,6 +47,7 @@ class ManageRedirectsViewControllerTest {
   @MockitoBean private BaseUrl baseUrl;
   @MockitoBean private CacheManager cacheManager;
   @MockitoBean private AnalyticsService analyticsService;
+  @MockitoBean private LoginRateLimitCaches loginRateLimitCaches;
 
   @BeforeEach
   void beforeEach() {
