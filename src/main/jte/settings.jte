@@ -51,6 +51,18 @@
                         </form>
                     </div>
                 </div>
+                <div class="grid">
+                    <div>
+                        <form method="POST" style="display: inline-block;" action="${"/settings/cache/rate-limit/login/clear"}">
+                            @if(csrfToken != null)
+                                <input type="hidden" name="${csrfToken.getParameterName()}" value="${csrfToken.getToken()}" />
+                            @endif
+                            <button type="submit">
+                                <i class="fa-solid fa-broom"></i> Clear Login Rate Limit Caches
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </main>
         @template.fragments.footer()

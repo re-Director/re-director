@@ -277,6 +277,7 @@
           </execution>
         </executions>
         <configuration>
+          <analyticsEnabled>false</analyticsEnabled>
           <driver>org.sqlite.JDBC</driver>
           <url>jdbc:sqlite:${project.build.directory}/jooq-codegen.sqlite</url>
           <changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>

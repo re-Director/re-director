@@ -38,7 +38,9 @@ spring:
     restart:
       enabled: false
 
-management:
+  liquibase:
+    analytics-enabled: false
+
   endpoints:
     enabled-by-default: false
     web:
