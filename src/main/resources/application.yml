@@ -92,7 +92,7 @@ re-director:
       flush-daily-aggregation-rate: 1h
       cleanup-old-data-cron: "0 0 3 * * *" # 3 AM
   auth:
-    enabled: false
+    enabled: true
     password:
       min-length: 8
   test-redirects:

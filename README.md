@@ -29,7 +29,7 @@ re:Director enables you to redirect any domain simply by specifying where it sho
 ## Roamap
 
 - Public Facing Instances
-  - [ ] Authentication
+  - [X] Authentication (since [v0.1.0](https://github.com/re-Director/re-director/releases/tag/0.1.0))
   - [ ] Auto SSL
   - [X] Base URL (since [v0.0.11](https://github.com/re-Director/re-director/releases/tag/0.0.11))
 - Advanced Redirects
@@ -61,7 +61,7 @@ docker run \
   --name re-director \
   -p 80:80 \
   -v re-director-data:/data \
-  jensknipper/re-director:0.0.11
+  jensknipper/re-director:0.1.0
 ```
 
 ### Docker Compose
@@ -72,7 +72,7 @@ Simply save the following code into a `docker-compose.yml` file and run `docker-
 ```yaml
 services:
   re-director:
-    image: jensknipper/re-director:0.0.11
+    image: jensknipper/re-director:0.1.0
     restart: unless-stopped
     ports:
       - "80:80"

@@ -11,7 +11,7 @@
 
   <groupId>de.jensknipper</groupId>
   <artifactId>re-director</artifactId>
-  <version>0.0.11</version>
+  <version>0.1.0</version>
   <name>re:Director</name>
   <description>redirect stuff</description>
 

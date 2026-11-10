@@ -107,9 +107,9 @@ Regular commits etc. will not trigger the images to be built.
 By default `amd64` and `arm64` images will be built.
 
 Before creating a release, make sure that:
-- all tests pass, run: `./mvnw clean verify`
 - you update the version in the `pom.xml` to the next version
 - update all the mentioned versions in the documentation and docker examples
+- all tests pass, run: `./mvnw clean verify`
 - you are able to run the docker containers - build them locally to do that
     - run `./mvnw jib:dockerBuild` to create the container locally (needs docker installed)
       - you might have to temporarily set the `architecture` variable to `arm64`
