@@ -11,7 +11,8 @@ public class SettingsViewController {
   private final ManageRedirectsService manageRedirectsService;
   private final RateLimitService rateLimitService;
 
-  public SettingsViewController(ManageRedirectsService manageRedirectsService, RateLimitService rateLimitService) {
+  public SettingsViewController(
+      ManageRedirectsService manageRedirectsService, RateLimitService rateLimitService) {
     this.manageRedirectsService = manageRedirectsService;
     this.rateLimitService = rateLimitService;
   }

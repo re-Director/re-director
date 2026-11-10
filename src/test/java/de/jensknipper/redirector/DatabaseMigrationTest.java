@@ -16,6 +16,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+@Isolated
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {"spring.liquibase.enabled=false"})
@@ -53,9 +55,9 @@ class DatabaseMigrationTest {
 
       dsl.execute(
           """
-                INSERT INTO redirects (source, target, status, http_status_code)
-                VALUES ('example-source', 'example-target', 'ACTIVE', 'FOUND')
-            """);
+              INSERT INTO redirects (source, target, status, http_status_code)
+              VALUES ('example-source', 'example-target', 'ACTIVE', 'FOUND')
+          """);
 
       liquibase.update(new Contexts(), new LabelExpression());
     }

@@ -2,6 +2,7 @@
 
 @param boolean authenticated
 @param boolean authEnabled
+@param boolean analyticsEnabled
 @param CsrfToken csrfToken
 
 <header class="container">
@@ -27,6 +28,13 @@
         </ul>
         <ul>
             @if(!authEnabled || authenticated)
+                @if(analyticsEnabled)
+                    <li>
+                        <a href="/analytics">
+                            Analytics
+                        </a>
+                    </li>
+                @endif
                 <li>
                     <a href="/test-redirect">
                         Test-Tool

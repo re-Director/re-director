@@ -69,12 +69,10 @@ Automated database migrations, versioned Docker releases (multi-arch), Docker Hu
 
 ## Setup
 
-You need the following software installed to get started:
+You need the following software installed to start developing:
 - Git
 - Java JDK 27
   - easiest to install with SDKMAN
-- Docker
-- Docker Compose
 - a Browser of your choice
 - an IDE of your choice 
   - preferably IntelliJ
@@ -90,6 +88,9 @@ Do the following steps to make sure you are ready to go:
 For manual testing
 - install `sqlite3` to access the database
 - add the following line to `/etc/hosts`: `127.0.0.1  test.internal` to simulate a DNS entry for testing redirects
+
+For releasing
+- install Docker and Docker Compose to build and tests the application
 
 ## Formatting
 

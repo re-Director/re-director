@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @ConditionalOnBooleanProperty("re-director.analytics.enabled")
@@ -54,6 +55,7 @@ public class AnalyticsService implements AnalyticsRecorder {
     }
   }
 
+  @Transactional
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hourly-aggregation-rate}")
   public void aggregateHourly() {
     Instant cutoff = Instant.now().minus(1, ChronoUnit.HOURS);
@@ -62,6 +64,7 @@ public class AnalyticsService implements AnalyticsRecorder {
     log.debug("Ran hourly aggregation at {}", Instant.now());
   }
 
+  @Transactional
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-daily-aggregation-rate}")
   public void aggregateDaily() {
     Instant cutoff = Instant.now().truncatedTo(ChronoUnit.DAYS);

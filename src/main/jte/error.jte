@@ -3,6 +3,7 @@
 @param CsrfToken csrfToken
 @param boolean authenticated
 @param boolean authEnabled
+@param boolean analyticsEnabled
 
 @param Integer status
 @param String error
@@ -14,7 +15,7 @@
     @template.fragments.header()
 
     <body>
-        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled)
+        @template.fragments.nav(csrfToken = csrfToken, authenticated = authenticated, authEnabled = authEnabled, analyticsEnabled = analyticsEnabled)
         <main class="container" style="padding-top: 1.5em;">
             <div style="text-align: center;">
                 <h1>
