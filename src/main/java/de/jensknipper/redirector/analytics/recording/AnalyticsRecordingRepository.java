@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.recording;
 
 import static de.jensknipper.redirector.database.tables.RedirectHit.REDIRECT_HIT;
 import static de.jensknipper.redirector.database.tables.RedirectHitDaily.REDIRECT_HIT_DAILY;
@@ -16,24 +16,23 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class AnalyticsRepository {
+public class AnalyticsRecordingRepository {
 
   private final DSLContext dsl;
 
-  public AnalyticsRepository(DSLContext dsl) {
+  public AnalyticsRecordingRepository(DSLContext dsl) {
     this.dsl = dsl;
   }
 
   public void insertHits(List<HitEvent> hits) {
     List<RedirectHitRecord> records =
         hits.stream()
-            .map(
-                hit -> {
-                  RedirectHitRecord hitRecord = dsl.newRecord(REDIRECT_HIT);
-                  hitRecord.setRedirectId(hit.redirectId());
-                  hitRecord.setHitTime(hit.time());
-                  return hitRecord;
-                })
+            .map(hit -> {
+              RedirectHitRecord hitRecord = dsl.newRecord(REDIRECT_HIT);
+              hitRecord.setRedirectId(hit.redirectId());
+              hitRecord.setHitTime(hit.time());
+              return hitRecord;
+            })
             .toList();
     dsl.batchInsert(records).execute();
   }

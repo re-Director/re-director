@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.recording;
 
 import jakarta.annotation.PreDestroy;
 import java.time.Instant;
@@ -16,19 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @ConditionalOnBooleanProperty("re-director.analytics.enabled")
-public class AnalyticsService implements AnalyticsRecorder {
+public class AnalyticsRecordingService implements AnalyticsRecorder {
 
-  private static final Logger log = LoggerFactory.getLogger(AnalyticsService.class);
+  private static final Logger log = LoggerFactory.getLogger(AnalyticsRecordingService.class);
 
-  private final AnalyticsRepository analyticsRepository;
+  private final AnalyticsRecordingRepository analyticsRecordingRepository;
   private final int dataRetentionDays;
 
   private final ConcurrentLinkedQueue<HitEvent> queue = new ConcurrentLinkedQueue<>();
 
-  public AnalyticsService(
-      AnalyticsRepository analyticsRepository,
+  public AnalyticsRecordingService(
+      AnalyticsRecordingRepository analyticsRecordingRepository,
       @Value("${re-director.analytics.data-retention-days}") int dataRetentionDays) {
-    this.analyticsRepository = analyticsRepository;
+    this.analyticsRecordingRepository = analyticsRecordingRepository;
     this.dataRetentionDays = dataRetentionDays;
   }
 
@@ -47,7 +47,7 @@ public class AnalyticsService implements AnalyticsRecorder {
     }
 
     try {
-      analyticsRepository.insertHits(batch);
+      analyticsRecordingRepository.insertHits(batch);
       log.debug("Flushed {} hit events", batch.size());
     } catch (Exception e) {
       queue.addAll(batch);
@@ -59,8 +59,8 @@ public class AnalyticsService implements AnalyticsRecorder {
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hourly-aggregation-rate}")
   public void aggregateHourly() {
     Instant cutoff = Instant.now().minus(1, ChronoUnit.HOURS);
-    analyticsRepository.aggregateHourly(cutoff);
-    analyticsRepository.deleteAggregatedHits(cutoff);
+    analyticsRecordingRepository.aggregateHourly(cutoff);
+    analyticsRecordingRepository.deleteAggregatedHits(cutoff);
     log.debug("Ran hourly aggregation at {}", Instant.now());
   }
 
@@ -68,8 +68,8 @@ public class AnalyticsService implements AnalyticsRecorder {
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-daily-aggregation-rate}")
   public void aggregateDaily() {
     Instant cutoff = Instant.now().truncatedTo(ChronoUnit.DAYS);
-    analyticsRepository.aggregateDaily(cutoff);
-    analyticsRepository.deleteAggregatedHourlyHits(cutoff);
+    analyticsRecordingRepository.aggregateDaily(cutoff);
+    analyticsRecordingRepository.deleteAggregatedHourlyHits(cutoff);
     log.debug("Ran daily aggregation at {}", Instant.now());
   }
 
@@ -77,7 +77,7 @@ public class AnalyticsService implements AnalyticsRecorder {
   public void cleanupOldData() {
     Instant cutoff =
         Instant.now().truncatedTo(ChronoUnit.DAYS).minus(dataRetentionDays, ChronoUnit.DAYS);
-    analyticsRepository.deleteOldDailyHits(cutoff);
+    analyticsRecordingRepository.deleteOldDailyHits(cutoff);
     log.debug("Ran retention cleanup at {}", Instant.now());
   }
 

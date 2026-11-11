@@ -1,6 +1,6 @@
 package de.jensknipper.redirector.redirects.filter;
 
-import de.jensknipper.redirector.analytics.AnalyticsRecorder;
+import de.jensknipper.redirector.analytics.recording.AnalyticsRecorder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

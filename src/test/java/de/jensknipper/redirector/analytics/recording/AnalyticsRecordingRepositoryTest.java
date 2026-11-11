@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.recording;
 
 import static de.jensknipper.redirector.database.tables.RedirectHit.REDIRECT_HIT;
 import static de.jensknipper.redirector.database.tables.RedirectHitDaily.REDIRECT_HIT_DAILY;
@@ -18,7 +18,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-class AnalyticsRepositoryTest {
+class AnalyticsRecordingRepositoryTest {
 
   private static final LocalDate date = LocalDate.of(2026, 1, 15);
   private static final LocalDateTime time = date.atTime(12, 0, 0);
@@ -26,7 +26,7 @@ class AnalyticsRepositoryTest {
   private static final Instant dateStartInstant = date.atStartOfDay().toInstant(ZoneOffset.UTC);
 
   @Autowired private DSLContext dsl;
-  @Autowired private AnalyticsRepository analyticsRepository;
+  @Autowired private AnalyticsRecordingRepository analyticsRecordingRepository;
 
   @DynamicPropertySource
   static void overrideProps(DynamicPropertyRegistry registry) {
@@ -50,7 +50,7 @@ class AnalyticsRepositoryTest {
       List<HitEvent> hits = List.of(new HitEvent(1, timeInstant), new HitEvent(2, timeInstant));
 
       // when
-      analyticsRepository.insertHits(hits);
+      analyticsRecordingRepository.insertHits(hits);
 
       // then
       List<HitEvent> results = dsl.selectFrom(REDIRECT_HIT).fetchInto(HitEvent.class);
@@ -64,7 +64,7 @@ class AnalyticsRepositoryTest {
     @Test
     void aggregateHourlyShouldGroupHitsByRedirectAndHour() {
       // given
-      analyticsRepository.insertHits(
+      analyticsRecordingRepository.insertHits(
           List.of(
               new HitEvent(1, timeInstant),
               new HitEvent(1, timeInstant.plusSeconds(60)),
@@ -72,39 +72,36 @@ class AnalyticsRepositoryTest {
               new HitEvent(2, timeInstant)));
 
       // when
-      analyticsRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(2)));
+      analyticsRecordingRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(2)));
 
       // then
       var rows = dsl.selectFrom(REDIRECT_HIT_HOURLY).fetch();
       assertThat(rows)
           .hasSize(3)
-          .anySatisfy(
-              row -> {
-                assertThat(row.getRedirectId()).isEqualTo(1);
-                assertThat(row.getHour()).isEqualTo(time);
-                assertThat(row.getHits()).isEqualTo(2);
-              })
-          .anySatisfy(
-              row -> {
-                assertThat(row.getRedirectId()).isEqualTo(1);
-                assertThat(row.getHour()).isEqualTo(time.plusHours(1));
-                assertThat(row.getHits()).isEqualTo(1);
-              })
-          .anySatisfy(
-              row -> {
-                assertThat(row.getRedirectId()).isEqualTo(2);
-                assertThat(row.getHour()).isEqualTo(time);
-                assertThat(row.getHits()).isEqualTo(1);
-              });
+          .anySatisfy(row -> {
+            assertThat(row.getRedirectId()).isEqualTo(1);
+            assertThat(row.getHour()).isEqualTo(time);
+            assertThat(row.getHits()).isEqualTo(2);
+          })
+          .anySatisfy(row -> {
+            assertThat(row.getRedirectId()).isEqualTo(1);
+            assertThat(row.getHour()).isEqualTo(time.plusHours(1));
+            assertThat(row.getHits()).isEqualTo(1);
+          })
+          .anySatisfy(row -> {
+            assertThat(row.getRedirectId()).isEqualTo(2);
+            assertThat(row.getHour()).isEqualTo(time);
+            assertThat(row.getHits()).isEqualTo(1);
+          });
     }
 
     @Test
     void aggregateHourlyShouldNotIncludeCurrentHourHits() {
       // given
-      analyticsRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
+      analyticsRecordingRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
 
       // when
-      analyticsRepository.aggregateHourly(timeInstant.minus(Duration.ofHours(1)));
+      analyticsRecordingRepository.aggregateHourly(timeInstant.minus(Duration.ofHours(1)));
 
       // then
       assertThat(dsl.fetchCount(REDIRECT_HIT_HOURLY)).isZero();
@@ -113,14 +110,14 @@ class AnalyticsRepositoryTest {
     @Test
     void aggregateHourlyShouldAccumulateExistingHourlyHits() {
       // given
-      analyticsRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
-      analyticsRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
-      analyticsRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(1)));
-      analyticsRepository.deleteAggregatedHits(timeInstant.plus(Duration.ofHours(1)));
-      analyticsRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
+      analyticsRecordingRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
+      analyticsRecordingRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
+      analyticsRecordingRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(1)));
+      analyticsRecordingRepository.deleteAggregatedHits(timeInstant.plus(Duration.ofHours(1)));
+      analyticsRecordingRepository.insertHits(List.of(new HitEvent(1, timeInstant)));
 
       // when
-      analyticsRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(1)));
+      analyticsRecordingRepository.aggregateHourly(timeInstant.plus(Duration.ofHours(1)));
 
       // then
       var rows = dsl.selectFrom(REDIRECT_HIT_HOURLY).fetch();
@@ -132,13 +129,13 @@ class AnalyticsRepositoryTest {
   @Test
   void deleteAggregatedHitsShouldRemoveOldHitsButKeepFutureHour() {
     // given
-    analyticsRepository.insertHits(
+    analyticsRecordingRepository.insertHits(
         List.of(
             new HitEvent(1, timeInstant),
             new HitEvent(1, timeInstant.plus(Duration.ofMinutes(61)))));
 
     // when
-    analyticsRepository.deleteAggregatedHits(timeInstant.plus(Duration.ofHours(1)));
+    analyticsRecordingRepository.deleteAggregatedHits(timeInstant.plus(Duration.ofHours(1)));
 
     // then
     assertThat(dsl.fetchCount(REDIRECT_HIT)).isEqualTo(1);
@@ -159,17 +156,16 @@ class AnalyticsRepositoryTest {
           .execute();
 
       // when
-      analyticsRepository.aggregateDaily(dateStartInstant);
+      analyticsRecordingRepository.aggregateDaily(dateStartInstant);
 
       // then
       var rows = dsl.selectFrom(REDIRECT_HIT_DAILY).fetch();
       assertThat(rows)
           .hasSize(1)
-          .anySatisfy(
-              row -> {
-                assertThat(row.getRedirectId()).isEqualTo(1);
-                assertThat(row.getHits()).isEqualTo(7);
-              });
+          .anySatisfy(row -> {
+            assertThat(row.getRedirectId()).isEqualTo(1);
+            assertThat(row.getHits()).isEqualTo(7);
+          });
     }
 
     @Test
@@ -182,7 +178,7 @@ class AnalyticsRepositoryTest {
           .execute();
 
       // when
-      analyticsRepository.aggregateDaily(dateStartInstant);
+      analyticsRecordingRepository.aggregateDaily(dateStartInstant);
 
       // then
       assertThat(dsl.fetchCount(REDIRECT_HIT_DAILY)).isZero();
@@ -203,17 +199,16 @@ class AnalyticsRepositoryTest {
           .execute();
 
       // when
-      analyticsRepository.aggregateDaily(dateStartInstant);
+      analyticsRecordingRepository.aggregateDaily(dateStartInstant);
 
       // then
       var rows = dsl.selectFrom(REDIRECT_HIT_DAILY).fetch();
       assertThat(rows)
           .hasSize(1)
-          .anySatisfy(
-              row -> {
-                assertThat(row.getRedirectId()).isEqualTo(1);
-                assertThat(row.getHits()).isEqualTo(15);
-              });
+          .anySatisfy(row -> {
+            assertThat(row.getRedirectId()).isEqualTo(1);
+            assertThat(row.getHits()).isEqualTo(15);
+          });
     }
   }
 
@@ -228,17 +223,16 @@ class AnalyticsRepositoryTest {
         .execute();
 
     // when
-    analyticsRepository.deleteAggregatedHourlyHits(timeInstant);
+    analyticsRecordingRepository.deleteAggregatedHourlyHits(timeInstant);
 
     // then
     var rows = dsl.selectFrom(REDIRECT_HIT_HOURLY).fetch();
     assertThat(rows)
         .hasSize(1)
-        .anySatisfy(
-            row -> {
-              assertThat(row.getRedirectId()).isEqualTo(1);
-              assertThat(row.getHour()).isEqualTo(time);
-            });
+        .anySatisfy(row -> {
+          assertThat(row.getRedirectId()).isEqualTo(1);
+          assertThat(row.getHour()).isEqualTo(time);
+        });
   }
 
   @Test
@@ -253,17 +247,16 @@ class AnalyticsRepositoryTest {
         .execute();
 
     // when
-    analyticsRepository.deleteOldDailyHits(
+    analyticsRecordingRepository.deleteOldDailyHits(
         date.minusDays(90).atStartOfDay().toInstant(ZoneOffset.UTC));
 
     // then
     var rows = dsl.selectFrom(REDIRECT_HIT_DAILY).fetch();
     assertThat(rows)
         .hasSize(1)
-        .anySatisfy(
-            row -> {
-              assertThat(row.getRedirectId()).isEqualTo(1);
-              assertThat(row.getDay()).isEqualTo(recently);
-            });
+        .anySatisfy(row -> {
+          assertThat(row.getRedirectId()).isEqualTo(1);
+          assertThat(row.getDay()).isEqualTo(recently);
+        });
   }
 }

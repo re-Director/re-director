@@ -60,6 +60,8 @@ Automated database migrations, versioned Docker releases (multi-arch), Docker Hu
 - tests are not dogmatic, they should help with validation and regression
   - coverage is not a target
 - favor real integration over heavy mocking
+- do not use current date or time in tests (e.g. `LocalDate.now()`, `Instant.now()`, ...)
+  - it is brittle and will eventually result in flaky tests
 
 ### Null Handling
   - prefer to not return null, e.g. through `List.of()` or `Optional.empty()`

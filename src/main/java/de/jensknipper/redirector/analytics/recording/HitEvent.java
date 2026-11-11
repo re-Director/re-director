@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.recording;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.dashboard;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;

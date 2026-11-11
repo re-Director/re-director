@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.analytics;
+package de.jensknipper.redirector.analytics.recording;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
     name = "re-director.analytics.enabled",
     havingValue = false,
     matchIfMissing = true)
-class NoOpAnalyticsService implements AnalyticsRecorder {
+class NoOpAnalyticsRecordingService implements AnalyticsRecorder {
 
   @Override
   public void recordHit(int redirectId) {

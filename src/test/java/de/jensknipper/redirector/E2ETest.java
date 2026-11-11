@@ -43,15 +43,14 @@ public class E2ETest {
         @Override
         public void testSuccessful(ExtensionContext context) {
           Optional.ofNullable(page.video())
-              .ifPresent(
-                  it -> {
-                    try {
-                      Files.deleteIfExists(it.path());
-                      Files.deleteIfExists(it.path().getParent());
-                    } catch (IOException _) {
-                      // do nothing
-                    }
-                  });
+              .ifPresent(it -> {
+                try {
+                  Files.deleteIfExists(it.path());
+                  Files.deleteIfExists(it.path().getParent());
+                } catch (IOException _) {
+                  // do nothing
+                }
+              });
         }
       };
 
