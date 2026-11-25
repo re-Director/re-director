@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class TestRedirectViewController {
+class TestRedirectViewController {
 
   private final TestRedirectService testRedirectService;
 

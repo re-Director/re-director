@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @ConditionalOnBooleanProperty("re-director.auth.enabled")
-public class AuthViewController {
+class AuthViewController {
   private static final String REDIRECT_LOGIN = "redirect:/login";
 
   private final UserService userService;

@@ -1,4 +1,4 @@
-package de.jensknipper.redirector.common;
+package de.jensknipper.redirector.settings;
 
 import de.jensknipper.redirector.auth.ratelimit.RateLimitService;
 import de.jensknipper.redirector.redirects.manage.ManageRedirectsService;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class SettingsViewController {
+class SettingsViewController {
 
   private final ManageRedirectsService manageRedirectsService;
   private final RateLimitService rateLimitService;

@@ -27,7 +27,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class E2ETest {
+class E2ETest {
 
   public static final Path RECORD_VIDEO_DIR = Paths.get("target/playwright");
 

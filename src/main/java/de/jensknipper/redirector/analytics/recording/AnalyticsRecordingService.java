@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ConditionalOnBooleanProperty("re-director.analytics.enabled")
 public class AnalyticsRecordingService implements AnalyticsRecorder {
 
-  private static final Logger log = LoggerFactory.getLogger(AnalyticsRecordingService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AnalyticsRecordingService.class);
 
   private final AnalyticsRecordingRepository analyticsRecordingRepository;
   private final int dataRetentionDays;
@@ -39,7 +39,7 @@ public class AnalyticsRecordingService implements AnalyticsRecorder {
 
   @Scheduled(fixedRateString = "${re-director.analytics.schedule.flush-hits-rate}")
   public void flushHits() {
-    log.debug("Queue size before flush: {}", queue.size());
+    LOG.debug("Queue size before flush: {}", queue.size());
 
     List<HitEvent> batch = drainQueue();
     if (batch.isEmpty()) {
@@ -48,10 +48,10 @@ public class AnalyticsRecordingService implements AnalyticsRecorder {
 
     try {
       analyticsRecordingRepository.insertHits(batch);
-      log.debug("Flushed {} hit events", batch.size());
+      LOG.debug("Flushed {} hit events", batch.size());
     } catch (Exception e) {
       queue.addAll(batch);
-      log.warn("Failed to flush {} hit events, will retry", batch.size(), e);
+      LOG.warn("Failed to flush {} hit events, will retry", batch.size(), e);
     }
   }
 
@@ -61,7 +61,7 @@ public class AnalyticsRecordingService implements AnalyticsRecorder {
     Instant cutoff = Instant.now().minus(1, ChronoUnit.HOURS);
     analyticsRecordingRepository.aggregateHourly(cutoff);
     analyticsRecordingRepository.deleteAggregatedHits(cutoff);
-    log.debug("Ran hourly aggregation at {}", Instant.now());
+    LOG.debug("Ran hourly aggregation at {}", Instant.now());
   }
 
   @Transactional
@@ -70,7 +70,7 @@ public class AnalyticsRecordingService implements AnalyticsRecorder {
     Instant cutoff = Instant.now().truncatedTo(ChronoUnit.DAYS);
     analyticsRecordingRepository.aggregateDaily(cutoff);
     analyticsRecordingRepository.deleteAggregatedHourlyHits(cutoff);
-    log.debug("Ran daily aggregation at {}", Instant.now());
+    LOG.debug("Ran daily aggregation at {}", Instant.now());
   }
 
   @Scheduled(cron = "${re-director.analytics.schedule.cleanup-old-data-cron}")
@@ -78,7 +78,7 @@ public class AnalyticsRecordingService implements AnalyticsRecorder {
     Instant cutoff =
         Instant.now().truncatedTo(ChronoUnit.DAYS).minus(dataRetentionDays, ChronoUnit.DAYS);
     analyticsRecordingRepository.deleteOldDailyHits(cutoff);
-    log.debug("Ran retention cleanup at {}", Instant.now());
+    LOG.debug("Ran retention cleanup at {}", Instant.now());
   }
 
   @PreDestroy

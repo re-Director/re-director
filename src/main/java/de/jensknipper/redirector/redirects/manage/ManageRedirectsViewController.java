@@ -21,7 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class ManageRedirectsViewController {
+class ManageRedirectsViewController {
 
   private static final String PAGE_REDIRECTS = "redirects";
 

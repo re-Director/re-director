@@ -32,7 +32,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RedirectTest {
+class RedirectTest {
 
   public static final String REQUEST_URL = "request.com";
   public static final String TARGET_URL = "http://target.com";
