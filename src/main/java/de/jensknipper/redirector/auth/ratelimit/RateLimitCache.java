@@ -8,10 +8,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 import org.springframework.cache.Cache;
 
+import static java.util.Objects.requireNonNull;
+
 public record RateLimitCache(Cache cache, Bandwidth limit) {
 
   boolean tryConsume(String key) {
     Bucket bucket = cache.get(hash(key), () -> Bucket.builder().addLimit(limit).build());
+    requireNonNull(bucket); // cannot be null here
     return bucket.tryConsume(1);
   }
 

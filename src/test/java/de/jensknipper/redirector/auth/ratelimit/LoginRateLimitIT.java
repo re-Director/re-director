@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LoginRateLimitIntegrationTest {
+class LoginRateLimitIT {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private LoginRateLimitCaches loginRateLimitCaches;

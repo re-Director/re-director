@@ -26,7 +26,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @Isolated
 @SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    webEnvironment = SpringBootTest.WebEnvironment.NONE,
     properties = {"spring.liquibase.enabled=false"})
 class DatabaseMigrationTest {
 

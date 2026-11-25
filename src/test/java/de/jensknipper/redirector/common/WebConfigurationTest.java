@@ -1,26 +1,26 @@
 package de.jensknipper.redirector.common;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient
 class WebConfigurationTest {
 
-  @Autowired MockMvc mockMvc;
+  @Autowired RestTestClient restTestClient;
 
   @Test
-  void trailingSlashIsHandledLikeWithoutSlash() throws Exception {
-    mockMvc
-        .perform(get("/setup/"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/setup"));
+  void trailingSlashIsHandledLikeWithoutSlash() {
+    restTestClient
+        .get()
+        .uri("/setup/")
+        .exchange()
+        .expectStatus()
+        .is3xxRedirection()
+        .expectHeader()
+        .location("/setup");
   }
 }

@@ -2,17 +2,12 @@ package de.jensknipper.redirector.redirects.manage;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import de.jensknipper.redirector.analytics.recording.AnalyticsRecordingService;
-import de.jensknipper.redirector.auth.ratelimit.LoginRateLimitCaches;
 import de.jensknipper.redirector.redirects.filter.BaseUrl;
-import de.jensknipper.redirector.redirects.filter.FilterRedirectsService;
-import de.jensknipper.redirector.redirects.manage.dto.DtoMapper;
-import gg.jte.springframework.boot.autoconfigure.JteAutoConfiguration;
-import gg.jte.springframework.boot.autoconfigure.ServletJteAutoConfiguration;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,32 +17,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(ManageRedirectsViewController.class)
-@Import({
-  RedirectValidationService.class,
-  DtoMapper.class,
-  ManageRedirectsService.class,
-  JteAutoConfiguration.class,
-  ServletJteAutoConfiguration.class
-})
+@SpringBootTest(properties = {"re-director.auth.enabled=false"})
+@AutoConfigureMockMvc
 class ManageRedirectsViewControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @MockitoBean private ManageRedirectsService manageRedirectsService;
-  @MockitoBean private FilterRedirectsService filterRedirectsService;
   @MockitoBean private BaseUrl baseUrl;
-  @MockitoBean private CacheManager cacheManager;
-  @MockitoBean private AnalyticsRecordingService analyticsRecordingService;
-  @MockitoBean private LoginRateLimitCaches loginRateLimitCaches;
 
   @BeforeEach
   void beforeEach() {
@@ -107,6 +91,7 @@ class ManageRedirectsViewControllerTest {
       mockMvc
           .perform(
               post("/redirects/create")
+                  .with(csrf())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", source)
                   .param("target", target)
@@ -133,6 +118,7 @@ class ManageRedirectsViewControllerTest {
       mockMvc
           .perform(
               post("/redirects/create")
+                  .with(csrf())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", invalidSource)
                   .param("target", "http://valid")
@@ -163,6 +149,7 @@ class ManageRedirectsViewControllerTest {
       mockMvc
           .perform(
               post("/redirects/create")
+                  .with(csrf())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", "source")
                   .param("target", invalidTarget)
@@ -189,6 +176,7 @@ class ManageRedirectsViewControllerTest {
       mockMvc
           .perform(
               post("/redirects/create")
+                  .with(csrf())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .param("source", "source")
                   .param("target", "http://valid")
